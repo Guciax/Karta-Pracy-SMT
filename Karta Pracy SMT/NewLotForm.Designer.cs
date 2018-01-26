@@ -66,7 +66,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(755, 100);
+            this.panel3.Size = new System.Drawing.Size(884, 100);
             this.panel3.TabIndex = 5;
             // 
             // label1
@@ -124,7 +124,7 @@
             this.buttonOK.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.buttonOK.Location = new System.Drawing.Point(0, 628);
             this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(755, 38);
+            this.buttonOK.Size = new System.Drawing.Size(884, 38);
             this.buttonOK.TabIndex = 5;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
@@ -137,9 +137,9 @@
             this.panel2.Controls.Add(this.labelRankB);
             this.panel2.Controls.Add(this.textBox3);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(351, 100);
+            this.panel2.Location = new System.Drawing.Point(450, 100);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(404, 528);
+            this.panel2.Size = new System.Drawing.Size(434, 528);
             this.panel2.TabIndex = 9;
             // 
             // dataGridView2
@@ -148,7 +148,7 @@
             this.dataGridView2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.dataGridView2.Location = new System.Drawing.Point(0, 390);
             this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(402, 136);
+            this.dataGridView2.Size = new System.Drawing.Size(432, 136);
             this.dataGridView2.TabIndex = 6;
             // 
             // labelRankB
@@ -182,9 +182,9 @@
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textBox1.Location = new System.Drawing.Point(63, 349);
+            this.textBox1.Location = new System.Drawing.Point(3, 358);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(201, 26);
+            this.textBox1.Size = new System.Drawing.Size(440, 26);
             this.textBox1.TabIndex = 6;
             this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
@@ -198,7 +198,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 100);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(351, 528);
+            this.panel1.Size = new System.Drawing.Size(450, 528);
             this.panel1.TabIndex = 8;
             // 
             // dataGridView1
@@ -215,7 +215,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(0, 390);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(349, 136);
+            this.dataGridView1.Size = new System.Drawing.Size(448, 136);
             this.dataGridView1.TabIndex = 7;
             // 
             // NC12
@@ -247,7 +247,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(755, 666);
+            this.ClientSize = new System.Drawing.Size(884, 666);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.buttonOK);
