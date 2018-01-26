@@ -21,8 +21,12 @@ namespace Karta_Pracy_SMT
         {
             NewLotForm fmNewLot = new NewLotForm();
             fmNewLot.Show();
+        }
 
-
+        public DataGridView grid
+        {
+            get { return dataGridView1; }
+            set { dataGridView1 = grid; }
         }
     }
 }

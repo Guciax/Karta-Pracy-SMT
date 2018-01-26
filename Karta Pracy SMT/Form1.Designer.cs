@@ -30,6 +30,7 @@
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.ColumnSaved = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ColumnLot = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -40,7 +41,6 @@
             this.ColumnRankB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnButtonLed = new System.Windows.Forms.DataGridViewButtonColumn();
             this.ColumnEndTime = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -53,6 +53,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1332, 89);
             this.panel1.TabIndex = 1;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(3, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(84, 80);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // dataGridView1
             // 
@@ -141,16 +151,6 @@
             this.ColumnEndTime.HeaderText = "Czas zakończenia";
             this.ColumnEndTime.Name = "ColumnEndTime";
             this.ColumnEndTime.ReadOnly = true;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(3, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(84, 80);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 

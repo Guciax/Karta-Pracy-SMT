@@ -16,10 +16,8 @@ namespace Karta_Pracy_SMT
         public NewLotForm()
         {
             InitializeComponent();
-            opener = ParentForm;
+            opener = ParentForm as Form1;
         }
-
-
 
         private void textBoxLotNo_TextChanged(object sender, EventArgs e)
         {
@@ -33,6 +31,44 @@ namespace Karta_Pracy_SMT
                 labelRankB.Text = "Rank B" + Environment.NewLine + currentLotData.RankB;
 
             }
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                ledReelData leedReel = SqlOperations.GetLedDataFromSparing(textBox1.Text);
+
+                dataGridView1.Rows.Add(leedReel.NC12, leedReel.Ilosc, leedReel.LPN_ID, leedReel.LPN_NC, leedReel.ZlecenieString);
+                if (leedReel.ZlecenieString == textBox1.Text)
+                {
+                    foreach (DataGridViewCell cell in dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells)
+                    {
+                        cell.Style.BackColor = Color.Green;
+                    }
+                }
+                else
+                {
+                    foreach (DataGridViewCell cell in dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells)
+                    {
+                        cell.Style.BackColor = Color.Red;
+                    }
+                }
+
+
+
+                    foreach (DataGridViewColumn col in dataGridView1.Columns)
+                    {
+                        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    }
+
+                textBox1.Text = "";
+            }
+        }
+
+        private void buttonOK_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }

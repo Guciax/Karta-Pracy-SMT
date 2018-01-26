@@ -51,6 +51,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="ledReelData.cs" />
     <Compile Include="LotData.cs" />
     <Compile Include="NewLotForm.cs">
       <SubType>Form</SubType>
