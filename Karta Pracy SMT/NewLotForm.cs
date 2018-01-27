@@ -12,14 +12,17 @@ namespace Karta_Pracy_SMT
 {
     public partial class NewLotForm : Form
     {
-        Form1 opener;
+        MainForm opener;
         ledReelData currentLedReel;
-        LotData currentLotData;
+        LotData currentLotData = new LotData("", 0, "", "");
+        private readonly DataGridView grid;
+        LedLeftovers ledsLeft;
 
-        public NewLotForm(Form1 callingForm)
+        public NewLotForm(MainForm callingForm, DataGridView grid)
         {
             InitializeComponent();
-            opener = callingForm as Form1;
+            opener = callingForm as MainForm;
+            this.grid = grid;
         }
 
         private void textBoxLotNo_TextChanged(object sender, EventArgs e)
@@ -40,48 +43,59 @@ namespace Karta_Pracy_SMT
         {
             if (e.KeyCode == Keys.Return)
             {
-                currentLedReel = SqlOperations.GetLedDataFromSparing(textBox1.Text);
+                currentLedReel = SqlOperations.GetLedDataFromSparing(textBoxRankAQr.Text);
 
-                dataGridView1.Rows.Add(currentLedReel.NC12, currentLedReel.Ilosc, currentLedReel.LPN_ID, currentLedReel.LPN_NC, currentLedReel.ZlecenieString);
-                if (currentLedReel.ZlecenieString == textBox1.Text)
+                dataGridViewRankA.Rows.Add(currentLedReel.NC12, currentLedReel.Ilosc, currentLedReel.LPN_ID, currentLedReel.LPN_NC, currentLedReel.ZlecenieString);
+                if (currentLedReel.ZlecenieString == textBoxRankAQr.Text)
                 {
-                    foreach (DataGridViewCell cell in dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells)
+                    foreach (DataGridViewCell cell in dataGridViewRankA.Rows[dataGridViewRankA.Rows.Count - 1].Cells)
                     {
                         cell.Style.BackColor = Color.Green;
                     }
                 }
                 else
                 {
-                    foreach (DataGridViewCell cell in dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells)
+                    foreach (DataGridViewCell cell in dataGridViewRankA.Rows[dataGridViewRankA.Rows.Count - 1].Cells)
                     {
                         cell.Style.BackColor = Color.Red;
                     }
                 }
 
-                    foreach (DataGridViewColumn col in dataGridView1.Columns)
+                    foreach (DataGridViewColumn col in dataGridViewRankA.Columns)
                     {
                         col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     }
 
-                textBox1.Text = "";
+                textBoxRankAQr.Text = "";
             }
         }
 
         
         private void buttonOK_Click(object sender, EventArgs e)
         {
-
-            opener.grid.Rows.Add(false, textBoxLotNo.Text, currentLotData.Model, "", currentLotData.OrderedQty, currentLotData.RankA, new DataGridViewButtonCell(), currentLotData.RankB, new DataGridViewButtonCell(), new DataGridViewButtonCell(), System.DateTime.Now.ToShortDateString());
-            opener.grid.Rows[opener.grid.Rows.Count - 1].Cells["RankAInfo"].Value = "INFO";
-            opener.grid.Rows[opener.grid.Rows.Count - 1].Cells["RankBInfo"].Value = "INFO";
-            opener.grid.Rows[opener.grid.Rows.Count - 1].Cells["ColumnButtonLed"] .Value = "Brak";
-            opener.grid.Rows[opener.grid.Rows.Count - 1].Cells["ColumnButtonLed"].Style.BackColor = Color.Red;
-            foreach (DataGridViewColumn col in opener.grid.Columns)
+            if (dataGridViewRankA.Rows.Count == dataGridViewRankB.Rows.Count)
             {
-                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            }
-            this.Close();
+                grid.Rows.Add(false, textBoxLotNo.Text, currentLotData.Model, "", currentLotData.OrderedQty, currentLotData.RankA, new DataGridViewButtonCell(), currentLotData.RankB, new DataGridViewButtonCell(), new DataGridViewButtonCell(), System.DateTime.Now.ToShortDateString());
+                grid.Rows[grid.Rows.Count - 1].Cells["RankAInfo"].Value = "INFO";
+                grid.Rows[grid.Rows.Count - 1].Cells["RankBInfo"].Value = "INFO";
+                grid.Rows[grid.Rows.Count - 1].Cells["ColumnButtonLed"].Value = "Brak";
+                grid.Rows[grid.Rows.Count - 1].Cells["ColumnButtonLed"].Style.BackColor = Color.Red;
 
+                foreach (DataGridViewRow row in dataGridViewRankA.Rows)
+                {
+                    ledsLeft.RankA.Add(new RankStruc(labelRankA.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None)[1], row.Cells["RankAId"].ToString(), row.Cells["RankANc12"].ToString(), double.Parse(row.Cells["RankAIlosc"].ToString())));
+                    ledsLeft.RankB.Add(new RankStruc(labelRankB.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None)[1], row.Cells["RankBId"].ToString(), row.Cells["RankBNc12"].ToString(), double.Parse(row.Cells["RankBIlosc"].ToString())));
+                }
+
+                grid.Rows[grid.Rows.Count - 1].Cells["ColumnButtonLed"].Tag = ledsLeft;
+
+                foreach (DataGridViewColumn col in grid.Columns)
+                {
+                    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                }
+
+                this.Close();
+            }
         }
     }
 }

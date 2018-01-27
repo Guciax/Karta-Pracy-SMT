@@ -36,23 +36,26 @@
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.buttonOK = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.labelRankB = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.textBoxRankBQr = new System.Windows.Forms.TextBox();
             this.labelRankA = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBoxRankAQr = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.NC12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Ilosc = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.LPN_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.LPN_NC = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ZlecenieString = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewRankA = new System.Windows.Forms.DataGridView();
+            this.dataGridViewRankB = new System.Windows.Forms.DataGridView();
+            this.rankBNc12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.rankBId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.rankBIlosc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RankBZlecenie = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RankANc12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RankAId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RankAIlosc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RankAZlecenie = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRankA)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRankB)).BeginInit();
             this.SuspendLayout();
             // 
             // panel3
@@ -65,8 +68,9 @@
             this.panel3.Controls.Add(this.textBox4);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(0, 0);
+            this.panel3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(884, 100);
+            this.panel3.Size = new System.Drawing.Size(1179, 123);
             this.panel3.TabIndex = 5;
             // 
             // label1
@@ -74,9 +78,10 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.label1.ForeColor = System.Drawing.SystemColors.Control;
-            this.label1.Location = new System.Drawing.Point(5, 2);
+            this.label1.Location = new System.Drawing.Point(7, 2);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(110, 24);
+            this.label1.Size = new System.Drawing.Size(140, 29);
             this.label1.TabIndex = 5;
             this.label1.Text = "Nr zlecenia:";
             // 
@@ -85,9 +90,10 @@
             this.labelOrderedQty.AutoSize = true;
             this.labelOrderedQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.labelOrderedQty.ForeColor = System.Drawing.SystemColors.Control;
-            this.labelOrderedQty.Location = new System.Drawing.Point(171, 64);
+            this.labelOrderedQty.Location = new System.Drawing.Point(228, 79);
+            this.labelOrderedQty.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelOrderedQty.Name = "labelOrderedQty";
-            this.labelOrderedQty.Size = new System.Drawing.Size(48, 24);
+            this.labelOrderedQty.Size = new System.Drawing.Size(63, 29);
             this.labelOrderedQty.TabIndex = 4;
             this.labelOrderedQty.Text = "Ilość";
             // 
@@ -96,35 +102,39 @@
             this.labelModel.AutoSize = true;
             this.labelModel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.labelModel.ForeColor = System.Drawing.SystemColors.Control;
-            this.labelModel.Location = new System.Drawing.Point(171, 37);
+            this.labelModel.Location = new System.Drawing.Point(228, 46);
+            this.labelModel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelModel.Name = "labelModel";
-            this.labelModel.Size = new System.Drawing.Size(73, 24);
+            this.labelModel.Size = new System.Drawing.Size(93, 29);
             this.labelModel.TabIndex = 3;
             this.labelModel.Text = "Model: ";
             // 
             // textBoxLotNo
             // 
             this.textBoxLotNo.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textBoxLotNo.Location = new System.Drawing.Point(123, 0);
+            this.textBoxLotNo.Location = new System.Drawing.Point(164, 0);
+            this.textBoxLotNo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.textBoxLotNo.Name = "textBoxLotNo";
-            this.textBoxLotNo.Size = new System.Drawing.Size(635, 29);
+            this.textBoxLotNo.Size = new System.Drawing.Size(845, 34);
             this.textBoxLotNo.TabIndex = 2;
             this.textBoxLotNo.TextChanged += new System.EventHandler(this.textBoxLotNo_TextChanged);
             // 
             // textBox4
             // 
             this.textBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textBox4.Location = new System.Drawing.Point(64, 264);
+            this.textBox4.Location = new System.Drawing.Point(85, 325);
+            this.textBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(201, 26);
+            this.textBox4.Size = new System.Drawing.Size(267, 30);
             this.textBox4.TabIndex = 1;
             // 
             // buttonOK
             // 
             this.buttonOK.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonOK.Location = new System.Drawing.Point(0, 628);
+            this.buttonOK.Location = new System.Drawing.Point(0, 773);
+            this.buttonOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(884, 38);
+            this.buttonOK.Size = new System.Drawing.Size(1179, 47);
             this.buttonOK.TabIndex = 5;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
@@ -133,135 +143,167 @@
             // panel2
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Controls.Add(this.dataGridView2);
+            this.panel2.Controls.Add(this.dataGridViewRankB);
             this.panel2.Controls.Add(this.labelRankB);
-            this.panel2.Controls.Add(this.textBox3);
+            this.panel2.Controls.Add(this.textBoxRankBQr);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(450, 100);
+            this.panel2.Location = new System.Drawing.Point(599, 123);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(434, 528);
+            this.panel2.Size = new System.Drawing.Size(580, 650);
             this.panel2.TabIndex = 9;
-            // 
-            // dataGridView2
-            // 
-            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.dataGridView2.Location = new System.Drawing.Point(0, 390);
-            this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(432, 136);
-            this.dataGridView2.TabIndex = 6;
             // 
             // labelRankB
             // 
             this.labelRankB.AutoSize = true;
             this.labelRankB.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelRankB.Location = new System.Drawing.Point(143, 24);
+            this.labelRankB.Location = new System.Drawing.Point(191, 30);
+            this.labelRankB.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelRankB.Name = "labelRankB";
-            this.labelRankB.Size = new System.Drawing.Size(103, 31);
+            this.labelRankB.Size = new System.Drawing.Size(129, 39);
             this.labelRankB.TabIndex = 5;
             this.labelRankB.Text = "Rank B";
             // 
-            // textBox3
+            // textBoxRankBQr
             // 
-            this.textBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textBox3.Location = new System.Drawing.Point(171, 349);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(201, 26);
-            this.textBox3.TabIndex = 1;
+            this.textBoxRankBQr.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.textBoxRankBQr.Location = new System.Drawing.Point(7, 441);
+            this.textBoxRankBQr.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBoxRankBQr.Name = "textBoxRankBQr";
+            this.textBoxRankBQr.Size = new System.Drawing.Size(555, 30);
+            this.textBoxRankBQr.TabIndex = 1;
             // 
             // labelRankA
             // 
             this.labelRankA.AutoSize = true;
             this.labelRankA.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelRankA.Location = new System.Drawing.Point(116, 24);
+            this.labelRankA.Location = new System.Drawing.Point(155, 30);
+            this.labelRankA.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelRankA.Name = "labelRankA";
-            this.labelRankA.Size = new System.Drawing.Size(103, 31);
+            this.labelRankA.Size = new System.Drawing.Size(129, 39);
             this.labelRankA.TabIndex = 4;
             this.labelRankA.Text = "Rank A";
             // 
-            // textBox1
+            // textBoxRankAQr
             // 
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textBox1.Location = new System.Drawing.Point(3, 358);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(440, 26);
-            this.textBox1.TabIndex = 6;
-            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
+            this.textBoxRankAQr.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.textBoxRankAQr.Location = new System.Drawing.Point(4, 441);
+            this.textBoxRankAQr.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBoxRankAQr.Name = "textBoxRankAQr";
+            this.textBoxRankAQr.Size = new System.Drawing.Size(585, 30);
+            this.textBoxRankAQr.TabIndex = 6;
+            this.textBoxRankAQr.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // panel1
             // 
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.dataGridView1);
-            this.panel1.Controls.Add(this.textBox1);
+            this.panel1.Controls.Add(this.dataGridViewRankA);
+            this.panel1.Controls.Add(this.textBoxRankAQr);
             this.panel1.Controls.Add(this.labelRankA);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 100);
+            this.panel1.Location = new System.Drawing.Point(0, 123);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(450, 528);
+            this.panel1.Size = new System.Drawing.Size(599, 650);
             this.panel1.TabIndex = 8;
             // 
-            // dataGridView1
+            // dataGridViewRankA
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.NC12,
-            this.Ilosc,
-            this.LPN_ID,
-            this.LPN_NC,
-            this.ZlecenieString});
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 390);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(448, 136);
-            this.dataGridView1.TabIndex = 7;
+            this.dataGridViewRankA.AllowUserToAddRows = false;
+            this.dataGridViewRankA.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewRankA.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.RankANc12,
+            this.RankAId,
+            this.RankAIlosc,
+            this.RankAZlecenie});
+            this.dataGridViewRankA.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dataGridViewRankA.Location = new System.Drawing.Point(0, 481);
+            this.dataGridViewRankA.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dataGridViewRankA.Name = "dataGridViewRankA";
+            this.dataGridViewRankA.RowHeadersVisible = false;
+            this.dataGridViewRankA.Size = new System.Drawing.Size(597, 167);
+            this.dataGridViewRankA.TabIndex = 7;
             // 
-            // NC12
+            // dataGridViewRankB
             // 
-            this.NC12.HeaderText = "NC12";
-            this.NC12.Name = "NC12";
+            this.dataGridViewRankB.AllowUserToAddRows = false;
+            this.dataGridViewRankB.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewRankB.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.rankBNc12,
+            this.rankBId,
+            this.rankBIlosc,
+            this.RankBZlecenie});
+            this.dataGridViewRankB.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dataGridViewRankB.Location = new System.Drawing.Point(0, 481);
+            this.dataGridViewRankB.Margin = new System.Windows.Forms.Padding(4);
+            this.dataGridViewRankB.Name = "dataGridViewRankB";
+            this.dataGridViewRankB.RowHeadersVisible = false;
+            this.dataGridViewRankB.Size = new System.Drawing.Size(578, 167);
+            this.dataGridViewRankB.TabIndex = 8;
             // 
-            // Ilosc
+            // rankBNc12
             // 
-            this.Ilosc.HeaderText = "Ilosc ";
-            this.Ilosc.Name = "Ilosc";
+            this.rankBNc12.HeaderText = "Nazwa";
+            this.rankBNc12.Name = "rankBNc12";
+            this.rankBNc12.Width = 250;
             // 
-            // LPN_ID
+            // rankBId
             // 
-            this.LPN_ID.HeaderText = "LPN_ID";
-            this.LPN_ID.Name = "LPN_ID";
+            this.rankBId.HeaderText = "ID";
+            this.rankBId.Name = "rankBId";
             // 
-            // LPN_NC
+            // rankBIlosc
             // 
-            this.LPN_NC.HeaderText = "LPN_NC";
-            this.LPN_NC.Name = "LPN_NC";
+            this.rankBIlosc.HeaderText = "Ilosc ";
+            this.rankBIlosc.Name = "rankBIlosc";
             // 
-            // ZlecenieString
+            // RankBZlecenie
             // 
-            this.ZlecenieString.HeaderText = "Zlecenie";
-            this.ZlecenieString.Name = "ZlecenieString";
+            this.RankBZlecenie.HeaderText = "Zlecenie";
+            this.RankBZlecenie.Name = "RankBZlecenie";
+            // 
+            // RankANc12
+            // 
+            this.RankANc12.HeaderText = "Nazwa";
+            this.RankANc12.Name = "RankANc12";
+            this.RankANc12.Width = 250;
+            // 
+            // RankAId
+            // 
+            this.RankAId.HeaderText = "ID";
+            this.RankAId.Name = "RankAId";
+            // 
+            // RankAIlosc
+            // 
+            this.RankAIlosc.HeaderText = "Ilosc ";
+            this.RankAIlosc.Name = "RankAIlosc";
+            // 
+            // RankAZlecenie
+            // 
+            this.RankAZlecenie.HeaderText = "Zlecenie";
+            this.RankAZlecenie.Name = "RankAZlecenie";
             // 
             // NewLotForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 666);
+            this.ClientSize = new System.Drawing.Size(1179, 820);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.panel3);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "NewLotForm";
             this.Text = "NewLotForm";
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRankA)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRankB)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -276,17 +318,20 @@
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label labelRankB;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.TextBox textBoxRankBQr;
         private System.Windows.Forms.Label labelRankA;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBoxRankAQr;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dataGridViewRankA;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn NC12;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Ilosc;
-        private System.Windows.Forms.DataGridViewTextBoxColumn LPN_ID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn LPN_NC;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ZlecenieString;
+        private System.Windows.Forms.DataGridView dataGridViewRankB;
+        private System.Windows.Forms.DataGridViewTextBoxColumn rankBNc12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn rankBId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn rankBIlosc;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RankBZlecenie;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RankANc12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RankAId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RankAIlosc;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RankAZlecenie;
     }
 }

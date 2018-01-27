@@ -57,8 +57,9 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="ledReelData.cs" />
-    <Compile Include="LotData.cs" />
+    <Compile Include="Data Structures\LedLeftovers.cs" />
+    <Compile Include="Data Structures\ledReelData.cs" />
+    <Compile Include="Data Structures\LotData.cs" />
     <Compile Include="NewLotForm.cs">
       <SubType>Form</SubType>
     </Compile>
