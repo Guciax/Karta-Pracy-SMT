@@ -31,7 +31,7 @@ namespace Karta_Pracy_SMT
         public string Rank { get; }
         public string ID { get; }
         public string Nc12 { get; }
-        public double Qty { get; }
+        public double Qty { get; set; }
     }
     
 }

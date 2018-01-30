@@ -26,8 +26,8 @@ namespace Karta_Pracy_SMT
 
                 SqlCommand command = new SqlCommand();
                 command.Connection = conn;
-                command.CommandText =
-                    String.Format(@"SELECT Nr_Zlecenia_Produkcyjnego,NC12_wyrobu,Ilosc_wyrobu_zlecona,RankA,RankB FROM tb_Zlecenia_produkcyjne WHERE Nr_Zlecenia_Produkcyjnego ='{0}';", lotNo);
+                command.CommandText =String.Format(@"SELECT Nr_Zlecenia_Produkcyjnego,NC12_wyrobu,Ilosc_wyrobu_zlecona,RankA,RankB FROM tb_Zlecenia_produkcyjne WHERE Nr_Zlecenia_Produkcyjnego = @Zlecenie;");
+                command.Parameters.AddWithValue("@Zlecenie", lotNo);
 
                 SqlDataAdapter adapter = new SqlDataAdapter(command);
                 adapter.Fill(sqlTable);
@@ -66,8 +66,10 @@ namespace Karta_Pracy_SMT
 
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
-            command.CommandText =
-            String.Format(@"SELECT  NC12,ID,Ilosc,LPN_ID,LPN_NC,ZlecenieString,RodzajKOMP FROM DaneBierzaceKompAktualne_FULL WHERE ID ='{0}' AND NC12='{1}';", ledID, nc12);
+            command.CommandText = @"SELECT  NC12,ID,Ilosc,LPN_ID,LPN_NC,ZlecenieString,RodzajKOMP FROM DaneBierzaceKompAktualne_FULL WHERE ID = @ledId AND NC12= @nc12;"; 
+            command.Parameters.AddWithValue("@ledId", ledID);
+            command.Parameters.AddWithValue("@nc12", nc12);
+
 
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(sqlTable);
@@ -81,6 +83,11 @@ namespace Karta_Pracy_SMT
             string rank = sqlTable.Rows[0]["RodzajKOMP"].ToString();
 
             return new ledReelData(nc12, ilosc, LPN_ID, LPN_NC, ZlecenieString, ledID, rank);
+        }
+
+        public static void SaveRecordToDb(DateTime startDate)
+        {
+
         }
     }
 }
