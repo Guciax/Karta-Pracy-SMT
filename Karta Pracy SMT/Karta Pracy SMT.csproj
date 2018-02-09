@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -57,6 +58,8 @@
     <Compile Include="ChangeOverConfirmationCard.Designer.cs">
       <DependentUpon>ChangeOverConfirmationCard.cs</DependentUpon>
     </Compile>
+    <Compile Include="Data Structures\EfficiencyStructure.cs" />
+    <Compile Include="EfficiencyTools.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -79,6 +82,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlOperations.cs" />
     <Compile Include="Tools.cs" />
+    <Compile Include="VirtualKeyboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VirtualKeyboard.Designer.cs">
+      <DependentUpon>VirtualKeyboard.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Add LED leftovers.resx">
       <DependentUpon>Add LED leftovers.cs</DependentUpon>
     </EmbeddedResource>
@@ -101,6 +110,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="VirtualKeyboard.resx">
+      <DependentUpon>VirtualKeyboard.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -34,7 +34,7 @@ namespace Karta_Pracy_SMT
 
                 if (sqlTable.Rows.Count > 0)
                 {
-                    model = sqlTable.Rows[0]["NC12_wyrobu"].ToString();
+                    model = sqlTable.Rows[0]["NC12_wyrobu"].ToString().Replace("LLFML","");
                     int.TryParse(sqlTable.Rows[0]["Ilosc_wyrobu_zlecona"].ToString(), out orderedQuantity);
                     rankA = sqlTable.Rows[0]["RankA"].ToString();
                     rankB = sqlTable.Rows[0]["RankB"].ToString();
@@ -83,6 +83,23 @@ namespace Karta_Pracy_SMT
             string rank = sqlTable.Rows[0]["RodzajKOMP"].ToString();
 
             return new ledReelData(nc12, ilosc, LPN_ID, LPN_NC, ZlecenieString, ledID, rank);
+        }
+
+        public static DataTable GetMesModels()
+        {
+            DataTable sqlTable = new DataTable();
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = conn;
+            command.CommandText = String.Format(@"SELECT MODEL_ID,A_PKG_QTY,B_PKG_QTY,CCT_CODE,SMT_Carrier_QTY FROM tb_MES_models");
+
+
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(sqlTable);
+
+            return sqlTable;
         }
 
         public static void SaveRecordToDb(DateTime startDate)

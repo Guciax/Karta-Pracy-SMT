@@ -38,29 +38,37 @@
             this.labelRankA = new System.Windows.Forms.Label();
             this.textBoxRankAQr = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.dataGridViewRankA = new System.Windows.Forms.DataGridView();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.textBoxRankBQr = new System.Windows.Forms.TextBox();
+            this.dataGridViewRankB = new System.Windows.Forms.DataGridView();
+            this.labelRankB = new System.Windows.Forms.Label();
+            this.labelMiraeProgram = new System.Windows.Forms.Label();
             this.RankANc12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RankAId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RankA = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RankAIlosc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RankAZlecenie = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.dataGridViewRankB = new System.Windows.Forms.DataGridView();
             this.rankBNc12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rankBId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RankB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rankBIlosc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RankBZlecenie = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.labelRankB = new System.Windows.Forms.Label();
-            this.textBoxRankBQr = new System.Windows.Forms.TextBox();
             this.panel3.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRankA)).BeginInit();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRankB)).BeginInit();
             this.SuspendLayout();
             // 
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.panel3.Controls.Add(this.labelMiraeProgram);
             this.panel3.Controls.Add(this.label1);
             this.panel3.Controls.Add(this.labelOrderedQty);
             this.panel3.Controls.Add(this.labelModel);
@@ -137,7 +145,7 @@
             // 
             this.labelRankA.AutoSize = true;
             this.labelRankA.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelRankA.Location = new System.Drawing.Point(140, 24);
+            this.labelRankA.Location = new System.Drawing.Point(140, 7);
             this.labelRankA.Name = "labelRankA";
             this.labelRankA.Size = new System.Drawing.Size(103, 31);
             this.labelRankA.TabIndex = 4;
@@ -156,6 +164,7 @@
             // 
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.pictureBox2);
             this.panel1.Controls.Add(this.dataGridViewRankA);
             this.panel1.Controls.Add(this.textBoxRankAQr);
             this.panel1.Controls.Add(this.labelRankA);
@@ -165,6 +174,15 @@
             this.panel1.Size = new System.Drawing.Size(450, 528);
             this.panel1.TabIndex = 8;
             // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Location = new System.Drawing.Point(8, 83);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(435, 269);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 8;
+            this.pictureBox2.TabStop = false;
+            // 
             // dataGridViewRankA
             // 
             this.dataGridViewRankA.AllowUserToAddRows = false;
@@ -173,6 +191,7 @@
             this.dataGridViewRankA.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.RankANc12,
             this.RankAId,
+            this.RankA,
             this.RankAIlosc,
             this.RankAZlecenie});
             this.dataGridViewRankA.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -181,6 +200,75 @@
             this.dataGridViewRankA.RowHeadersVisible = false;
             this.dataGridViewRankA.Size = new System.Drawing.Size(448, 136);
             this.dataGridViewRankA.TabIndex = 7;
+            // 
+            // panel2
+            // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.pictureBox1);
+            this.panel2.Controls.Add(this.textBoxRankBQr);
+            this.panel2.Controls.Add(this.dataGridViewRankB);
+            this.panel2.Controls.Add(this.labelRankB);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(450, 100);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(434, 528);
+            this.panel2.TabIndex = 10;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(5, 83);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(416, 269);
+            this.pictureBox1.TabIndex = 10;
+            this.pictureBox1.TabStop = false;
+            // 
+            // textBoxRankBQr
+            // 
+            this.textBoxRankBQr.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.textBoxRankBQr.Location = new System.Drawing.Point(12, 358);
+            this.textBoxRankBQr.Name = "textBoxRankBQr";
+            this.textBoxRankBQr.Size = new System.Drawing.Size(417, 26);
+            this.textBoxRankBQr.TabIndex = 9;
+            this.textBoxRankBQr.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxRankBQr_KeyDown_1);
+            // 
+            // dataGridViewRankB
+            // 
+            this.dataGridViewRankB.AllowUserToAddRows = false;
+            this.dataGridViewRankB.AllowUserToResizeRows = false;
+            this.dataGridViewRankB.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewRankB.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.rankBNc12,
+            this.rankBId,
+            this.RankB,
+            this.rankBIlosc,
+            this.RankBZlecenie});
+            this.dataGridViewRankB.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dataGridViewRankB.Location = new System.Drawing.Point(0, 390);
+            this.dataGridViewRankB.Name = "dataGridViewRankB";
+            this.dataGridViewRankB.RowHeadersVisible = false;
+            this.dataGridViewRankB.Size = new System.Drawing.Size(432, 136);
+            this.dataGridViewRankB.TabIndex = 8;
+            // 
+            // labelRankB
+            // 
+            this.labelRankB.AutoSize = true;
+            this.labelRankB.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelRankB.Location = new System.Drawing.Point(141, 7);
+            this.labelRankB.Name = "labelRankB";
+            this.labelRankB.Size = new System.Drawing.Size(103, 31);
+            this.labelRankB.TabIndex = 5;
+            this.labelRankB.Text = "Rank B";
+            // 
+            // labelMiraeProgram
+            // 
+            this.labelMiraeProgram.AutoSize = true;
+            this.labelMiraeProgram.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelMiraeProgram.ForeColor = System.Drawing.SystemColors.Control;
+            this.labelMiraeProgram.Location = new System.Drawing.Point(517, 37);
+            this.labelMiraeProgram.Name = "labelMiraeProgram";
+            this.labelMiraeProgram.Size = new System.Drawing.Size(138, 24);
+            this.labelMiraeProgram.TabIndex = 6;
+            this.labelMiraeProgram.Text = "Mirae program:";
             // 
             // RankANc12
             // 
@@ -193,6 +281,11 @@
             this.RankAId.HeaderText = "ID";
             this.RankAId.Name = "RankAId";
             // 
+            // RankA
+            // 
+            this.RankA.HeaderText = "Rank";
+            this.RankA.Name = "RankA";
+            // 
             // RankAIlosc
             // 
             this.RankAIlosc.HeaderText = "Ilosc ";
@@ -202,35 +295,6 @@
             // 
             this.RankAZlecenie.HeaderText = "Zlecenie";
             this.RankAZlecenie.Name = "RankAZlecenie";
-            // 
-            // panel2
-            // 
-            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Controls.Add(this.textBoxRankBQr);
-            this.panel2.Controls.Add(this.dataGridViewRankB);
-            this.panel2.Controls.Add(this.labelRankB);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(450, 100);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(434, 528);
-            this.panel2.TabIndex = 10;
-            // 
-            // dataGridViewRankB
-            // 
-            this.dataGridViewRankB.AllowUserToAddRows = false;
-            this.dataGridViewRankB.AllowUserToResizeRows = false;
-            this.dataGridViewRankB.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewRankB.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.rankBNc12,
-            this.rankBId,
-            this.rankBIlosc,
-            this.RankBZlecenie});
-            this.dataGridViewRankB.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.dataGridViewRankB.Location = new System.Drawing.Point(0, 390);
-            this.dataGridViewRankB.Name = "dataGridViewRankB";
-            this.dataGridViewRankB.RowHeadersVisible = false;
-            this.dataGridViewRankB.Size = new System.Drawing.Size(432, 136);
-            this.dataGridViewRankB.TabIndex = 8;
             // 
             // rankBNc12
             // 
@@ -243,6 +307,11 @@
             this.rankBId.HeaderText = "ID";
             this.rankBId.Name = "rankBId";
             // 
+            // RankB
+            // 
+            this.RankB.HeaderText = "Rank";
+            this.RankB.Name = "RankB";
+            // 
             // rankBIlosc
             // 
             this.rankBIlosc.HeaderText = "Ilosc ";
@@ -252,25 +321,6 @@
             // 
             this.RankBZlecenie.HeaderText = "Zlecenie";
             this.RankBZlecenie.Name = "RankBZlecenie";
-            // 
-            // labelRankB
-            // 
-            this.labelRankB.AutoSize = true;
-            this.labelRankB.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelRankB.Location = new System.Drawing.Point(143, 24);
-            this.labelRankB.Name = "labelRankB";
-            this.labelRankB.Size = new System.Drawing.Size(103, 31);
-            this.labelRankB.TabIndex = 5;
-            this.labelRankB.Text = "Rank B";
-            // 
-            // textBoxRankBQr
-            // 
-            this.textBoxRankBQr.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textBoxRankBQr.Location = new System.Drawing.Point(12, 358);
-            this.textBoxRankBQr.Name = "textBoxRankBQr";
-            this.textBoxRankBQr.Size = new System.Drawing.Size(417, 26);
-            this.textBoxRankBQr.TabIndex = 9;
-            this.textBoxRankBQr.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxRankBQr_KeyDown_1);
             // 
             // NewLotForm
             // 
@@ -287,9 +337,11 @@
             this.panel3.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRankA)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRankB)).EndInit();
             this.ResumeLayout(false);
 
@@ -308,17 +360,22 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.DataGridView dataGridViewRankA;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RankANc12;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RankAId;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RankAIlosc;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RankAZlecenie;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.DataGridView dataGridViewRankB;
-        private System.Windows.Forms.DataGridViewTextBoxColumn rankBNc12;
-        private System.Windows.Forms.DataGridViewTextBoxColumn rankBId;
-        private System.Windows.Forms.DataGridViewTextBoxColumn rankBIlosc;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RankBZlecenie;
         private System.Windows.Forms.Label labelRankB;
         private System.Windows.Forms.TextBox textBoxRankBQr;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label labelMiraeProgram;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RankANc12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RankAId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RankA;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RankAIlosc;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RankAZlecenie;
+        private System.Windows.Forms.DataGridViewTextBoxColumn rankBNc12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn rankBId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RankB;
+        private System.Windows.Forms.DataGridViewTextBoxColumn rankBIlosc;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RankBZlecenie;
     }
 }

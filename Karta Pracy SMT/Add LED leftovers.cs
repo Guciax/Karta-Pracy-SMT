@@ -43,6 +43,9 @@ namespace Karta_Pracy_SMT
             
             Tools.AutoSizeColumnsWidth(dataGridViewRankA);
             Tools.AutoSizeColumnsWidth(dataGridViewRankB);
+
+            this.ActiveControl = textBoxQr;
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -84,6 +87,59 @@ namespace Karta_Pracy_SMT
             }
 
             this.Close();
+        }
+
+        private void textBoxQr_Leave(object sender, EventArgs e)
+        {
+            textBoxQr.Focus();
+        }
+
+        private void textBoxQr_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return & textBoxQr.Text.Split('\t').Length>4) 
+            {
+                bool foundLedReel = false;
+                string ledID = textBoxQr.Text.Split('\t')[5];
+                string nc12 = textBoxQr.Text.Split('\t')[0];
+
+                for (int a = 0; a < dataGridViewRankA.Rows.Count; a++) 
+                {
+                    if (dataGridViewRankA.Rows[a].Cells[0].Value.ToString()==nc12 & dataGridViewRankA.Rows[a].Cells[2].Value.ToString() ==ledID)
+                    {
+                        VirtualKeyboard kbForm = new VirtualKeyboard(dataGridViewRankA.Rows[a].Cells[3]);
+                        kbForm.ShowInTaskbar = false;
+                        kbForm.Location = new Point(this.Location.X + 50, this.Location.Y + 50);
+                        kbForm.ShowDialog();
+                        textBoxQr.Text = "";
+                        foundLedReel = true;
+                    }
+                }
+
+                if (!foundLedReel)
+                    for (int b = 0; b < dataGridViewRankB.Rows.Count; b++)
+                    {
+                        if (dataGridViewRankB.Rows[b].Cells[0].Value.ToString() == nc12 & dataGridViewRankB.Rows[b].Cells[2].Value.ToString() == ledID)
+                        {
+                            VirtualKeyboard kbForm = new VirtualKeyboard(dataGridViewRankB.Rows[b].Cells[3]);
+                            kbForm.ShowInTaskbar = false;
+                            kbForm.Location = new Point(this.Location.X + 50, this.Location.Y + 50);
+                            kbForm.ShowDialog();
+                            textBoxQr.Text = "";
+                            foundLedReel = true;
+                        }
+                    }
+
+                if (!foundLedReel)
+                {
+                    MessageBox.Show("Podana rolka LED nie należy do tego zlecenia");
+                }
+            }
+
+        }
+
+        private void Add_LED_leftovers_Load(object sender, EventArgs e)
+        {
+            textBoxQr.Focus();
         }
     }
 }

@@ -16,18 +16,20 @@ namespace Karta_Pracy_SMT
         ledReelData currentLedReel;
         LotData currentLotData = new LotData("", 0, "", "");
         private readonly DataGridView grid;
-        
+        private readonly string currentMiraeProgram;
 
-        public NewLotForm(MainForm callingForm, DataGridView grid)
+        public NewLotForm(MainForm callingForm, DataGridView grid, string currentMiraeProgram)
         {
             InitializeComponent();
             opener = callingForm as MainForm;
             this.grid = grid;
+            this.currentMiraeProgram = currentMiraeProgram;
+            this.ActiveControl = textBoxLotNo;
         }
 
         private void textBoxLotNo_TextChanged(object sender, EventArgs e)
         {
-            if (textBoxLotNo.Text.Length > 5)
+            if (textBoxLotNo.Text.Length > 5) 
             {
                 currentLotData = SqlOperations.GetLotData(textBoxLotNo.Text);
                 if (currentLotData.Model.Length > 0)
@@ -36,8 +38,25 @@ namespace Karta_Pracy_SMT
                     labelOrderedQty.Text = "Ilość " + currentLotData.OrderedQty.ToString();
                     labelRankA.Text = "Rank A" + Environment.NewLine + currentLotData.RankA;
                     labelRankB.Text = "Rank B" + Environment.NewLine + currentLotData.RankB;
-                    textBoxRankAQr.Visible = true;
-                    textBoxRankBQr.Visible = true;
+
+                    string expectedMiraeProgram = currentLotData.Model.Remove(6, 1).Insert(6, "X");
+
+                    
+                    labelMiraeProgram.Text = "Mirae program: "+ currentMiraeProgram;
+
+                    if (currentMiraeProgram == expectedMiraeProgram)
+                    {
+                        labelMiraeProgram.Text = labelMiraeProgram.Text + " OK";
+                        textBoxRankAQr.Visible = true;
+                        textBoxRankBQr.Visible = true;
+                        textBoxRankAQr.Focus();
+                    }
+                    else
+                    {
+                        labelMiraeProgram.Text = labelMiraeProgram.Text +Environment.NewLine+ " ZŁY PROGRAM!";
+                        labelMiraeProgram.ForeColor = Color.Red;
+                        labelMiraeProgram.Font = new Font(labelMiraeProgram.Font, FontStyle.Bold);
+                    }
                 }
                 else
                 {
@@ -55,15 +74,49 @@ namespace Karta_Pracy_SMT
         {
             if (e.KeyCode == Keys.Return)
             {
-                currentLedReel = SqlOperations.GetLedDataFromSparing(textBoxRankAQr.Text);
+                bool correctLED = true;
+                string expectedRank = labelRankA.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None)[1];
 
-                dataGridViewRankA.Rows.Add(currentLedReel.NC12, currentLedReel.ID, currentLedReel.Ilosc, currentLedReel.ZlecenieString);
-                if (currentLedReel.ZlecenieString == textBoxRankAQr.Text)
+                currentLedReel = SqlOperations.GetLedDataFromSparing(textBoxRankAQr.Text);
+                List<string> loadedIds = new List<string>();
+                foreach (DataGridViewRow row in dataGridViewRankA.Rows)
+                {
+
+                    loadedIds.Add(row.Cells["RankAId"].Value.ToString());
+                }
+
+                foreach (DataGridViewRow row in dataGridViewRankB.Rows)
+                {
+
+                    loadedIds.Add(row.Cells["rankAId"].Value.ToString());
+                }
+
+                if (loadedIds.Contains(currentLedReel.ID))
+                {
+                    correctLED = false;
+                    MessageBox.Show("Błąd!" + Environment.NewLine + "Ta rolka już została dodana ID: " + currentLedReel.ID);
+                }
+
+                dataGridViewRankA.Rows.Add(currentLedReel.NC12, currentLedReel.ID, currentLedReel.Rank,currentLedReel.Ilosc, currentLedReel.ZlecenieString);
+
+                if (currentLedReel.ZlecenieString != textBoxLotNo.Text)
+                {
+                    correctLED = false;
+                    MessageBox.Show("Błąd!" + Environment.NewLine+ "Diody należą do zlecenia nr: " + currentLedReel.ZlecenieString);
+                }
+
+                if (currentLedReel.Rank != expectedRank)
+                {
+                    correctLED = false;
+                    MessageBox.Show("Błąd!" + Environment.NewLine + "Oczekiwany Rank: " + expectedRank);
+                }
+
+                if (correctLED)
                 {
                     foreach (DataGridViewCell cell in dataGridViewRankA.Rows[dataGridViewRankA.Rows.Count - 1].Cells)
                     {
                         cell.Style.BackColor = Color.Green;
-                        cell.Style.ForeColor = Color.Green;
+                        //cell.Style.ForeColor = Color.Green;
                     }
                 }
                 else
@@ -71,7 +124,7 @@ namespace Karta_Pracy_SMT
                     foreach (DataGridViewCell cell in dataGridViewRankA.Rows[dataGridViewRankA.Rows.Count - 1].Cells)
                     {
                         cell.Style.BackColor = Color.Red;
-                        cell.Style.ForeColor = Color.Red;
+                        //cell.Style.ForeColor = Color.Red;
                     }
                 }
 
@@ -81,6 +134,24 @@ namespace Karta_Pracy_SMT
                     }
 
                 textBoxRankAQr.Text = "";
+            }
+        }
+
+        private string GetNumberOfConnectors(string model)
+        {
+            //exceptions....
+            if (model.Replace("LLFML", "") == "G2-08L404B")
+                return "0";
+
+            string family = model.Split('-')[0].Replace("LLFML","").Substring(0,1).ToUpper();
+            string connCode = model.Split('-')[1].Substring(5, 1);
+            if ((family == "K" || family == "G") & (connCode=="2" || connCode=="4"))
+            {
+                return "4";
+            }
+            else
+            {
+                return "2";
             }
         }
 
@@ -126,6 +197,12 @@ namespace Karta_Pracy_SMT
                 grid.Rows[lastRow].Cells["BtnSave"].Value = "";
                 grid.Rows[lastRow].Cells["ColumnButtonLed"].Tag = ledsLeft;
 
+                grid.Rows[lastRow].Cells["connQty"].Value = GetNumberOfConnectors(currentLotData.Model);
+                if (grid.Rows[lastRow].Cells["connQty"].Value.ToString()=="4")
+                {
+                    grid.Rows[lastRow].Cells["connQty"].Style.ForeColor = System.Drawing.Color.Red;
+                }
+
                 //foreach (DataGridViewCell cell in grid.Rows[lastRow].Cells)
                 //{
                 //    if (cell.GetType().ToString() == "System.Windows.Forms.DataGridViewButtonCell")
@@ -165,13 +242,13 @@ namespace Karta_Pracy_SMT
             {
                 currentLedReel = SqlOperations.GetLedDataFromSparing(textBoxRankBQr.Text);
 
-                dataGridViewRankB.Rows.Add(currentLedReel.NC12, currentLedReel.ID, currentLedReel.Ilosc, currentLedReel.ZlecenieString);
-                if (currentLedReel.ZlecenieString == textBoxRankBQr.Text)
+                dataGridViewRankB.Rows.Add(currentLedReel.NC12, currentLedReel.ID,currentLedReel.Rank, currentLedReel.Ilosc, currentLedReel.ZlecenieString);
+                if (currentLedReel.ZlecenieString == textBoxLotNo.Text)
                 {
                     foreach (DataGridViewCell cell in dataGridViewRankB.Rows[dataGridViewRankB.Rows.Count - 1].Cells)
                     {
                         cell.Style.BackColor = Color.Green;
-                        cell.Style.ForeColor = Color.Green;
+                        //cell.Style.ForeColor = Color.Green;
                     }
                 }
                 else
@@ -179,7 +256,7 @@ namespace Karta_Pracy_SMT
                     foreach (DataGridViewCell cell in dataGridViewRankB.Rows[dataGridViewRankB.Rows.Count - 1].Cells)
                     {
                         cell.Style.BackColor = Color.Red;
-                        cell.Style.ForeColor = Color.Red;
+                       // cell.Style.ForeColor = Color.Red;
                     }
                 }
 
