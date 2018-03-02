@@ -95,11 +95,11 @@
             // button5
             // 
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button5.Location = new System.Drawing.Point(154, 120);
+            this.button5.Location = new System.Drawing.Point(154, 170);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(50, 50);
             this.button5.TabIndex = 7;
-            this.button5.Text = "C";
+            this.button5.Text = "0";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             this.button5.Leave += new System.EventHandler(this.button1_Leave);
@@ -143,7 +143,7 @@
             // button9
             // 
             this.button9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button9.Location = new System.Drawing.Point(154, 170);
+            this.button9.Location = new System.Drawing.Point(154, 120);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(50, 50);
             this.button9.TabIndex = 11;
@@ -232,6 +232,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "VirtualKeyboard";
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "VirtualKeyboard";
             this.ResumeLayout(false);
             this.PerformLayout();

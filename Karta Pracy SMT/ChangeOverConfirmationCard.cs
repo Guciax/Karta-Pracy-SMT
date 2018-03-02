@@ -36,8 +36,16 @@ namespace Karta_Pracy_SMT
             {
                 Cell.Value = "OK";
                 Cell.Style.BackColor = Color.Green;
+                Cell.Tag = comboBoxInspect.Text + ";" + comboBoxTechn.Text;
                 this.Close();
             }
+        }
+
+        private void ChangeOverConfirmationCard_Load(object sender, EventArgs e)
+        {
+            string[][] technInsp = SqlOperations.GetTechnicianInspector(30);
+            comboBoxInspect.Items.AddRange(technInsp[0]);
+            comboBoxTechn.Items.AddRange(technInsp[1]);
         }
     }
 }

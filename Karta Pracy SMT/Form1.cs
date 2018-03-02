@@ -6,8 +6,10 @@ using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,7 +17,9 @@ namespace Karta_Pracy_SMT
 {
     public partial class MainForm : Form
     {
-        Dictionary<string, EfficiencyStructure> efficiencNormyPerModel = new Dictionary<string, EfficiencyStructure>(); 
+        Dictionary<string, EfficiencyStructure> efficiencNormyPerModel = new Dictionary<string, EfficiencyStructure>();
+        List<LedLeftovers> ledLeftSaveBuffer = new List<LedLeftovers>();
+        
 
         public MainForm()
         {
@@ -38,10 +42,8 @@ namespace Karta_Pracy_SMT
                 {
                     if (dataGridView1.Columns[e.ColumnIndex].Name == "ColumnButtonLed")
                     {
-                        
                         LedLeftovers clickedLeftovers = (LedLeftovers)cell.Tag;
-
-                        Add_LED_leftovers editLeftovers = new Add_LED_leftovers(dataGridView1, cell);
+                        Add_LED_leftovers editLeftovers = new Add_LED_leftovers(dataGridView1, cell, ledLeftSaveBuffer);
                         editLeftovers.ShowInTaskbar = false;
                         editLeftovers.ShowDialog();
                     }
@@ -56,44 +58,6 @@ namespace Karta_Pracy_SMT
             }
         }
 
-
-        private void dataGridView1_Paint(object sender, PaintEventArgs e)
-        {
-            //Pen p = new Pen(Color.Red, 3);
-            //foreach (DataGridViewRow row in dataGridView1.Rows)
-            //{
-            //    foreach (DataGridViewCell cell in row.Cells)
-            //    {
-            //        if (cell.GetType().ToString() == "System.Windows.Forms.DataGridViewButtonCell")
-            //        {
-            //            if (cell.Value.ToString() == "BRAK")
-            //            {
-            //                Rectangle rec = dataGridView1.GetCellDisplayRectangle(cell.ColumnIndex, cell.RowIndex, true);
-            //                e.Graphics.DrawRectangle(p, rec);
-            //            }
-            //        }
-            //    }
-            //}
-        }
-
-        private void dataGridView1_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
-        {
-            if (e.RowIndex < 0 || e.ColumnIndex < 0)
-                return;
-            DataGridViewCell cell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
-            if (cell.GetType().ToString() == "System.Windows.Forms.DataGridViewButtonCell") 
-            {
-                e.Paint(e.CellBounds, DataGridViewPaintParts.All
-                    & ~(DataGridViewPaintParts.ContentForeground));
-                var r = e.CellBounds;
-                r.Inflate(-4, -4);
-                SolidBrush brush = new SolidBrush(cell.Style.BackColor);
-
-                e.Graphics.FillRectangle(brush, r);
-                e.Paint(e.CellBounds, DataGridViewPaintParts.ContentForeground);
-                e.Handled = true;
-            }
-        }
         DateTime miraeFileLatModificationDate;
         public string miraeCurrentProgram = ""; 
         private void timerMiraeStalker_Tick(object sender, EventArgs e)
@@ -109,33 +73,243 @@ namespace Karta_Pracy_SMT
             }
         }
 
+        
+
+        private bool IsRowReadyToBeSaved(DataGridViewRow row)
+        {
+            bool result = true;
+            if (Tools.getCellValue( row.Cells["ColumnQualityCheck"]) == "BRAK") result= false;
+            if (Tools.getCellValue(row.Cells["goodQty"]) == "") result = false;
+            if (Tools.getCellValue(row.Cells["ColumnButtonLed"]) == "BRAK") result = false;
+
+            Debug.WriteLine("Row " + row.Index + " rdy to save: " + result);
+            return result;
+        }
+
+        
+
+        bool suspendCellVelueChangedEvent = false;
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (dataGridView1.Rows.Count > 0)
+            if (!suspendCellVelueChangedEvent)
             {
-                int rowIndex = e.RowIndex;
-                DataGridViewCell ngCell = dataGridView1.Rows[rowIndex].Cells["Ng"];
-                DataGridViewCell scrapCell = dataGridView1.Rows[rowIndex].Cells["Scrap"];
-
-                if (ngCell.Value != null & scrapCell.Value != null)
+                int ngIndex = dataGridView1.Columns.IndexOf(dataGridView1.Columns["Ng"]);
+                int scrapIndex = dataGridView1.Columns.IndexOf(dataGridView1.Columns["Scrap"]);
+                Debug.WriteLine("Cell value changed: " + e.RowIndex + " " + e.ColumnIndex);
+                //calculate good qty
+                if (dataGridView1.Rows.Count > 0 & (e.ColumnIndex == ngIndex || e.ColumnIndex == scrapIndex))
                 {
+                    int rowIndex = e.RowIndex;
 
+                    DataGridViewCell ngCell = dataGridView1.Rows[rowIndex].Cells["Ng"];
+                    DataGridViewCell scrapCell = dataGridView1.Rows[rowIndex].Cells["Scrap"];
+                    
                     double ngValue = -1;
                     double scrapValue = -1;
 
+                    if (ngCell.Value != null)
+                        if (!(double.TryParse(ngCell.Value.ToString(), out ngValue)))
+                        {
+                            dataGridView1.Rows[e.RowIndex].Cells[ngIndex].Value = null;
+                            ngValue = -1;
+                        }
 
-                    if (double.TryParse(ngCell.Value.ToString(), out ngValue) & double.TryParse(scrapCell.Value.ToString(), out scrapValue))
+                    if (scrapCell.Value != null)
+                        if (!(double.TryParse(scrapCell.Value.ToString(), out scrapValue)))
+                        {
+                            dataGridView1.Rows[e.RowIndex].Cells[scrapIndex].Value = null;
+                            scrapValue = -1;
+                        }
+
+
+                    if (ngValue >= 0 & scrapValue >= 0 & dataGridView1.Rows[e.RowIndex].Cells["ColumnQty"].Value!=null)
+                    {
+                        
+                        double orderedQty = double.Parse(dataGridView1.Rows[e.RowIndex].Cells["ColumnQty"].Value.ToString());
+                        double goodQty = orderedQty - ngValue - scrapValue;
+                        dataGridView1.Rows[e.RowIndex].Cells["goodQty"].Value = goodQty;
+                    }
+                    else
+                    {
+                        dataGridView1.Rows[e.RowIndex].Cells["goodQty"].Value = "";
+                    }
+                }
+                //saving finished LOT
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    Debug.WriteLine("Checking chkBox row:" + row.Index + " " + Convert.ToBoolean(row.Cells["ColumnSaved"].Value));
+                    if (!Convert.ToBoolean(row.Cells["ColumnSaved"].Value))
                     {
 
-                        if (dataGridView1.Columns[e.ColumnIndex].HeaderText == "NG" || dataGridView1.Columns[e.ColumnIndex].HeaderText == "Scrap")
+                        if (IsRowReadyToBeSaved(row))
                         {
-                            double orderedQty = double.Parse(dataGridView1.Rows[e.RowIndex].Cells["ColumnQty"].Value.ToString());
-                            double goodQty = orderedQty - ngValue - scrapValue;
-                            dataGridView1.Rows[e.RowIndex].Cells["goodQty"].Value = goodQty;
+                            Debug.WriteLine("Saving row:" + row.Index);
+                            DataGridViewCheckBoxCell ch = (DataGridViewCheckBoxCell)row.Cells["ColumnSaved"];
+                            suspendCellVelueChangedEvent = true;
+                            lotFinished(ch, row.Index);
+                            suspendCellVelueChangedEvent = false;
+
+                            DateTime startDate = DateTime.ParseExact(row.Cells["StartDate"].Value.ToString(), "HH:mm:ss dd-MM-yyyy", CultureInfo.InvariantCulture);
+                            DateTime endDate = DateTime.ParseExact(row.Cells["EndDate"].Value.ToString(), "HH:mm:ss dd-MM-yyyy", CultureInfo.InvariantCulture);
+                            string firstPieceCheck = "";
+
+                            LedLeftovers ledLeftovers = (LedLeftovers)row.Cells["ColumnButtonLed"].Tag;
+                            string leftovers = ledLeftovers.RankA[0].ID + ":" + ledLeftovers.RankA[0].Nc12 + ":" + ledLeftovers.RankA[0].Qty + "|" + ledLeftovers.RankB[0].ID + ":" + ledLeftovers.RankB[0].Nc12 + ":" + ledLeftovers.RankB[0].Qty;
+                            for (int i = 0; i < ledLeftovers.RankA.Count; i++)
+                            {
+                                if (i > 0)
+                                {
+                                    leftovers += "#" + ledLeftovers.RankA[i].ID + ":" + ledLeftovers.RankA[i].Nc12 + ":" + ledLeftovers.RankA[i].Qty + "|" + ledLeftovers.RankB[i].ID + ":" + ledLeftovers.RankB[i].Nc12 + ":" + ledLeftovers.RankB[i].Qty;
+                                }
+                            }
+
+                            if (row.Cells["ColumnQualityCheck"].Tag != null)
+                            {
+                                firstPieceCheck = row.Cells["ColumnQualityCheck"].Tag.ToString();
+                            }
+
+                            SqlOperations.SaveRecordToDb(
+                                startDate,
+                                endDate,
+                                labelLine.Text,
+                                row.Cells["Operator"].Value.ToString(),
+                                row.Cells["ColumnLot"].Value.ToString(),
+                                row.Cells["ColumnModel"].Value.ToString(),
+                                row.Cells["goodQty"].Value.ToString(),
+                                row.Cells["Ng"].Value.ToString(),
+                                row.Cells["Scrap"].Value.ToString(),
+                                firstPieceCheck,
+                                leftovers);
+                            Debug.WriteLine("Saved");
+                            Tools.CleanUpDgv(dataGridView1);
                         }
                     }
                 }
             }
+        }
+
+        private void lotFinished(DataGridViewCheckBoxCell checkBoxCell, int rowIndex)
+        {
+            dataGridView1.Rows[rowIndex].Cells["EndDate"].Value = System.DateTime.Now.ToString("HH:mm:ss dd-MM-yyyy");
+            checkBoxCell.Value = true;
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            string smtLine = ConfigurationManager.AppSettings["SMTLine"];
+            labelLine.Text = "Linia: " + smtLine;
+            AddRecordsFromDb();
+        }
+
+        private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+
+           // Debug.WriteLine(dataGridView1.Rows.Count);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            dataGridView1.Rows.Insert(0, 1);
+            dataGridView1.Rows[0].Cells["StartDate"].Value = System.DateTime.Now.ToLongTimeString();
+        }
+
+        bool saveLedLeftWorking = false;
+        private void timerLedLeftSave_Tick(object sender, EventArgs e)
+        {
+            if (ledLeftSaveBuffer.Count>0 & !saveLedLeftWorking)
+            {
+                saveLedLeftWorking = true;
+                MessageBox.Show("GOT IT");
+                new Thread(() =>
+                {
+                    Thread.CurrentThread.IsBackground = true;
+                    List<int> indexToDelete = new List<int>();
+
+                    for (int i = 0; i < ledLeftSaveBuffer.Count; i++)
+                    {
+                        if (SqlOperations.UpdateLedLeftovers(ledLeftSaveBuffer[i]))
+                        {
+                            indexToDelete.Add(i);
+                        }
+                    }
+
+                    foreach (var ind in indexToDelete)
+                    {
+                        ledLeftSaveBuffer.RemoveAt(ind);
+                    }
+
+                    Debug.WriteLine("done...");
+                    saveLedLeftWorking = false;
+                }).Start();
+            }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (saveLedLeftWorking)
+            {
+                e.Cancel = true;
+                MessageBox.Show("Trwa zapis do bazy danych, czekaj....");
+            }
+        }
+
+        private void AddRecordsFromDb()
+        {
+            //DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED
+            DataTable sqlTable = SqlOperations.GetSmtRecordsFromDb(22, labelLine.Text);
+            dataGridView1.SuspendLayout();
+            foreach (DataRow row in sqlTable.Rows)
+            {
+                dataGridView1.Rows.Insert(0);
+
+                string leftoverRaw = row["KoncowkiLED"].ToString();
+                string[] leftoverReels = leftoverRaw.Split('#');
+
+                List<string[]> rankaAlist = new List<string[]>();
+                List<string[]> rankaBlist = new List<string[]>();
+
+                List<RankStruc> rankAList = new List<RankStruc>();
+                List<RankStruc> rankBList = new List<RankStruc>();
+
+                foreach (var item in leftoverReels)
+                {
+                    string[] rankA = item.Split('|')[0].Split(':');
+                    string[] rankB = item.Split('|')[1].Split(':');
+
+                    double qtyA = double.Parse(rankA[2]);
+                    double qtyB = double.Parse(rankB[2]);
+
+                    rankAList.Add(new RankStruc("", rankA[0], rankA[1], qtyA));
+                    rankBList.Add(new RankStruc("", rankB[0], rankB[1], qtyB));
+
+                }
+
+                LedLeftovers ledLeft = new LedLeftovers(rankAList, rankBList);
+
+                DataGridViewCheckBoxCell chbCell = (DataGridViewCheckBoxCell)dataGridView1.Rows[0].Cells[0];
+                chbCell.Value = true;
+
+                dataGridView1.Rows[0].Cells[1].Value = row["NrZlecenia"].ToString().Trim();
+                dataGridView1.Rows[0].Cells[3].Value = Tools.GetNumberOfConnectors(row["Model"].ToString().Trim());
+                dataGridView1.Rows[0].Cells[2].Value = row["Model"].ToString().Trim();
+                //dataGridView1.Rows[0].Cells[4].Value = kontrola pierwszej
+                //dataGridView1.Rows[0].Cells[5].Value = ordered qty
+                //dataGridView1.Rows[0].Cells[6].Value = led 12nc
+                //dataGridView1.Rows[0].Cells[7].Value = RankA
+                //dataGridView1.Rows[0].Cells[8].Value = RankB
+                dataGridView1.Rows[0].Cells[9].Value = row["IloscWykonana"].ToString().Trim();
+                dataGridView1.Rows[0].Cells[10].Value = row["NGIlosc"].ToString().Trim();
+                dataGridView1.Rows[0].Cells[11].Value = row["ScrapIlosc"].ToString().Trim();
+                dataGridView1.Rows[0].Cells[12].Tag = ledLeft;
+                dataGridView1.Rows[0].Cells[12].Value = "OK";
+
+                dataGridView1.Rows[0].Cells[13].Value = row["DataCzasStart"].ToString().Trim();
+                dataGridView1.Rows[0].Cells[14].Value = row["DataCzasKoniec"].ToString().Trim();
+                dataGridView1.Rows[0].Cells[15].Value = row["OperatorSMT"].ToString().Trim();
+
+            }
+            Tools.AutoSizeColumnsWidth(dataGridView1);
+            dataGridView1.ResumeLayout();
         }
     }
 }

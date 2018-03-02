@@ -17,6 +17,8 @@ namespace Karta_Pracy_SMT
         LotData currentLotData = new LotData("", 0, "", "");
         private readonly DataGridView grid;
         private readonly string currentMiraeProgram;
+        List<TextBox> txbList = new List<TextBox>();
+        Tuple<double, double, double> ledRanksQty = new Tuple<double, double,double>(0,0,0);
 
         public NewLotForm(MainForm callingForm, DataGridView grid, string currentMiraeProgram)
         {
@@ -25,6 +27,11 @@ namespace Karta_Pracy_SMT
             this.grid = grid;
             this.currentMiraeProgram = currentMiraeProgram;
             this.ActiveControl = textBoxLotNo;
+
+            txbList.Add(textBoxLotNo);
+            txbList.Add(textBoxRankAQr);
+            txbList.Add(textBoxRankBQr);
+            textBoxLotNo.BackColor = Color.LemonChiffon;
         }
 
         private void textBoxLotNo_TextChanged(object sender, EventArgs e)
@@ -57,6 +64,10 @@ namespace Karta_Pracy_SMT
                         labelMiraeProgram.ForeColor = Color.Red;
                         labelMiraeProgram.Font = new Font(labelMiraeProgram.Font, FontStyle.Bold);
                     }
+                    ledRanksQty = SqlOperations.MaxRankQty(currentLotData.Model);
+                    labelLedQty.Text = "RankA=" + ledRanksQty.Item1 + " RankB=" + ledRanksQty.Item2;
+                    labelLotData.Text = "Dane zlecenia nr. " + textBoxLotNo.Text;
+                    textBoxRankAQr.Focus();
                 }
                 else
                 {
@@ -70,96 +81,227 @@ namespace Karta_Pracy_SMT
             }
         }
 
+        private void CountQtyProductToManufacture()
+        {
+            double sumRankA = 0;
+            double sumRankB = 0;
+
+            foreach (DataGridViewRow row in dataGridViewRankA.Rows)
+            {
+                double rankA = 0;
+                string stringA = row.Cells["RankAIlosc"].Value.ToString().Trim();
+                double.TryParse(stringA, out rankA);
+                sumRankA += rankA;
+            }
+
+            foreach (DataGridViewRow row in dataGridViewRankB.Rows)
+            {
+                double rankB = 0;
+                string stringB = row.Cells["rankBIlosc"].Value.ToString().Trim();
+                double.TryParse(stringB, out rankB);
+                sumRankB += rankB;
+            }
+            double smtCarrier = ledRanksQty.Item3;
+            if (smtCarrier < 3) smtCarrier = 1;
+
+            double maxProductQtyA = Math.Truncate(sumRankA / ledRanksQty.Item1 / smtCarrier) * smtCarrier;
+            double maxProductQtyB = Math.Truncate(sumRankB / ledRanksQty.Item2 / smtCarrier) * smtCarrier;
+            labelMaxProductQty.Text = "Maksymalna ilość zlecenia: " + Math.Min(maxProductQtyA, maxProductQtyB);
+        }
+
+        private void CheckIfCorrectLed()
+        {
+            bool error = false;
+            string errorDescription = "";
+            List<string> loadedIds = new List<string>();
+            string expectedRankA = labelRankA.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None)[1];
+            string expectedRankB = labelRankB.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None)[1];
+            List<Tuple<int, int>> errorCellsA = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> errorCellsB = new List<Tuple<int, int>>();
+            Dictionary<string, List<Tuple<DataGridView, int, int>>> idToCellAdress = new Dictionary<string, List<Tuple<DataGridView, int, int>>>();
+
+            HashSet<int> errorRowsA = new HashSet<int>();
+            HashSet<int> errorRowsB = new HashSet<int>();
+            string lotNumber = textBoxLotNo.Text;
+
+            foreach (DataGridViewRow row in dataGridViewRankA.Rows)
+            {
+                string rank = row.Cells["RankA"].Value.ToString();
+                string id = row.Cells["rankAId"].Value.ToString();
+
+                if (!idToCellAdress.ContainsKey(id))
+                {
+                    idToCellAdress.Add(id, new List<Tuple<DataGridView, int, int>>());
+                }
+                idToCellAdress[id].Add(new Tuple<DataGridView, int, int>(dataGridViewRankA, row.Index, row.Cells.IndexOf(row.Cells["rankAId"])));
+                
+
+                if (rank != expectedRankA)
+                {
+                    error = true;
+                    errorCellsA.Add(new Tuple<int, int>(row.Index, row.Cells.IndexOf(row.Cells["RankA"])));
+                    errorDescription += Environment.NewLine + "Rank BINA nie zgadza się. Powinno być: " + rank;
+                    errorRowsA.Add(row.Index);
+                }
+
+                if (lotNumber!= row.Cells["RankAZlecenie"].Value.ToString())
+                {
+                    error = true;
+                    errorDescription += Environment.NewLine + "Ta rolka LED jest przypisana do innego zlecenia -" + row.Cells["RankAZlecenie"].Value.ToString();
+                    errorRowsA.Add(row.Index);
+                    errorCellsA.Add(new Tuple<int, int>(row.Index, row.Cells.IndexOf(row.Cells["RankAZlecenie"])));
+                }
+            }
+
+            foreach (DataGridViewRow row in dataGridViewRankB.Rows)
+            {
+                string rank = row.Cells["RankB"].Value.ToString();
+                string id = row.Cells["rankBId"].Value.ToString();
+
+                if (!idToCellAdress.ContainsKey(id))
+                {
+                    idToCellAdress.Add(id, new List<Tuple<DataGridView, int, int>>());
+                }
+                idToCellAdress[id].Add(new Tuple<DataGridView, int, int>(dataGridViewRankB, row.Index, row.Cells.IndexOf(row.Cells["rankBId"])));
+
+                if (rank != expectedRankB)
+                {
+                    error = true;
+                    errorDescription += Environment.NewLine + "Rank BINA nie zgadza się. Powinno być: " + rank;
+                    errorRowsB.Add(row.Index);
+                    errorCellsB.Add(new Tuple<int, int>(row.Index, row.Cells.IndexOf(row.Cells["RankB"])));
+                }
+                if (lotNumber != row.Cells["RankBZlecenie"].Value.ToString())
+                {
+                    error = true;
+                    errorDescription += Environment.NewLine + "Ta rolka LED jest przypisana do innego zlecenia -" + row.Cells["RankBZlecenie"].Value.ToString();
+                    errorRowsB.Add(row.Index);
+                    errorCellsB.Add(new Tuple<int, int>(row.Index, row.Cells.IndexOf(row.Cells["RankBZlecenie"])));
+                }
+            }
+
+            foreach (var idEntry in idToCellAdress) 
+            {
+                if (idEntry.Value.Count > 1) 
+                {
+                    foreach (var id in idEntry.Value)
+                    {
+                        id.Item1.Rows[id.Item2].Cells[id.Item3].Style.BackColor = Color.Red;
+                    }
+                    errorDescription += Environment.NewLine + "Rolka ID:" + idEntry.Key + " została już wcześniej dodana!";
+                    error = true;
+                }
+            }
+
+            if (error)
+            {
+                foreach (var aCoord in errorCellsA)
+                {
+                    dataGridViewRankA.Rows[aCoord.Item1].Cells[aCoord.Item2].Style.BackColor = Color.Red;
+                }
+                foreach (var bCoord in errorCellsB)
+                {
+                    dataGridViewRankB.Rows[bCoord.Item1].Cells[bCoord.Item2].Style.BackColor = Color.Red;
+                }
+                MessageBox.Show(errorDescription);
+            }
+        }
+
+        private void CheckIfFormDataComplete()
+        {
+            bool correct = true;
+            buttonOK.Text = "UZUPEŁNIJ DANE ";
+
+            foreach (DataGridViewRow row  in dataGridViewRankA.Rows)
+            {
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    if (cell.Style.BackColor==Color.Red)
+                    {
+                        correct = false;
+                        buttonOK.Text += "-Błąd RankA";
+                        break;
+                    }
+                }
+            }
+
+
+                foreach (DataGridViewRow row in dataGridViewRankB.Rows)
+                {
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        if (cell.Style.BackColor == Color.Red)
+                        {
+                            correct = false;
+                            buttonOK.Text += "-Błąd RankB";
+                            break;
+                        }
+                    }
+                }
+
+
+            if (comboBoxOperator.Text.Length < 1)
+            {
+                correct = false;
+                buttonOK.Text += "-Operator";
+            }
+
+            if (dataGridViewRankA.Rows.Count != dataGridViewRankB.Rows.Count)
+            {
+                correct = false;
+                buttonOK.Text += "-Ilość A/B";
+            }
+
+
+            if (correct)
+            {
+                buttonOK.Text = "OK";
+                
+            }
+            else
+            {
+                //buttonOK.Text = "UZUPEŁNIJ DANE";
+            }
+        }
+
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Return)
             {
-                bool correctLED = true;
-                string expectedRank = labelRankA.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None)[1];
-
                 currentLedReel = SqlOperations.GetLedDataFromSparing(textBoxRankAQr.Text);
-                List<string> loadedIds = new List<string>();
-                foreach (DataGridViewRow row in dataGridViewRankA.Rows)
+                if (currentLedReel.ID != "error")
                 {
-
-                    loadedIds.Add(row.Cells["RankAId"].Value.ToString());
-                }
-
-                foreach (DataGridViewRow row in dataGridViewRankB.Rows)
-                {
-
-                    loadedIds.Add(row.Cells["rankAId"].Value.ToString());
-                }
-
-                if (loadedIds.Contains(currentLedReel.ID))
-                {
-                    correctLED = false;
-                    MessageBox.Show("Błąd!" + Environment.NewLine + "Ta rolka już została dodana ID: " + currentLedReel.ID);
-                }
-
-                dataGridViewRankA.Rows.Add(currentLedReel.NC12, currentLedReel.ID, currentLedReel.Rank,currentLedReel.Ilosc, currentLedReel.ZlecenieString);
-
-                if (currentLedReel.ZlecenieString != textBoxLotNo.Text)
-                {
-                    correctLED = false;
-                    MessageBox.Show("Błąd!" + Environment.NewLine+ "Diody należą do zlecenia nr: " + currentLedReel.ZlecenieString);
-                }
-
-                if (currentLedReel.Rank != expectedRank)
-                {
-                    correctLED = false;
-                    MessageBox.Show("Błąd!" + Environment.NewLine + "Oczekiwany Rank: " + expectedRank);
-                }
-
-                if (correctLED)
-                {
-                    foreach (DataGridViewCell cell in dataGridViewRankA.Rows[dataGridViewRankA.Rows.Count - 1].Cells)
-                    {
-                        cell.Style.BackColor = Color.Green;
-                        //cell.Style.ForeColor = Color.Green;
-                    }
-                }
-                else
-                {
-                    foreach (DataGridViewCell cell in dataGridViewRankA.Rows[dataGridViewRankA.Rows.Count - 1].Cells)
-                    {
-                        cell.Style.BackColor = Color.Red;
-                        //cell.Style.ForeColor = Color.Red;
-                    }
-                }
+                    dataGridViewRankA.Rows.Add(currentLedReel.NC12, currentLedReel.ID, currentLedReel.Rank, currentLedReel.Ilosc, currentLedReel.ZlecenieString);
 
                     foreach (DataGridViewColumn col in dataGridViewRankA.Columns)
                     {
                         col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     }
+                    textBoxRankAQr.Text = "";
+                    CheckIfCorrectLed();
+                    textBoxRankBQr.Focus();
+                    labelRankALoaded.Text += Environment.NewLine + currentLedReel.Rank;
 
-                textBoxRankAQr.Text = "";
-            }
-        }
+                    string ledFamily = currentLedReel.NC12;
+                    if (!labelLed12NC.Text.Contains(ledFamily))
+                    {
+                        labelLed12NC.Text += " "+ledFamily;
+                    }
 
-        private string GetNumberOfConnectors(string model)
-        {
-            //exceptions....
-            if (model.Replace("LLFML", "") == "G2-08L404B")
-                return "0";
-
-            string family = model.Split('-')[0].Replace("LLFML","").Substring(0,1).ToUpper();
-            string connCode = model.Split('-')[1].Substring(5, 1);
-            if ((family == "K" || family == "G") & (connCode=="2" || connCode=="4"))
-            {
-                return "4";
-            }
-            else
-            {
-                return "2";
+                    CountQtyProductToManufacture();
+                    CheckIfFormDataComplete();
+                }
             }
         }
 
         
+
+        
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            if (dataGridViewRankA.Rows.Count == dataGridViewRankB.Rows.Count)
+            if (buttonOK.Text=="OK")
             {
+                grid.SuspendLayout();
                 LedLeftovers ledsLeft = new LedLeftovers(new List<RankStruc>(), new List<RankStruc>());
                 
                 foreach (DataGridViewRow rowA in dataGridViewRankA.Rows)
@@ -182,8 +324,8 @@ namespace Karta_Pracy_SMT
                     ledsLeft.RankB.Add(new RankStruc(rankB, rankBId, rankB12NC, -1));
                 }
 
-                grid.Rows.Add();
-                int lastRow = grid.Rows.Count - 1;
+                grid.Rows.Insert(0, 1);
+                int lastRow = 0;
                 grid.Rows[lastRow].Cells["ColumnLot"].Value = textBoxLotNo.Text;
                 grid.Rows[lastRow].Cells["ColumnModel"].Value = currentLotData.Model;
                 grid.Rows[lastRow].Cells["ColumnQty"].Value = currentLotData.OrderedQty;
@@ -193,28 +335,21 @@ namespace Karta_Pracy_SMT
                 grid.Rows[lastRow].Cells["ColumnButtonLed"].Value = "BRAK";
                 grid.Rows[lastRow].Cells["ColumnButtonLed"].Style.BackColor = Color.Red;
                 grid.Rows[lastRow].Cells["ColumnQualityCheck"].Value = "";
-                grid.Rows[lastRow].Cells["StartDate"].Value = DateTime.Now.ToLongTimeString();
-                grid.Rows[lastRow].Cells["BtnSave"].Value = "";
+                grid.Rows[lastRow].Cells["StartDate"].Value = DateTime.Now.ToString("HH:mm:ss dd-MM-yyyy");
                 grid.Rows[lastRow].Cells["ColumnButtonLed"].Tag = ledsLeft;
+                grid.Rows[lastRow].Cells["Operator"].Value = comboBoxOperator.Text;
 
-                grid.Rows[lastRow].Cells["connQty"].Value = GetNumberOfConnectors(currentLotData.Model);
+                grid.Rows[lastRow].Cells["connQty"].Value = Tools.GetNumberOfConnectors(currentLotData.Model);
                 if (grid.Rows[lastRow].Cells["connQty"].Value.ToString()=="4")
                 {
                     grid.Rows[lastRow].Cells["connQty"].Style.ForeColor = System.Drawing.Color.Red;
                 }
 
-                //foreach (DataGridViewCell cell in grid.Rows[lastRow].Cells)
-                //{
-                //    if (cell.GetType().ToString() == "System.Windows.Forms.DataGridViewButtonCell")
-                //    {
-                //        ((DataGridViewButtonCell)cell).FlatStyle = FlatStyle.Flat;
-                //    }
-                //}
-
-                foreach (DataGridViewColumn col in grid.Columns)
-                {
-                    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                }
+                if (grid.Rows.Count == 1)
+                    foreach (DataGridViewColumn col in grid.Columns)
+                    {
+                        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    }
 
                 if (grid.Rows.Count==1)
                 {
@@ -223,51 +358,81 @@ namespace Karta_Pracy_SMT
                 }
                 else
                 {
-                    if (grid.Rows[lastRow].Cells["ColumnModel"].Value.ToString() != grid.Rows[lastRow-1].Cells["ColumnModel"].Value.ToString())
-                    {
-                        grid.Rows[lastRow].Cells["ColumnQualityCheck"].Style.BackColor = Color.Red;
-                        grid.Rows[lastRow].Cells["ColumnQualityCheck"].Value = "BRAK";
-                    }
+                    if (Tools.getCellValue(grid.Rows[lastRow + 1].Cells["ColumnModel"]) != "")
+                        if (grid.Rows[lastRow].Cells["ColumnModel"].Value.ToString() != grid.Rows[lastRow + 1].Cells["ColumnModel"].Value.ToString())
+                        {
+                            grid.Rows[lastRow].Cells["ColumnQualityCheck"].Style.BackColor = Color.Red;
+                            grid.Rows[lastRow].Cells["ColumnQualityCheck"].Value = "BRAK";
+                        }
                 }
-
+                Tools.CleanUpDgv(grid);
                 this.Close();
+                grid.ResumeLayout();
             }
+
         }
-
-
 
         private void textBoxRankBQr_KeyDown_1(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Return)
             {
                 currentLedReel = SqlOperations.GetLedDataFromSparing(textBoxRankBQr.Text);
-
-                dataGridViewRankB.Rows.Add(currentLedReel.NC12, currentLedReel.ID,currentLedReel.Rank, currentLedReel.Ilosc, currentLedReel.ZlecenieString);
-                if (currentLedReel.ZlecenieString == textBoxLotNo.Text)
+                if (currentLedReel.ID != "error")
                 {
-                    foreach (DataGridViewCell cell in dataGridViewRankB.Rows[dataGridViewRankB.Rows.Count - 1].Cells)
+                    dataGridViewRankB.Rows.Add(currentLedReel.NC12, currentLedReel.ID, currentLedReel.Rank, currentLedReel.Ilosc, currentLedReel.ZlecenieString);
+                    CheckIfCorrectLed();
+                    foreach (DataGridViewColumn col in dataGridViewRankB.Columns)
                     {
-                        cell.Style.BackColor = Color.Green;
-                        //cell.Style.ForeColor = Color.Green;
+                        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     }
+                    textBoxRankBQr.Text = "";
+                    textBoxRankAQr.Focus();
+                    labelRankBLoaded.Text += Environment.NewLine + currentLedReel.Rank;
+                    CountQtyProductToManufacture();
+                    CheckIfFormDataComplete();
                 }
-                else
-                {
-                    foreach (DataGridViewCell cell in dataGridViewRankB.Rows[dataGridViewRankB.Rows.Count - 1].Cells)
-                    {
-                        cell.Style.BackColor = Color.Red;
-                       // cell.Style.ForeColor = Color.Red;
-                    }
-                }
-
-                foreach (DataGridViewColumn col in dataGridViewRankB.Columns)
-                {
-                    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                }
-
-                textBoxRankBQr.Text = "";
             }
+        }
+
+        private void textBoxLotNo_Leave(object sender, EventArgs e)
+        {
+            if (labelModel.Text == "Model:") 
+            {
+                this.ActiveControl = textBoxLotNo;
+            }
+        }
+
         
+
+        private void textBoxEnter(object sender, EventArgs e)
+        {
+            foreach (TextBox txb in txbList)
+            {
+                if (txb.Focused) txb.BackColor = Color.LemonChiffon;
+                else txb.BackColor = Color.White;
+            }
+        }
+
+        private void NewLotForm_Load(object sender, EventArgs e)
+        {
+            // comboBoxOperator.Items.AddRange(SqlOperations.GetLastOperators());
+            comboBoxOperator.Items.AddRange(SqlOperations.GetOperatorsArray(30));
+
+        }
+
+        private void dataGridViewRankA_SelectionChanged(object sender, EventArgs e)
+        {
+            dataGridViewRankA.ClearSelection();
+        }
+
+        private void dataGridViewRankB_SelectionChanged(object sender, EventArgs e)
+        {
+            dataGridViewRankB.ClearSelection();
+        }
+
+        private void comboBoxOperator_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CheckIfFormDataComplete();
         }
     }
 }

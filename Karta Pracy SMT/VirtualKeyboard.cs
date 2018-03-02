@@ -29,7 +29,7 @@ namespace Karta_Pracy_SMT
 
         private void button5_Click(object sender, EventArgs e)
         {
-            textBoxDisplay.Text = "";
+            textBoxDisplay.Text += "0";
         }
 
         private void button9_Click(object sender, EventArgs e)

@@ -14,12 +14,15 @@ namespace Karta_Pracy_SMT
     {
         private readonly DataGridView grid;
         private readonly DataGridViewCell cell;
+        private List<LedLeftovers> ledLeftSaveBuffer;
         LedLeftovers ledsLeft;
-        public Add_LED_leftovers(DataGridView grid,DataGridViewCell cell)
+
+        public Add_LED_leftovers(DataGridView grid,DataGridViewCell cell, List<LedLeftovers> ledLeftSaveBuffer)
         {
             InitializeComponent();
             this.grid = grid;
             this.cell = cell;
+            this.ledLeftSaveBuffer = ledLeftSaveBuffer;
             ledsLeft = (LedLeftovers)cell.Tag;
 
             foreach (var reel in ledsLeft.RankA)
@@ -84,6 +87,9 @@ namespace Karta_Pracy_SMT
             {
                 cell.Value = "OK";
                 cell.Style.BackColor = Color.Green;
+
+                //SqlOperations.UpdateLedLeftovers(ledsLeft);
+                ledLeftSaveBuffer.Add(ledsLeft);
             }
 
             this.Close();
