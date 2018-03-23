@@ -99,8 +99,7 @@ namespace Karta_Pracy_SMT
             command.CommandText = @"SELECT  NC12,ID,Ilosc,LPN_ID,LPN_NC,ZlecenieString,RodzajKOMP FROM DaneBierzaceKompAktualne_FULL WHERE ID = @ledId AND NC12= @nc12;"; 
             command.Parameters.AddWithValue("@ledId", ledID);
             command.Parameters.AddWithValue("@nc12", nc12);
-
-
+            
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(sqlTable);
 
@@ -127,6 +126,11 @@ namespace Karta_Pracy_SMT
 
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(sqlTable);
+
+            foreach (DataRow row in sqlTable.Rows)
+            {
+                row["MODEL_ID"] = row["MODEL_ID"].ToString().Replace("LLFML", "");
+            }
 
             return sqlTable;
         }
@@ -160,17 +164,17 @@ namespace Karta_Pracy_SMT
             }
         }
 
-        public static string[] GetOperatorsArray(int daysAgo)
+        public static string[] GetOperatorsArray()
         {
-            DateTime untilDate = System.DateTime.Now.AddDays(daysAgo * (-1));
+           // DateTime untilDate = System.DateTime.Now.AddDays(daysAgo * (-1));
             DataTable sqlTable = new DataTable();
             SqlConnection conn = new SqlConnection();
             conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
 
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
-            command.CommandText = String.Format(@"SELECT OperatorSMT,DataCzasKoniec FROM tb_SMT_Karta_Pracy WHERE DataCzasKoniec >= @days ");
-            command.Parameters.AddWithValue("@days", untilDate.Date);
+            command.CommandText = String.Format(@"SELECT DISTINCT OperatorSMT FROM tb_SMT_Karta_Pracy");
+            //command.Parameters.AddWithValue("@days", untilDate.Date);
 
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(sqlTable);
@@ -178,7 +182,7 @@ namespace Karta_Pracy_SMT
             HashSet<string> operators = new HashSet<string>();
             foreach (DataRow row in sqlTable.Rows)
             {
-                operators.Add(row["OperatorSMT"].ToString());
+                operators.Add(row["OperatorSMT"].ToString().Trim());
             }
 
             return operators.OrderBy(o=>o).ToArray();
@@ -258,19 +262,72 @@ namespace Karta_Pracy_SMT
             return result;
         }
 
+        public static Dictionary<string, string[]> lotToRankABQty(string[] lots)
+        {
+            Dictionary<string, string[]> result = new Dictionary<string, string[]>();
+            DataTable sqlTableLot = new DataTable();
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = conn;
+            string querry = @"SELECT Nr_Zlecenia_Produkcyjnego,Ilosc_wyrobu_zlecona,RankA,RankB FROM tb_Zlecenia_produkcyjne WHERE";
+            foreach (var lot in lots)
+            {
+                querry += " Nr_Zlecenia_Produkcyjnego = " + lot + " OR";
+            }
+            querry = querry.Remove(querry.Length - 3, 3);
+            command.CommandText = querry;
+
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(sqlTableLot);
+
+
+            foreach (DataRow row in sqlTableLot.Rows)
+            {
+                result.Add(row["Nr_Zlecenia_Produkcyjnego"].ToString(), new string[] { row["RankA"].ToString(), row["RankB"].ToString(), row["Ilosc_wyrobu_zlecona"].ToString() });
+            }
+            return result;
+        }
+
         public static DataTable GetSmtRecordsFromDb(int recordsQty, string line)
         {
             DataTable result = new DataTable();
-            //line = line.Split(' ')[1];
 
             SqlConnection conn = new SqlConnection();
             conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
 
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
-            command.CommandText = String.Format(@"SELECT DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED FROM tb_SMT_Karta_Pracy");
-            command.Parameters.AddWithValue("@qty", recordsQty);
-            command.Parameters.AddWithValue("@line", line);
+            command.CommandText = String.Format(@"SELECT TOP 28 DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED FROM MES.dbo.tb_SMT_Karta_Pracy WHERE LiniaSMT = @smtLine ORDER BY DataCzasKoniec DESC;");
+            command.Parameters.AddWithValue("@qty", recordsQty.ToString());
+            command.Parameters.AddWithValue("@smtLine", line);
+
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(result);
+            Debug.WriteLine(line + " " + result.Rows.Count);
+
+            DataView dv = result.DefaultView;
+            dv.Sort = "DataCzasStart";
+            //DataTable sortedDT = dv.ToTable();
+
+            return dv.ToTable();
+        }
+
+        public static DataTable GetSmtRecordsFromDbQuantityOnly(int daysAgo, string line)
+        {
+            DataTable result = new DataTable();
+            DateTime untilDay = DateTime.Now.Date.AddDays(daysAgo * (-1)).AddHours(6);
+
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = conn;
+            command.CommandText = String.Format(@"SELECT DataCzasKoniec,LiniaSMT,Model,NrZlecenia,IloscWykonana,OperatorSMT FROM MES.dbo.tb_SMT_Karta_Pracy WHERE LiniaSMT = @smtLine and DataCzasKoniec>@until order by [DataCzasKoniec];");
+            //command.Parameters.AddWithValue("@qty", recordsQty);
+            command.Parameters.AddWithValue("@smtLine", line);
+            command.Parameters.AddWithValue("@until", untilDay);
 
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(result);

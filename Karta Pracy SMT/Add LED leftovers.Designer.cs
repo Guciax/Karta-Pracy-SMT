@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.button1 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.dataGridViewRankA = new System.Windows.Forms.DataGridView();
@@ -57,7 +57,7 @@
             // button1
             // 
             this.button1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.button1.Location = new System.Drawing.Point(0, 201);
+            this.button1.Location = new System.Drawing.Point(0, 199);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(810, 38);
             this.button1.TabIndex = 2;
@@ -72,7 +72,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(423, 201);
+            this.panel1.Size = new System.Drawing.Size(423, 199);
             this.panel1.TabIndex = 3;
             // 
             // dataGridViewRankA
@@ -85,16 +85,16 @@
             this.RankARank,
             this.RankAId,
             this.RankAIlosc});
-            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle18.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle18.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle18.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewRankA.DefaultCellStyle = dataGridViewCellStyle18;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewRankA.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridViewRankA.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.dataGridViewRankA.Location = new System.Drawing.Point(0, 46);
+            this.dataGridViewRankA.Location = new System.Drawing.Point(0, 44);
             this.dataGridViewRankA.Name = "dataGridViewRankA";
             this.dataGridViewRankA.RowHeadersVisible = false;
             this.dataGridViewRankA.Size = new System.Drawing.Size(423, 155);
@@ -121,8 +121,8 @@
             // 
             // RankAIlosc
             // 
-            dataGridViewCellStyle17.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.RankAIlosc.DefaultCellStyle = dataGridViewCellStyle17;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.RankAIlosc.DefaultCellStyle = dataGridViewCellStyle1;
             this.RankAIlosc.HeaderText = "Ilość";
             this.RankAIlosc.Name = "RankAIlosc";
             // 
@@ -143,7 +143,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(423, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(387, 201);
+            this.panel2.Size = new System.Drawing.Size(387, 199);
             this.panel2.TabIndex = 4;
             // 
             // dataGridViewRankB
@@ -156,16 +156,16 @@
             this.RankBRank,
             this.RankBId,
             this.RankBIlosc});
-            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle20.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle20.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle20.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle20.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle20.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle20.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewRankB.DefaultCellStyle = dataGridViewCellStyle20;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewRankB.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridViewRankB.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.dataGridViewRankB.Location = new System.Drawing.Point(0, 46);
+            this.dataGridViewRankB.Location = new System.Drawing.Point(0, 44);
             this.dataGridViewRankB.Name = "dataGridViewRankB";
             this.dataGridViewRankB.RowHeadersVisible = false;
             this.dataGridViewRankB.Size = new System.Drawing.Size(387, 155);
@@ -192,8 +192,8 @@
             // 
             // RankBIlosc
             // 
-            dataGridViewCellStyle19.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.RankBIlosc.DefaultCellStyle = dataGridViewCellStyle19;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.RankBIlosc.DefaultCellStyle = dataGridViewCellStyle3;
             this.RankBIlosc.HeaderText = "Ilość";
             this.RankBIlosc.Name = "RankBIlosc";
             // 
@@ -209,11 +209,13 @@
             // 
             // textBoxQr
             // 
+            this.textBoxQr.AcceptsTab = true;
             this.textBoxQr.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.textBoxQr.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.textBoxQr.Location = new System.Drawing.Point(0, 239);
+            this.textBoxQr.Location = new System.Drawing.Point(0, 237);
+            this.textBoxQr.Multiline = true;
             this.textBoxQr.Name = "textBoxQr";
-            this.textBoxQr.Size = new System.Drawing.Size(810, 23);
+            this.textBoxQr.Size = new System.Drawing.Size(810, 25);
             this.textBoxQr.TabIndex = 5;
             this.textBoxQr.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQr_KeyDown);
             this.textBoxQr.Leave += new System.EventHandler(this.textBoxQr_Leave);
@@ -231,6 +233,7 @@
             this.Name = "Add_LED_leftovers";
             this.Text = "Końcówki LED";
             this.Load += new System.EventHandler(this.Add_LED_leftovers_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Add_LED_leftovers_KeyDown);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRankA)).EndInit();

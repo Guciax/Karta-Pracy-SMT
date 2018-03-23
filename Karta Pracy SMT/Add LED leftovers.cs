@@ -137,15 +137,21 @@ namespace Karta_Pracy_SMT
 
                 if (!foundLedReel)
                 {
-                    MessageBox.Show("Podana rolka LED nie należy do tego zlecenia");
+                    MessageBox.Show("Ta rolka LED nie należy do tego zlecenia");
                 }
             }
-
+            if (e.KeyCode == Keys.Escape) this.Close();
         }
 
         private void Add_LED_leftovers_Load(object sender, EventArgs e)
         {
+
             textBoxQr.Focus();
+        }
+
+        private void Add_LED_leftovers_KeyDown(object sender, KeyEventArgs e)
+        {
+            
         }
     }
 }

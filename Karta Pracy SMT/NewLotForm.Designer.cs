@@ -28,27 +28,38 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle25 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle28 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle29 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle30 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.labelMiraeProgram = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.labelOrderedQty = new System.Windows.Forms.Label();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.labelLedQty = new System.Windows.Forms.Label();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.labelMaxProductQty = new System.Windows.Forms.Label();
+            this.labelLed12NC = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.labelLotData = new System.Windows.Forms.Label();
             this.labelModel = new System.Windows.Forms.Label();
+            this.labelRankB = new System.Windows.Forms.Label();
+            this.labelRankA = new System.Windows.Forms.Label();
+            this.labelOrderedQty = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.labelMiraeProgram = new System.Windows.Forms.Label();
+            this.comboBoxOperator = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.textBoxLotNo = new System.Windows.Forms.TextBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.buttonOK = new System.Windows.Forms.Button();
-            this.labelRankA = new System.Windows.Forms.Label();
             this.textBoxRankAQr = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.labelRankALoaded = new System.Windows.Forms.Label();
             this.dataGridViewRankA = new System.Windows.Forms.DataGridView();
             this.RankANc12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RankAId = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -56,6 +67,7 @@
             this.RankAIlosc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RankAZlecenie = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.labelRankBLoaded = new System.Windows.Forms.Label();
             this.textBoxRankBQr = new System.Windows.Forms.TextBox();
             this.dataGridViewRankB = new System.Windows.Forms.DataGridView();
             this.rankBNc12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -63,25 +75,13 @@
             this.RankB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.rankBIlosc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RankBZlecenie = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.labelRankB = new System.Windows.Forms.Label();
-            this.comboBoxOperator = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.labelLotData = new System.Windows.Forms.Label();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
-            this.labelRankALoaded = new System.Windows.Forms.Label();
-            this.labelRankBLoaded = new System.Windows.Forms.Label();
-            this.labelLed12NC = new System.Windows.Forms.Label();
-            this.labelMaxProductQty = new System.Windows.Forms.Label();
-            this.labelLedQty = new System.Windows.Forms.Label();
             this.panel3.SuspendLayout();
+            this.panel4.SuspendLayout();
+            this.panel5.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRankA)).BeginInit();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRankB)).BeginInit();
-            this.panel4.SuspendLayout();
-            this.panel5.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel3
@@ -100,38 +100,88 @@
             this.panel3.Size = new System.Drawing.Size(884, 329);
             this.panel3.TabIndex = 5;
             // 
-            // labelMiraeProgram
+            // panel4
             // 
-            this.labelMiraeProgram.AutoSize = true;
-            this.labelMiraeProgram.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelMiraeProgram.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelMiraeProgram.Location = new System.Drawing.Point(471, 44);
-            this.labelMiraeProgram.Name = "labelMiraeProgram";
-            this.labelMiraeProgram.Size = new System.Drawing.Size(138, 24);
-            this.labelMiraeProgram.TabIndex = 6;
-            this.labelMiraeProgram.Text = "Mirae program:";
+            this.panel4.BackColor = System.Drawing.SystemColors.Control;
+            this.panel4.Controls.Add(this.labelLedQty);
+            this.panel4.Controls.Add(this.panel5);
+            this.panel4.Controls.Add(this.labelLotData);
+            this.panel4.Controls.Add(this.labelModel);
+            this.panel4.Controls.Add(this.labelRankB);
+            this.panel4.Controls.Add(this.labelRankA);
+            this.panel4.Controls.Add(this.labelOrderedQty);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel4.Location = new System.Drawing.Point(0, 96);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(884, 233);
+            this.panel4.TabIndex = 8;
             // 
-            // label1
+            // labelLedQty
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label1.ForeColor = System.Drawing.SystemColors.Control;
-            this.label1.Location = new System.Drawing.Point(5, 2);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(110, 24);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Nr zlecenia:";
+            this.labelLedQty.AutoSize = true;
+            this.labelLedQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelLedQty.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.labelLedQty.Location = new System.Drawing.Point(319, 83);
+            this.labelLedQty.Name = "labelLedQty";
+            this.labelLedQty.Size = new System.Drawing.Size(42, 20);
+            this.labelLedQty.TabIndex = 7;
+            this.labelLedQty.Text = "Ilość";
             // 
-            // labelOrderedQty
+            // panel5
             // 
-            this.labelOrderedQty.AutoSize = true;
-            this.labelOrderedQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelOrderedQty.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelOrderedQty.Location = new System.Drawing.Point(319, 59);
-            this.labelOrderedQty.Name = "labelOrderedQty";
-            this.labelOrderedQty.Size = new System.Drawing.Size(42, 20);
-            this.labelOrderedQty.TabIndex = 4;
-            this.labelOrderedQty.Text = "Ilość";
+            this.panel5.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panel5.Controls.Add(this.labelMaxProductQty);
+            this.panel5.Controls.Add(this.labelLed12NC);
+            this.panel5.Controls.Add(this.label4);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel5.Location = new System.Drawing.Point(0, 118);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(884, 115);
+            this.panel5.TabIndex = 6;
+            // 
+            // labelMaxProductQty
+            // 
+            this.labelMaxProductQty.AutoSize = true;
+            this.labelMaxProductQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelMaxProductQty.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.labelMaxProductQty.Location = new System.Drawing.Point(267, 65);
+            this.labelMaxProductQty.Name = "labelMaxProductQty";
+            this.labelMaxProductQty.Size = new System.Drawing.Size(111, 20);
+            this.labelMaxProductQty.TabIndex = 8;
+            this.labelMaxProductQty.Text = "Ilość wyrobów:";
+            // 
+            // labelLed12NC
+            // 
+            this.labelLed12NC.AutoSize = true;
+            this.labelLed12NC.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelLed12NC.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.labelLed12NC.Location = new System.Drawing.Point(323, 41);
+            this.labelLed12NC.Name = "labelLed12NC";
+            this.labelLed12NC.Size = new System.Drawing.Size(55, 20);
+            this.labelLed12NC.TabIndex = 7;
+            this.labelLed12NC.Text = "Dioda:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label4.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label4.Location = new System.Drawing.Point(360, 9);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(226, 24);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Wczytane komponenty:";
+            // 
+            // labelLotData
+            // 
+            this.labelLotData.AutoSize = true;
+            this.labelLotData.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelLotData.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.labelLotData.Location = new System.Drawing.Point(319, 9);
+            this.labelLotData.Name = "labelLotData";
+            this.labelLotData.Size = new System.Drawing.Size(183, 24);
+            this.labelLotData.TabIndex = 5;
+            this.labelLotData.Text = "Dane Zlecenia nr. ";
             // 
             // labelModel
             // 
@@ -144,6 +194,81 @@
             this.labelModel.TabIndex = 3;
             this.labelModel.Text = "Model:";
             // 
+            // labelRankB
+            // 
+            this.labelRankB.AutoSize = true;
+            this.labelRankB.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelRankB.Location = new System.Drawing.Point(667, 24);
+            this.labelRankB.Name = "labelRankB";
+            this.labelRankB.Size = new System.Drawing.Size(103, 31);
+            this.labelRankB.TabIndex = 5;
+            this.labelRankB.Text = "Rank B";
+            // 
+            // labelRankA
+            // 
+            this.labelRankA.AutoSize = true;
+            this.labelRankA.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelRankA.Location = new System.Drawing.Point(85, 24);
+            this.labelRankA.Name = "labelRankA";
+            this.labelRankA.Size = new System.Drawing.Size(103, 31);
+            this.labelRankA.TabIndex = 4;
+            this.labelRankA.Text = "Rank A";
+            // 
+            // labelOrderedQty
+            // 
+            this.labelOrderedQty.AutoSize = true;
+            this.labelOrderedQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelOrderedQty.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.labelOrderedQty.Location = new System.Drawing.Point(319, 59);
+            this.labelOrderedQty.Name = "labelOrderedQty";
+            this.labelOrderedQty.Size = new System.Drawing.Size(42, 20);
+            this.labelOrderedQty.TabIndex = 4;
+            this.labelOrderedQty.Text = "Ilość";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label2.ForeColor = System.Drawing.SystemColors.Control;
+            this.label2.Location = new System.Drawing.Point(383, 4);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(89, 24);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "Operator:";
+            // 
+            // labelMiraeProgram
+            // 
+            this.labelMiraeProgram.AutoSize = true;
+            this.labelMiraeProgram.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelMiraeProgram.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.labelMiraeProgram.Location = new System.Drawing.Point(471, 44);
+            this.labelMiraeProgram.Name = "labelMiraeProgram";
+            this.labelMiraeProgram.Size = new System.Drawing.Size(0, 24);
+            this.labelMiraeProgram.TabIndex = 6;
+            // 
+            // comboBoxOperator
+            // 
+            this.comboBoxOperator.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.comboBoxOperator.FormattingEnabled = true;
+            this.comboBoxOperator.Location = new System.Drawing.Point(475, 2);
+            this.comboBoxOperator.Name = "comboBoxOperator";
+            this.comboBoxOperator.Size = new System.Drawing.Size(266, 28);
+            this.comboBoxOperator.TabIndex = 7;
+            this.comboBoxOperator.SelectedIndexChanged += new System.EventHandler(this.comboBoxOperator_SelectedIndexChanged);
+            this.comboBoxOperator.TextChanged += new System.EventHandler(this.comboBoxOperator_TextChanged);
+            this.comboBoxOperator.Leave += new System.EventHandler(this.comboBoxOperator_Leave);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label1.ForeColor = System.Drawing.SystemColors.Control;
+            this.label1.Location = new System.Drawing.Point(5, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(110, 24);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Nr zlecenia:";
+            // 
             // textBoxLotNo
             // 
             this.textBoxLotNo.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
@@ -153,6 +278,7 @@
             this.textBoxLotNo.TabIndex = 2;
             this.textBoxLotNo.TextChanged += new System.EventHandler(this.textBoxLotNo_TextChanged);
             this.textBoxLotNo.Enter += new System.EventHandler(this.textBoxEnter);
+            this.textBoxLotNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxLotNo_KeyDown);
             this.textBoxLotNo.Leave += new System.EventHandler(this.textBoxLotNo_Leave);
             // 
             // textBox4
@@ -176,25 +302,18 @@
             this.buttonOK.UseVisualStyleBackColor = false;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
             // 
-            // labelRankA
-            // 
-            this.labelRankA.AutoSize = true;
-            this.labelRankA.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelRankA.Location = new System.Drawing.Point(85, 24);
-            this.labelRankA.Name = "labelRankA";
-            this.labelRankA.Size = new System.Drawing.Size(103, 31);
-            this.labelRankA.TabIndex = 4;
-            this.labelRankA.Text = "Rank A";
-            // 
             // textBoxRankAQr
             // 
+            this.textBoxRankAQr.AcceptsTab = true;
             this.textBoxRankAQr.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.textBoxRankAQr.Location = new System.Drawing.Point(3, 132);
+            this.textBoxRankAQr.Multiline = true;
             this.textBoxRankAQr.Name = "textBoxRankAQr";
             this.textBoxRankAQr.Size = new System.Drawing.Size(442, 26);
             this.textBoxRankAQr.TabIndex = 6;
             this.textBoxRankAQr.Enter += new System.EventHandler(this.textBoxEnter);
             this.textBoxRankAQr.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
+            this.textBoxRankAQr.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.textBoxRankAQr_PreviewKeyDown);
             // 
             // panel1
             // 
@@ -209,6 +328,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(450, 299);
             this.panel1.TabIndex = 8;
+            // 
+            // labelRankALoaded
+            // 
+            this.labelRankALoaded.AutoSize = true;
+            this.labelRankALoaded.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelRankALoaded.Location = new System.Drawing.Point(161, 5);
+            this.labelRankALoaded.Name = "labelRankALoaded";
+            this.labelRankALoaded.Size = new System.Drawing.Size(103, 31);
+            this.labelRankALoaded.TabIndex = 7;
+            this.labelRankALoaded.Text = "Rank A";
             // 
             // dataGridViewRankA
             // 
@@ -233,8 +362,8 @@
             // 
             // RankANc12
             // 
-            dataGridViewCellStyle21.BackColor = System.Drawing.Color.Lime;
-            this.RankANc12.DefaultCellStyle = dataGridViewCellStyle21;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Lime;
+            this.RankANc12.DefaultCellStyle = dataGridViewCellStyle1;
             this.RankANc12.HeaderText = "Nazwa";
             this.RankANc12.Name = "RankANc12";
             this.RankANc12.ReadOnly = true;
@@ -242,32 +371,32 @@
             // 
             // RankAId
             // 
-            dataGridViewCellStyle22.BackColor = System.Drawing.Color.Lime;
-            this.RankAId.DefaultCellStyle = dataGridViewCellStyle22;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Lime;
+            this.RankAId.DefaultCellStyle = dataGridViewCellStyle2;
             this.RankAId.HeaderText = "ID";
             this.RankAId.Name = "RankAId";
             this.RankAId.ReadOnly = true;
             // 
             // RankA
             // 
-            dataGridViewCellStyle23.BackColor = System.Drawing.Color.Lime;
-            this.RankA.DefaultCellStyle = dataGridViewCellStyle23;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Lime;
+            this.RankA.DefaultCellStyle = dataGridViewCellStyle3;
             this.RankA.HeaderText = "Rank";
             this.RankA.Name = "RankA";
             this.RankA.ReadOnly = true;
             // 
             // RankAIlosc
             // 
-            dataGridViewCellStyle24.BackColor = System.Drawing.Color.Lime;
-            this.RankAIlosc.DefaultCellStyle = dataGridViewCellStyle24;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.Lime;
+            this.RankAIlosc.DefaultCellStyle = dataGridViewCellStyle4;
             this.RankAIlosc.HeaderText = "Ilosc ";
             this.RankAIlosc.Name = "RankAIlosc";
             this.RankAIlosc.ReadOnly = true;
             // 
             // RankAZlecenie
             // 
-            dataGridViewCellStyle25.BackColor = System.Drawing.Color.Lime;
-            this.RankAZlecenie.DefaultCellStyle = dataGridViewCellStyle25;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.Lime;
+            this.RankAZlecenie.DefaultCellStyle = dataGridViewCellStyle5;
             this.RankAZlecenie.HeaderText = "Zlecenie";
             this.RankAZlecenie.Name = "RankAZlecenie";
             this.RankAZlecenie.ReadOnly = true;
@@ -285,15 +414,28 @@
             this.panel2.Size = new System.Drawing.Size(434, 299);
             this.panel2.TabIndex = 10;
             // 
+            // labelRankBLoaded
+            // 
+            this.labelRankBLoaded.AutoSize = true;
+            this.labelRankBLoaded.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelRankBLoaded.Location = new System.Drawing.Point(187, 5);
+            this.labelRankBLoaded.Name = "labelRankBLoaded";
+            this.labelRankBLoaded.Size = new System.Drawing.Size(103, 31);
+            this.labelRankBLoaded.TabIndex = 7;
+            this.labelRankBLoaded.Text = "Rank B";
+            // 
             // textBoxRankBQr
             // 
+            this.textBoxRankBQr.AcceptsTab = true;
             this.textBoxRankBQr.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.textBoxRankBQr.Location = new System.Drawing.Point(3, 132);
+            this.textBoxRankBQr.Multiline = true;
             this.textBoxRankBQr.Name = "textBoxRankBQr";
             this.textBoxRankBQr.Size = new System.Drawing.Size(426, 26);
             this.textBoxRankBQr.TabIndex = 9;
             this.textBoxRankBQr.Enter += new System.EventHandler(this.textBoxEnter);
             this.textBoxRankBQr.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxRankBQr_KeyDown_1);
+            this.textBoxRankBQr.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.textBoxRankBQr_PreviewKeyDown);
             // 
             // dataGridViewRankB
             // 
@@ -316,173 +458,39 @@
             // 
             // rankBNc12
             // 
-            dataGridViewCellStyle26.BackColor = System.Drawing.Color.Lime;
-            this.rankBNc12.DefaultCellStyle = dataGridViewCellStyle26;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.Lime;
+            this.rankBNc12.DefaultCellStyle = dataGridViewCellStyle6;
             this.rankBNc12.HeaderText = "Nazwa";
             this.rankBNc12.Name = "rankBNc12";
             this.rankBNc12.Width = 250;
             // 
             // rankBId
             // 
-            dataGridViewCellStyle27.BackColor = System.Drawing.Color.Lime;
-            this.rankBId.DefaultCellStyle = dataGridViewCellStyle27;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.Lime;
+            this.rankBId.DefaultCellStyle = dataGridViewCellStyle7;
             this.rankBId.HeaderText = "ID";
             this.rankBId.Name = "rankBId";
             // 
             // RankB
             // 
-            dataGridViewCellStyle28.BackColor = System.Drawing.Color.Lime;
-            this.RankB.DefaultCellStyle = dataGridViewCellStyle28;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.Lime;
+            this.RankB.DefaultCellStyle = dataGridViewCellStyle8;
             this.RankB.HeaderText = "Rank";
             this.RankB.Name = "RankB";
             // 
             // rankBIlosc
             // 
-            dataGridViewCellStyle29.BackColor = System.Drawing.Color.Lime;
-            this.rankBIlosc.DefaultCellStyle = dataGridViewCellStyle29;
+            dataGridViewCellStyle9.BackColor = System.Drawing.Color.Lime;
+            this.rankBIlosc.DefaultCellStyle = dataGridViewCellStyle9;
             this.rankBIlosc.HeaderText = "Ilosc ";
             this.rankBIlosc.Name = "rankBIlosc";
             // 
             // RankBZlecenie
             // 
-            dataGridViewCellStyle30.BackColor = System.Drawing.Color.Lime;
-            this.RankBZlecenie.DefaultCellStyle = dataGridViewCellStyle30;
+            dataGridViewCellStyle10.BackColor = System.Drawing.Color.Lime;
+            this.RankBZlecenie.DefaultCellStyle = dataGridViewCellStyle10;
             this.RankBZlecenie.HeaderText = "Zlecenie";
             this.RankBZlecenie.Name = "RankBZlecenie";
-            // 
-            // labelRankB
-            // 
-            this.labelRankB.AutoSize = true;
-            this.labelRankB.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelRankB.Location = new System.Drawing.Point(667, 24);
-            this.labelRankB.Name = "labelRankB";
-            this.labelRankB.Size = new System.Drawing.Size(103, 31);
-            this.labelRankB.TabIndex = 5;
-            this.labelRankB.Text = "Rank B";
-            // 
-            // comboBoxOperator
-            // 
-            this.comboBoxOperator.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.comboBoxOperator.FormattingEnabled = true;
-            this.comboBoxOperator.Location = new System.Drawing.Point(475, 2);
-            this.comboBoxOperator.Name = "comboBoxOperator";
-            this.comboBoxOperator.Size = new System.Drawing.Size(266, 28);
-            this.comboBoxOperator.TabIndex = 7;
-            this.comboBoxOperator.SelectedIndexChanged += new System.EventHandler(this.comboBoxOperator_SelectedIndexChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label2.ForeColor = System.Drawing.SystemColors.Control;
-            this.label2.Location = new System.Drawing.Point(380, 6);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(89, 24);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "Operator:";
-            // 
-            // panel4
-            // 
-            this.panel4.BackColor = System.Drawing.SystemColors.Control;
-            this.panel4.Controls.Add(this.labelLedQty);
-            this.panel4.Controls.Add(this.panel5);
-            this.panel4.Controls.Add(this.labelLotData);
-            this.panel4.Controls.Add(this.labelModel);
-            this.panel4.Controls.Add(this.labelRankB);
-            this.panel4.Controls.Add(this.labelRankA);
-            this.panel4.Controls.Add(this.labelOrderedQty);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(0, 96);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(884, 233);
-            this.panel4.TabIndex = 8;
-            // 
-            // labelLotData
-            // 
-            this.labelLotData.AutoSize = true;
-            this.labelLotData.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelLotData.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelLotData.Location = new System.Drawing.Point(319, 9);
-            this.labelLotData.Name = "labelLotData";
-            this.labelLotData.Size = new System.Drawing.Size(183, 24);
-            this.labelLotData.TabIndex = 5;
-            this.labelLotData.Text = "Dane Zlecenia nr. ";
-            // 
-            // panel5
-            // 
-            this.panel5.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.panel5.Controls.Add(this.labelMaxProductQty);
-            this.panel5.Controls.Add(this.labelLed12NC);
-            this.panel5.Controls.Add(this.label4);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel5.Location = new System.Drawing.Point(0, 118);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(884, 115);
-            this.panel5.TabIndex = 6;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label4.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label4.Location = new System.Drawing.Point(360, 9);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(226, 24);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Wczytane komponenty:";
-            // 
-            // labelRankALoaded
-            // 
-            this.labelRankALoaded.AutoSize = true;
-            this.labelRankALoaded.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelRankALoaded.Location = new System.Drawing.Point(161, 5);
-            this.labelRankALoaded.Name = "labelRankALoaded";
-            this.labelRankALoaded.Size = new System.Drawing.Size(103, 31);
-            this.labelRankALoaded.TabIndex = 7;
-            this.labelRankALoaded.Text = "Rank A";
-            // 
-            // labelRankBLoaded
-            // 
-            this.labelRankBLoaded.AutoSize = true;
-            this.labelRankBLoaded.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelRankBLoaded.Location = new System.Drawing.Point(187, 5);
-            this.labelRankBLoaded.Name = "labelRankBLoaded";
-            this.labelRankBLoaded.Size = new System.Drawing.Size(103, 31);
-            this.labelRankBLoaded.TabIndex = 7;
-            this.labelRankBLoaded.Text = "Rank B";
-            // 
-            // labelLed12NC
-            // 
-            this.labelLed12NC.AutoSize = true;
-            this.labelLed12NC.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelLed12NC.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelLed12NC.Location = new System.Drawing.Point(323, 41);
-            this.labelLed12NC.Name = "labelLed12NC";
-            this.labelLed12NC.Size = new System.Drawing.Size(55, 20);
-            this.labelLed12NC.TabIndex = 7;
-            this.labelLed12NC.Text = "Dioda:";
-            // 
-            // labelMaxProductQty
-            // 
-            this.labelMaxProductQty.AutoSize = true;
-            this.labelMaxProductQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelMaxProductQty.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelMaxProductQty.Location = new System.Drawing.Point(267, 65);
-            this.labelMaxProductQty.Name = "labelMaxProductQty";
-            this.labelMaxProductQty.Size = new System.Drawing.Size(111, 20);
-            this.labelMaxProductQty.TabIndex = 8;
-            this.labelMaxProductQty.Text = "Ilość wyrobów:";
-            // 
-            // labelLedQty
-            // 
-            this.labelLedQty.AutoSize = true;
-            this.labelLedQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelLedQty.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelLedQty.Location = new System.Drawing.Point(319, 83);
-            this.labelLedQty.Name = "labelLedQty";
-            this.labelLedQty.Size = new System.Drawing.Size(42, 20);
-            this.labelLedQty.TabIndex = 7;
-            this.labelLedQty.Text = "Ilość";
             // 
             // NewLotForm
             // 
@@ -502,16 +510,16 @@
             this.Load += new System.EventHandler(this.NewLotForm_Load);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRankA)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRankB)).EndInit();
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
-            this.panel5.ResumeLayout(false);
-            this.panel5.PerformLayout();
             this.ResumeLayout(false);
 
         }

@@ -32,12 +32,15 @@ namespace Karta_Pracy_SMT
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (checkBoxInspector.Checked & checkBoxTechncian.Checked)
+            if (button1.Text == "OK")
             {
-                Cell.Value = "OK";
-                Cell.Style.BackColor = Color.Green;
-                Cell.Tag = comboBoxInspect.Text + ";" + comboBoxTechn.Text;
-                this.Close();
+                if (checkBoxInspector.Checked & checkBoxTechncian.Checked)
+                {
+                    Cell.Value = "OK";
+                    Cell.Style.BackColor = Color.Green;
+                    Cell.Tag = comboBoxInspect.Text.ToUpper() + ";" + comboBoxTechn.Text.ToUpper();
+                    this.Close();
+                }
             }
         }
 
@@ -46,6 +49,33 @@ namespace Karta_Pracy_SMT
             string[][] technInsp = SqlOperations.GetTechnicianInspector(30);
             comboBoxInspect.Items.AddRange(technInsp[0]);
             comboBoxTechn.Items.AddRange(technInsp[1]);
+        }
+
+        private void checkIfOk()
+        {
+            if (comboBoxInspect.Text != "" & comboBoxTechn.Text != "" & checkBoxInspector.Checked & checkBoxTechncian.Checked)
+            {
+                button1.Text = "OK";
+            }
+            else
+            {
+                button1.Text = "UZUPEŁNIJ DANE";
+            }
+        }
+
+        private void comboBoxTechn_TextChanged(object sender, EventArgs e)
+        {
+            checkIfOk();
+        }
+
+        private void comboBoxInspect_TextChanged(object sender, EventArgs e)
+        {
+            checkIfOk();
+        }
+
+        private void checkBoxTechncian_CheckedChanged_1(object sender, EventArgs e)
+        {
+            checkIfOk();
         }
     }
 }

@@ -92,6 +92,8 @@
     <Compile Include="ChangeOverConfirmationCard.Designer.cs">
       <DependentUpon>ChangeOverConfirmationCard.cs</DependentUpon>
     </Compile>
+    <Compile Include="Charting.cs" />
+    <Compile Include="Data Structures\EfficiencyNormsPerModel.cs" />
     <Compile Include="Data Structures\EfficiencyStructure.cs" />
     <Compile Include="Drawing.cs" />
     <Compile Include="EfficiencyTools.cs" />
@@ -115,6 +117,18 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScanStencilQr.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ScanStencilQr.Designer.cs">
+      <DependentUpon>ScanStencilQr.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShowShiftInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowShiftInfo.Designer.cs">
+      <DependentUpon>ShowShiftInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="SqlOperations.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="VirtualKeyboard.cs">
@@ -145,6 +159,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="ScanStencilQr.resx">
+      <DependentUpon>ScanStencilQr.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowShiftInfo.resx">
+      <DependentUpon>ShowShiftInfo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VirtualKeyboard.resx">
       <DependentUpon>VirtualKeyboard.cs</DependentUpon>
     </EmbeddedResource>

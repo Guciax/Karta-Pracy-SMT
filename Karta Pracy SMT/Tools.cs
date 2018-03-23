@@ -55,6 +55,7 @@ namespace Karta_Pracy_SMT
 
         public static void CleanUpDgv(DataGridView dgv)
         {
+            List<DataGridViewRow> rowsToRemove = new List<DataGridViewRow>();
             for (int i = 0; i < dgv.Rows.Count; i++)
             {
                 if (!dgv.Rows[i].Displayed)
@@ -62,10 +63,21 @@ namespace Karta_Pracy_SMT
                     bool saved = Convert.ToBoolean(dgv.Rows[i].Cells[0].Value);
                     if (saved)
                     {
-                        dgv.Rows.RemoveAt(i);
-                        break;
+                        rowsToRemove.Add(dgv.Rows[i]);
                     }
                 }
+
+                DataGridViewCheckBoxCell chbCell = (DataGridViewCheckBoxCell)dgv.Rows[i].Cells[0];
+                if (Convert.ToBoolean(chbCell.Value))
+                {
+                    dgv.Rows[i].Cells[9].ReadOnly = true;
+                    dgv.Rows[i].Cells[10].ReadOnly = true;
+                }
+            }
+
+            foreach (var row in rowsToRemove)
+            {
+                dgv.Rows.Remove(row);
             }
         }
 
@@ -76,6 +88,76 @@ namespace Karta_Pracy_SMT
                 return cell.Value.ToString();
             }
             return "";
+        }
+
+        public struct dateShiftNo
+        {
+            public DateTime date;
+            public int shift;
+        }
+
+        ///<summary>
+        ///<para>returns shift number and shift start date and time</para>
+        ///</summary>
+        public static dateShiftNo whatDayShiftIsit(DateTime inputDate)
+        {
+            int hourNow = inputDate.Hour;
+            DateTime resultDate = new DateTime();
+            int resultShift = 0;
+
+            if (hourNow < 6)
+            {
+                resultDate = new DateTime(inputDate.Date.Year, inputDate.Date.Month, inputDate.Date.Day-1, 22, 0, 0);
+                resultShift = 3;
+            }
+
+            else if (hourNow < 14)
+            {
+                resultDate = new DateTime(inputDate.Date.Year, inputDate.Date.Month, inputDate.Date.Day, 6, 0, 0);
+                resultShift = 1;
+            }
+
+            else if (hourNow < 22)
+            {
+                resultDate = new DateTime(inputDate.Date.Year, inputDate.Date.Month, inputDate.Date.Day, 14, 0, 0);
+                resultShift = 2;
+            }
+
+            else
+            {
+                resultDate = new DateTime(inputDate.Date.Year, inputDate.Date.Month, inputDate.Date.Day, 22, 0, 0);
+                resultShift = 3;
+            }
+
+            dateShiftNo result = new dateShiftNo();
+            result.date = resultDate;
+            result.shift = resultShift;
+            return result;
+        }
+
+        public static DateTime shiftStartTime()
+        {
+            DateTime shiftStart = new DateTime();
+            int hourNow = DateTime.Now.Hour; 
+
+            if (hourNow < 6)
+            {
+                shiftStart = new DateTime(DateTime.Now.Date.Year, DateTime.Now.Date.Month, DateTime.Now.Date.Day - 1, 22, 0, 0);
+            }
+            else if (hourNow < 14)
+            {
+                shiftStart = new DateTime(DateTime.Now.Date.Year, DateTime.Now.Date.Month, DateTime.Now.Date.Day, 6, 0, 0);
+            }
+            else if (hourNow < 22)
+            {
+                shiftStart = new DateTime(DateTime.Now.Date.Year, DateTime.Now.Date.Month, DateTime.Now.Date.Day, 14, 0, 0);
+            }
+            else
+            {
+                shiftStart = new DateTime(DateTime.Now.Date.Year, DateTime.Now.Date.Month, DateTime.Now.Date.Day, 22, 0, 0);
+            }
+
+            return shiftStart;
         }
     }
 }

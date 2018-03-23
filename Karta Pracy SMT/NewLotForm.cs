@@ -17,15 +17,17 @@ namespace Karta_Pracy_SMT
         LotData currentLotData = new LotData("", 0, "", "");
         private readonly DataGridView grid;
         private readonly string currentMiraeProgram;
+        private readonly bool checkMirae;
         List<TextBox> txbList = new List<TextBox>();
         Tuple<double, double, double> ledRanksQty = new Tuple<double, double,double>(0,0,0);
 
-        public NewLotForm(MainForm callingForm, DataGridView grid, string currentMiraeProgram)
+        public NewLotForm(MainForm callingForm, DataGridView grid, string currentMiraeProgram, bool checkMirae)
         {
             InitializeComponent();
             opener = callingForm as MainForm;
             this.grid = grid;
             this.currentMiraeProgram = currentMiraeProgram;
+            this.checkMirae = checkMirae;
             this.ActiveControl = textBoxLotNo;
 
             txbList.Add(textBoxLotNo);
@@ -36,49 +38,7 @@ namespace Karta_Pracy_SMT
 
         private void textBoxLotNo_TextChanged(object sender, EventArgs e)
         {
-            if (textBoxLotNo.Text.Length > 5) 
-            {
-                currentLotData = SqlOperations.GetLotData(textBoxLotNo.Text);
-                if (currentLotData.Model.Length > 0)
-                {
-                    labelModel.Text = "Model: " + currentLotData.Model;
-                    labelOrderedQty.Text = "Ilość " + currentLotData.OrderedQty.ToString();
-                    labelRankA.Text = "Rank A" + Environment.NewLine + currentLotData.RankA;
-                    labelRankB.Text = "Rank B" + Environment.NewLine + currentLotData.RankB;
-
-                    string expectedMiraeProgram = currentLotData.Model.Remove(6, 1).Insert(6, "X");
-
-                    
-                    labelMiraeProgram.Text = "Mirae program: "+ currentMiraeProgram;
-
-                    if (currentMiraeProgram == expectedMiraeProgram)
-                    {
-                        labelMiraeProgram.Text = labelMiraeProgram.Text + " OK";
-                        textBoxRankAQr.Visible = true;
-                        textBoxRankBQr.Visible = true;
-                        textBoxRankAQr.Focus();
-                    }
-                    else
-                    {
-                        labelMiraeProgram.Text = labelMiraeProgram.Text +Environment.NewLine+ " ZŁY PROGRAM!";
-                        labelMiraeProgram.ForeColor = Color.Red;
-                        labelMiraeProgram.Font = new Font(labelMiraeProgram.Font, FontStyle.Bold);
-                    }
-                    ledRanksQty = SqlOperations.MaxRankQty(currentLotData.Model);
-                    labelLedQty.Text = "RankA=" + ledRanksQty.Item1 + " RankB=" + ledRanksQty.Item2;
-                    labelLotData.Text = "Dane zlecenia nr. " + textBoxLotNo.Text;
-                    textBoxRankAQr.Focus();
-                }
-                else
-                {
-                    labelModel.Text = "Brak zlecenia w bazie danych";
-                    labelOrderedQty.Text = "";
-                    labelRankA.Text = "";
-                    labelRankB.Text = "";
-                    textBoxRankAQr.Visible = false;
-                    textBoxRankBQr.Visible = false;
-                }
-            }
+           
         }
 
         private void CountQtyProductToManufacture()
@@ -240,7 +200,7 @@ namespace Karta_Pracy_SMT
                 }
 
 
-            if (comboBoxOperator.Text.Length < 1)
+            if (comboBoxOperator.Text.Length < 5)
             {
                 correct = false;
                 buttonOK.Text += "-Operator";
@@ -252,11 +212,16 @@ namespace Karta_Pracy_SMT
                 buttonOK.Text += "-Ilość A/B";
             }
 
+            if (dataGridViewRankA.Rows.Count == 0 & dataGridViewRankB.Rows.Count==0)
+            {
+                buttonOK.Text = "UZUPEŁNIJ DANE ";
+                correct = false;
+            }
+
 
             if (correct)
             {
                 buttonOK.Text = "OK";
-                
             }
             else
             {
@@ -266,37 +231,43 @@ namespace Karta_Pracy_SMT
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
+            
             if (e.KeyCode == Keys.Return)
             {
-                currentLedReel = SqlOperations.GetLedDataFromSparing(textBoxRankAQr.Text);
-                if (currentLedReel.ID != "error")
+                if (textBoxRankAQr.Text.Split('\t').Length > 5)
                 {
-                    dataGridViewRankA.Rows.Add(currentLedReel.NC12, currentLedReel.ID, currentLedReel.Rank, currentLedReel.Ilosc, currentLedReel.ZlecenieString);
-
-                    foreach (DataGridViewColumn col in dataGridViewRankA.Columns)
+                    currentLedReel = SqlOperations.GetLedDataFromSparing(textBoxRankAQr.Text);
+                    if (currentLedReel.ID != "error")
                     {
-                        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridViewRankA.Rows.Add(currentLedReel.NC12, currentLedReel.ID, currentLedReel.Rank, currentLedReel.Ilosc, currentLedReel.ZlecenieString);
+
+                        foreach (DataGridViewColumn col in dataGridViewRankA.Columns)
+                        {
+                            col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        }
+                        textBoxRankAQr.Text = "";
+                        CheckIfCorrectLed();
+                        textBoxRankBQr.Focus();
+                        labelRankALoaded.Text += Environment.NewLine + currentLedReel.Rank;
+
+                        string ledFamily = currentLedReel.NC12;
+                        if (!labelLed12NC.Text.Contains(ledFamily))
+                        {
+                            labelLed12NC.Text += " " + ledFamily;
+                        }
+
+                        CountQtyProductToManufacture();
+                        CheckIfFormDataComplete();
                     }
+                }
+                else
+                {
                     textBoxRankAQr.Text = "";
-                    CheckIfCorrectLed();
-                    textBoxRankBQr.Focus();
-                    labelRankALoaded.Text += Environment.NewLine + currentLedReel.Rank;
-
-                    string ledFamily = currentLedReel.NC12;
-                    if (!labelLed12NC.Text.Contains(ledFamily))
-                    {
-                        labelLed12NC.Text += " "+ledFamily;
-                    }
-
-                    CountQtyProductToManufacture();
-                    CheckIfFormDataComplete();
+                    MessageBox.Show("Niewłaściwy kod QR!");
                 }
             }
         }
 
-        
-
-        
         private void buttonOK_Click(object sender, EventArgs e)
         {
             if (buttonOK.Text=="OK")
@@ -326,6 +297,7 @@ namespace Karta_Pracy_SMT
 
                 grid.Rows.Insert(0, 1);
                 int lastRow = 0;
+                grid.Rows[lastRow].Cells["ColumnSaved"].Style.BackColor = Color.Red;
                 grid.Rows[lastRow].Cells["ColumnLot"].Value = textBoxLotNo.Text;
                 grid.Rows[lastRow].Cells["ColumnModel"].Value = currentLotData.Model;
                 grid.Rows[lastRow].Cells["ColumnQty"].Value = currentLotData.OrderedQty;
@@ -342,7 +314,9 @@ namespace Karta_Pracy_SMT
                 grid.Rows[lastRow].Cells["connQty"].Value = Tools.GetNumberOfConnectors(currentLotData.Model);
                 if (grid.Rows[lastRow].Cells["connQty"].Value.ToString()=="4")
                 {
-                    grid.Rows[lastRow].Cells["connQty"].Style.ForeColor = System.Drawing.Color.Red;
+                    //grid.Rows[lastRow].Cells["connQty"].Style.ForeColor = System.Drawing.Color.Red;
+                    grid.Rows[lastRow].Cells["connQty"].Style.ForeColor = Color.White;
+                    grid.Rows[lastRow].Cells["connQty"].Style.BackColor = Color.DarkCyan;
                 }
 
                 if (grid.Rows.Count == 1)
@@ -363,11 +337,28 @@ namespace Karta_Pracy_SMT
                         {
                             grid.Rows[lastRow].Cells["ColumnQualityCheck"].Style.BackColor = Color.Red;
                             grid.Rows[lastRow].Cells["ColumnQualityCheck"].Value = "BRAK";
+                            //Stencil QR reading
+                            //ScanStencilQr fm = new ScanStencilQr(grid.Rows[lastRow].Cells["Stencil"]);
+                            //fm.ShowDialog();
                         }
                 }
+
                 Tools.CleanUpDgv(grid);
+                grid.FirstDisplayedScrollingRowIndex = 0;
                 this.Close();
                 grid.ResumeLayout();
+            }
+            else
+            {
+            #if DEBUG
+                grid.Columns["Stencil"].Visible = true;
+                grid.Rows.Insert(0, 1);
+                grid.Rows[0].Cells["StartDate"].Value = System.DateTime.Now.ToLongTimeString();
+                grid.Rows[0].Cells["ColumnSaved"].Style.BackColor = Color.Red;
+                ScanStencilQr fm = new ScanStencilQr(grid.Rows[0].Cells["Stencil"]);
+                fm.ShowDialog();
+
+            #endif
             }
 
         }
@@ -402,8 +393,6 @@ namespace Karta_Pracy_SMT
             }
         }
 
-        
-
         private void textBoxEnter(object sender, EventArgs e)
         {
             foreach (TextBox txb in txbList)
@@ -416,8 +405,7 @@ namespace Karta_Pracy_SMT
         private void NewLotForm_Load(object sender, EventArgs e)
         {
             // comboBoxOperator.Items.AddRange(SqlOperations.GetLastOperators());
-            comboBoxOperator.Items.AddRange(SqlOperations.GetOperatorsArray(30));
-
+            comboBoxOperator.Items.AddRange(SqlOperations.GetOperatorsArray());
         }
 
         private void dataGridViewRankA_SelectionChanged(object sender, EventArgs e)
@@ -433,6 +421,76 @@ namespace Karta_Pracy_SMT
         private void comboBoxOperator_SelectedIndexChanged(object sender, EventArgs e)
         {
             CheckIfFormDataComplete();
+        }
+
+        private void comboBoxOperator_TextChanged(object sender, EventArgs e)
+        {
+            CheckIfFormDataComplete();
+        }
+
+        private void comboBoxOperator_Leave(object sender, EventArgs e)
+        {
+            comboBoxOperator.Text = comboBoxOperator.Text.ToUpper().Trim();
+        }
+        
+        private void textBoxLotNo_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode== Keys.Return)
+            {
+                currentLotData = SqlOperations.GetLotData(textBoxLotNo.Text);
+                if (currentLotData.Model.Length > 0)
+                {
+                    labelModel.Text = "Model: " + currentLotData.Model;
+                    labelOrderedQty.Text = "Ilość " + currentLotData.OrderedQty.ToString();
+                    labelRankA.Text = "Rank A" + Environment.NewLine + currentLotData.RankA;
+                    labelRankB.Text = "Rank B" + Environment.NewLine + currentLotData.RankB;
+
+                    string expectedMiraeProgram = currentLotData.Model.Remove(6, 1).Insert(6, "X");
+
+                    if (checkMirae)
+                        labelMiraeProgram.Text = "Mirae program: " + currentMiraeProgram;
+                    else
+                        labelMiraeProgram.Text = "";
+
+                    if (currentMiraeProgram == expectedMiraeProgram || !checkMirae)
+                    {
+                        labelMiraeProgram.Text = labelMiraeProgram.Text + " OK";
+                        textBoxRankAQr.Visible = true;
+                        textBoxRankBQr.Visible = true;
+                        textBoxRankAQr.Focus();
+                    }
+                    else
+                    {
+                        labelMiraeProgram.Text = labelMiraeProgram.Text + Environment.NewLine + " ZŁY PROGRAM!";
+                        labelMiraeProgram.ForeColor = Color.Red;
+                        labelMiraeProgram.Font = new Font(labelMiraeProgram.Font, FontStyle.Bold);
+                    }
+
+                    ledRanksQty = SqlOperations.MaxRankQty(currentLotData.Model);
+                    labelLedQty.Text = "RankA=" + ledRanksQty.Item1 + " RankB=" + ledRanksQty.Item2;
+                    labelLotData.Text = "Dane zlecenia nr. " + textBoxLotNo.Text;
+                    textBoxRankAQr.Focus();
+                }
+                else
+                {
+                    labelModel.Text = "Brak zlecenia w bazie danych";
+                    labelOrderedQty.Text = "";
+                    labelRankA.Text = "";
+                    labelRankB.Text = "";
+                    textBoxRankAQr.Visible = false;
+                    textBoxRankBQr.Visible = false;
+                }
+            }
+        }
+
+        private void textBoxRankAQr_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            //if (e.KeyCode == Keys.Tab) e.IsInputKey = true;
+        }
+
+        private void textBoxRankBQr_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+           // if (e.KeyCode == Keys.Tab) e.IsInputKey = true;
         }
     }
 }

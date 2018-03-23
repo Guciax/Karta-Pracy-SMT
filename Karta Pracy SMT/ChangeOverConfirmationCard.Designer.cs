@@ -33,9 +33,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.checkBoxTechncian = new Karta_Pracy_SMT.MyCheckBox();
-            this.checkBoxInspector = new Karta_Pracy_SMT.MyCheckBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.checkBoxInspector = new Karta_Pracy_SMT.MyCheckBox();
+            this.checkBoxTechncian = new Karta_Pracy_SMT.MyCheckBox();
             this.SuspendLayout();
             // 
             // comboBoxInspect
@@ -46,6 +46,7 @@
             this.comboBoxInspect.Name = "comboBoxInspect";
             this.comboBoxInspect.Size = new System.Drawing.Size(267, 32);
             this.comboBoxInspect.TabIndex = 0;
+            this.comboBoxInspect.TextChanged += new System.EventHandler(this.comboBoxInspect_TextChanged);
             // 
             // comboBoxTechn
             // 
@@ -55,6 +56,7 @@
             this.comboBoxTechn.Name = "comboBoxTechn";
             this.comboBoxTechn.Size = new System.Drawing.Size(267, 32);
             this.comboBoxTechn.TabIndex = 1;
+            this.comboBoxTechn.TextChanged += new System.EventHandler(this.comboBoxTechn_TextChanged);
             // 
             // label1
             // 
@@ -62,9 +64,9 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.label1.Location = new System.Drawing.Point(12, 69);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(78, 24);
+            this.label1.Size = new System.Drawing.Size(242, 24);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Technik";
+            this.label1.Text = "Technik (wybierz lub wpisz)";
             // 
             // label2
             // 
@@ -72,9 +74,9 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.label2.Location = new System.Drawing.Point(12, 148);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(148, 24);
+            this.label2.Size = new System.Drawing.Size(312, 24);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Inspektor jakości";
+            this.label2.Text = "Inspektor jakości (wybierz lub wpisz)";
             // 
             // label3
             // 
@@ -86,15 +88,16 @@
             this.label3.TabIndex = 4;
             this.label3.Text = "Potwierdzenie gotowości linii SMT do produkcji";
             // 
-            // checkBoxTechncian
+            // button1
             // 
-            this.checkBoxTechncian.Location = new System.Drawing.Point(286, 96);
-            this.checkBoxTechncian.Name = "checkBoxTechncian";
-            this.checkBoxTechncian.Size = new System.Drawing.Size(104, 32);
-            this.checkBoxTechncian.TabIndex = 6;
-            this.checkBoxTechncian.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBoxTechncian.UseVisualStyleBackColor = true;
-            this.checkBoxTechncian.CheckedChanged += new System.EventHandler(this.checkBoxTechncian_CheckedChanged);
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.button1.Location = new System.Drawing.Point(12, 228);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(418, 62);
+            this.button1.TabIndex = 8;
+            this.button1.Text = "Uzupełnij dane";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // checkBoxInspector
             // 
@@ -104,18 +107,17 @@
             this.checkBoxInspector.TabIndex = 7;
             this.checkBoxInspector.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.checkBoxInspector.UseVisualStyleBackColor = true;
-            this.checkBoxInspector.CheckedChanged += new System.EventHandler(this.checkBoxInspector_CheckedChanged);
+            this.checkBoxInspector.CheckedChanged += new System.EventHandler(this.checkBoxTechncian_CheckedChanged_1);
             // 
-            // button1
+            // checkBoxTechncian
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button1.Location = new System.Drawing.Point(12, 228);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(418, 62);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "OK";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.checkBoxTechncian.Location = new System.Drawing.Point(286, 96);
+            this.checkBoxTechncian.Name = "checkBoxTechncian";
+            this.checkBoxTechncian.Size = new System.Drawing.Size(104, 32);
+            this.checkBoxTechncian.TabIndex = 6;
+            this.checkBoxTechncian.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBoxTechncian.UseVisualStyleBackColor = true;
+            this.checkBoxTechncian.CheckedChanged += new System.EventHandler(this.checkBoxTechncian_CheckedChanged_1);
             // 
             // ChangeOverConfirmationCard
             // 

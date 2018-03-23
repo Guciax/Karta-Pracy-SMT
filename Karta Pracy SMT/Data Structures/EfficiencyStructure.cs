@@ -8,7 +8,7 @@ namespace Karta_Pracy_SMT.Data_Structures
 {
     public class EfficiencyStructure
     {
-        public EfficiencyStructure(DateTime startDate, DateTime ednDate, double elapsedMinutes, string model, string lotNo, double allQty, double ngQty, double scrapQty)
+        public EfficiencyStructure(DateTime startDate, DateTime ednDate, double elapsedMinutes, string model, string lotNo, double allQty, double ngQty)
         {
             StartDate = startDate;
             EdnDate = ednDate;
@@ -17,7 +17,6 @@ namespace Karta_Pracy_SMT.Data_Structures
             LotNo = lotNo;
             AllQty = allQty;
             NgQty = ngQty;
-            ScrapQty = scrapQty;
         }
 
         public DateTime StartDate { get; }
@@ -27,6 +26,5 @@ namespace Karta_Pracy_SMT.Data_Structures
         public string LotNo { get; }
         public double AllQty { get; }
         public double NgQty { get; }
-        public double ScrapQty { get; }
     }
 }
