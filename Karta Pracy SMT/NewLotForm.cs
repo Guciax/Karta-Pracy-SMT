@@ -337,10 +337,15 @@ namespace Karta_Pracy_SMT
                         {
                             grid.Rows[lastRow].Cells["ColumnQualityCheck"].Style.BackColor = Color.Red;
                             grid.Rows[lastRow].Cells["ColumnQualityCheck"].Value = "BRAK";
-                            //Stencil QR reading
-                            //ScanStencilQr fm = new ScanStencilQr(grid.Rows[lastRow].Cells["Stencil"]);
-                            //fm.ShowDialog();
+                            
                         }
+                }
+
+                if (radioButtonNewStencil.Checked)
+                {
+                    //Stencil QR reading
+                    //ScanStencilQr fm = new ScanStencilQr(grid.Rows[lastRow].Cells["Stencil"]);
+                    //fm.ShowDialog();
                 }
 
                 Tools.CleanUpDgv(grid);
@@ -406,6 +411,9 @@ namespace Karta_Pracy_SMT
         {
             // comboBoxOperator.Items.AddRange(SqlOperations.GetLastOperators());
             comboBoxOperator.Items.AddRange(SqlOperations.GetOperatorsArray());
+            //Stencil QR reading
+            //radioButtonCurrentStencil.Visible = true;
+            //radioButtonNewStencil.Visible = true;
         }
 
         private void dataGridViewRankA_SelectionChanged(object sender, EventArgs e)
@@ -479,6 +487,24 @@ namespace Karta_Pracy_SMT
                     labelRankB.Text = "";
                     textBoxRankAQr.Visible = false;
                     textBoxRankBQr.Visible = false;
+                }
+
+                string prevModel = "";
+
+                if (grid.Rows.Count > 0)
+                {
+                    prevModel = Tools.getCellValue(grid.Rows[0].Cells["ColumnModel"]); 
+                    if (prevModel != "")
+                        if (prevModel == currentLotData.Model)
+                        {
+                            string stencil = Tools.getCellValue(grid.Rows[0].Cells["Stencil"]);
+                            if (stencil != "")
+                            {
+                                radioButtonCurrentStencil.Enabled = true;
+                                radioButtonCurrentStencil.Checked = true;
+                                radioButtonCurrentStencil.Text = "Aktualny: " + stencil;
+                            }
+                        }
                 }
             }
         }

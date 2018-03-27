@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,10 +18,46 @@ namespace Karta_Pracy_SMT
             public float efficiency;
             public DateTime time;
         }
+
+        private void savePoints(List<EfficiencyAtTime> pointsList)
+        {
+            List<string> fileToSave = new List<string>();
+            foreach (var point in pointsList)
+            {
+                string newLine = point.efficiency + ":" + point.time;
+                fileToSave.Add(newLine);
+            }
+
+            File.WriteAllLines("efficiencyPoints.pts", fileToSave.ToArray());
+        }
+
+        List<EfficiencyAtTime> makeListOfPoints(float newPoint)
+        {
+            List<EfficiencyAtTime> result = new List<EfficiencyAtTime>();
+            if (File.Exists("efficiencyPoints.pts"))
+            {
+                string[] fileLines = File.ReadAllLines("efficiencyPoints.pts");
+                foreach (var line in fileLines)
+                {
+                    float eff = float.Parse(line.Split(';')[0]);
+                    DateTime time = DateTime.Parse(line.Split(';')[1]);
+                    EfficiencyAtTime newItem = new EfficiencyAtTime();
+                    newItem.efficiency = eff;
+                    newItem.time = time;
+                    result.Add(newItem);
+                }
+            }
+            EfficiencyAtTime latestPoint = new EfficiencyAtTime();
+            latestPoint.time = DateTime.Now;
+            latestPoint.efficiency = newPoint;
+            result.Add(latestPoint);
+
+            savePoints(result);
+            return result;
+        }
+
         public static void DrawEfficiencyChart(PictureBox pbChart, float newPoint)
         {
-            
-
             List<EfficiencyAtTime> allPoints = (List<EfficiencyAtTime>)pbChart.Tag;
             if (allPoints==null)
             {

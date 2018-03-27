@@ -78,6 +78,7 @@
             // dataGridViewRankA
             // 
             this.dataGridViewRankA.AllowUserToAddRows = false;
+            this.dataGridViewRankA.AllowUserToDeleteRows = false;
             this.dataGridViewRankA.AllowUserToResizeRows = false;
             this.dataGridViewRankA.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewRankA.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -96,6 +97,7 @@
             this.dataGridViewRankA.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.dataGridViewRankA.Location = new System.Drawing.Point(0, 44);
             this.dataGridViewRankA.Name = "dataGridViewRankA";
+            this.dataGridViewRankA.ReadOnly = true;
             this.dataGridViewRankA.RowHeadersVisible = false;
             this.dataGridViewRankA.Size = new System.Drawing.Size(423, 155);
             this.dataGridViewRankA.TabIndex = 2;
@@ -125,6 +127,7 @@
             this.RankAIlosc.DefaultCellStyle = dataGridViewCellStyle1;
             this.RankAIlosc.HeaderText = "Ilość";
             this.RankAIlosc.Name = "RankAIlosc";
+            this.RankAIlosc.ReadOnly = true;
             // 
             // label1
             // 
@@ -149,6 +152,7 @@
             // dataGridViewRankB
             // 
             this.dataGridViewRankB.AllowUserToAddRows = false;
+            this.dataGridViewRankB.AllowUserToDeleteRows = false;
             this.dataGridViewRankB.AllowUserToResizeRows = false;
             this.dataGridViewRankB.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewRankB.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -167,6 +171,7 @@
             this.dataGridViewRankB.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.dataGridViewRankB.Location = new System.Drawing.Point(0, 44);
             this.dataGridViewRankB.Name = "dataGridViewRankB";
+            this.dataGridViewRankB.ReadOnly = true;
             this.dataGridViewRankB.RowHeadersVisible = false;
             this.dataGridViewRankB.Size = new System.Drawing.Size(387, 155);
             this.dataGridViewRankB.TabIndex = 3;
@@ -196,6 +201,7 @@
             this.RankBIlosc.DefaultCellStyle = dataGridViewCellStyle3;
             this.RankBIlosc.HeaderText = "Ilość";
             this.RankBIlosc.Name = "RankBIlosc";
+            this.RankBIlosc.ReadOnly = true;
             // 
             // label2
             // 

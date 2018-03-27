@@ -251,7 +251,8 @@ namespace Karta_Pracy_SMT
             Dictionary<DateTime, Dictionary<int, lotPiecesQuantity>> result = new Dictionary<DateTime, Dictionary<int, lotPiecesQuantity>>();
             //Dictionary<DateTime, Dictionary<int, DataTable>> tagTables = new Dictionary<DateTime, Dictionary<int, DataTable>>();
 
-            Tools.dateShiftNo startingDateShift = Tools.whatDayShiftIsit(DateTime.Parse(sqlTable.Rows[0]["DataCzasKoniec"].ToString()));
+
+            //Tools.dateShiftNo startingDateShift = Tools.whatDayShiftIsit(DateTime.Parse(sqlTable.Rows[0]["DataCzasKoniec"].ToString()));
 
             foreach (DataRow row in sqlTable.Rows)
             {
@@ -338,6 +339,8 @@ namespace Karta_Pracy_SMT
             return DateTime.ParseExact(stringDate, "HH:mm:ss dd-MM-yyyy", CultureInfo.InvariantCulture);
 
         }
+
+
 
         public static int HowManyLotsThisShift(DataGridView grid)
         {

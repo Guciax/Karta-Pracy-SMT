@@ -39,6 +39,8 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.radioButtonNewStencil = new System.Windows.Forms.RadioButton();
+            this.radioButtonCurrentStencil = new System.Windows.Forms.RadioButton();
             this.panel4 = new System.Windows.Forms.Panel();
             this.labelLedQty = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
@@ -87,6 +89,8 @@
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.panel3.Controls.Add(this.radioButtonNewStencil);
+            this.panel3.Controls.Add(this.radioButtonCurrentStencil);
             this.panel3.Controls.Add(this.panel4);
             this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.labelMiraeProgram);
@@ -99,6 +103,31 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(884, 329);
             this.panel3.TabIndex = 5;
+            // 
+            // radioButtonNewStencil
+            // 
+            this.radioButtonNewStencil.AutoSize = true;
+            this.radioButtonNewStencil.Checked = true;
+            this.radioButtonNewStencil.Location = new System.Drawing.Point(722, 32);
+            this.radioButtonNewStencil.Name = "radioButtonNewStencil";
+            this.radioButtonNewStencil.Size = new System.Drawing.Size(85, 17);
+            this.radioButtonNewStencil.TabIndex = 10;
+            this.radioButtonNewStencil.TabStop = true;
+            this.radioButtonNewStencil.Text = "nowy Stencil";
+            this.radioButtonNewStencil.UseVisualStyleBackColor = true;
+            this.radioButtonNewStencil.Visible = false;
+            // 
+            // radioButtonCurrentStencil
+            // 
+            this.radioButtonCurrentStencil.AutoSize = true;
+            this.radioButtonCurrentStencil.Enabled = false;
+            this.radioButtonCurrentStencil.Location = new System.Drawing.Point(722, 9);
+            this.radioButtonCurrentStencil.Name = "radioButtonCurrentStencil";
+            this.radioButtonCurrentStencil.Size = new System.Drawing.Size(68, 17);
+            this.radioButtonCurrentStencil.TabIndex = 9;
+            this.radioButtonCurrentStencil.Text = "aktualny ";
+            this.radioButtonCurrentStencil.UseVisualStyleBackColor = true;
+            this.radioButtonCurrentStencil.Visible = false;
             // 
             // panel4
             // 
@@ -230,7 +259,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.label2.ForeColor = System.Drawing.SystemColors.Control;
-            this.label2.Location = new System.Drawing.Point(383, 4);
+            this.label2.Location = new System.Drawing.Point(346, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(89, 24);
             this.label2.TabIndex = 8;
@@ -250,7 +279,7 @@
             // 
             this.comboBoxOperator.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.comboBoxOperator.FormattingEnabled = true;
-            this.comboBoxOperator.Location = new System.Drawing.Point(475, 2);
+            this.comboBoxOperator.Location = new System.Drawing.Point(438, 1);
             this.comboBoxOperator.Name = "comboBoxOperator";
             this.comboBoxOperator.Size = new System.Drawing.Size(266, 28);
             this.comboBoxOperator.TabIndex = 7;
@@ -563,5 +592,7 @@
         private System.Windows.Forms.Label labelRankALoaded;
         private System.Windows.Forms.Label labelRankBLoaded;
         private System.Windows.Forms.Label labelLedQty;
+        private System.Windows.Forms.RadioButton radioButtonNewStencil;
+        private System.Windows.Forms.RadioButton radioButtonCurrentStencil;
     }
 }

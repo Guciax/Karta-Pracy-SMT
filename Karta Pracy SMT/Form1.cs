@@ -430,59 +430,65 @@ namespace Karta_Pracy_SMT
                 dataGridView1.Columns["Scrap"].Visible = !dataGridView1.Columns["Scrap"].Visible;
             }
         }
-        
+
         private void EfficiencyTick()
-        { 
-            int lotsThisShift = EfficiencyTools.HowManyLotsThisShift(dataGridView1);
-            if (lotsThisShift > 0)
+        {
+            if (dataGridView1.Rows.Count > 0)
             {
-                Tools.dateShiftNo shiftStart = Tools.whatDayShiftIsit(DateTime.Now);
-                double minutesFromShiftStart = (DateTime.Now - shiftStart.date).TotalMinutes;
-                double lotsPerShift = (480 * (double)lotsThisShift) / minutesFromShiftStart;
-                double efficiency = Math.Round(lotsPerShift / normlotsPerShift * 100, 1);
-
-
-                labelWasteLed.Text = "Odpad diody LED: " + EfficiencyTools.CalculateLedDiodeWasteLevel(dataGridView1, normPerModel)[0] + "%";
-                labelModuleWaste.Text= "Odpad modułów: " + EfficiencyTools.CalculateLedDiodeWasteLevel(dataGridView1, normPerModel)[1] + "%";
-                labelLotsThisShift.Text = "LOTy od początku zmiany: " + lotsThisShift;
-                labelEfficiency.Text = "Wydajność: " + efficiency + "%";
-
-                if (DateTime.Now.Minute == 0 || DateTime.Now.Minute == 30)
+                int lotsThisShift = EfficiencyTools.HowManyLotsThisShift(dataGridView1);
+                if (lotsThisShift > 0)
                 {
-                    Charting.DrawEfficiencyChart(pbChart, (float)efficiency);
+                    Tools.dateShiftNo shiftStart = Tools.whatDayShiftIsit(DateTime.Now);
+                    double minutesFromShiftStart = (DateTime.Now - shiftStart.date).TotalMinutes;
+                    double lotsPerShift = (480 * (double)lotsThisShift) / minutesFromShiftStart;
+                    double efficiency = Math.Round(lotsPerShift / normlotsPerShift * 100, 1);
+
+
+                    labelWasteLed.Text = "Odpad diody LED: " + EfficiencyTools.CalculateLedDiodeWasteLevel(dataGridView1, normPerModel)[0] + "%";
+                    labelModuleWaste.Text = "Odpad modułów: " + EfficiencyTools.CalculateLedDiodeWasteLevel(dataGridView1, normPerModel)[1] + "%";
+                    labelLotsThisShift.Text = "LOTy od początku zmiany: " + lotsThisShift;
+                    labelEfficiency.Text = "Wydajność: " + efficiency + "%";
+
+                    if (DateTime.Now.Minute == 0 || DateTime.Now.Minute == 30)
+                    {
+                        Charting.DrawEfficiencyChart(pbChart, (float)efficiency);
+                    }
+
+                    //List<Charting.EfficiencyAtTime> list = (List<Charting.EfficiencyAtTime>)pbChart.Tag;
+
+                    //if (list==null)
+                    //{
+                    //    Charting.DrawEfficiencyChart(pbChart, (float)efficiency);
+                    //}
+                    //else
+                    //if (list.Count > 0)
+                    //{
+                    //    DateTime lastChartPoint = list[list.Count - 1].time;
+                    //    if ((DateTime.Now - lastChartPoint).TotalMinutes > 0)
+                    //    {
+                    //        Charting.DrawEfficiencyChart(pbChart, (float)efficiency);
+                    //    }
+                    //}
+
+
+
+
+
+                }
+                else
+                {
+                    labelWasteLed.Text = "Odpad diody LED: -";
+                    labelModuleWaste.Text = "Odpad modułów: ";
+                    labelLotsThisShift.Text = "LOTy od początku zmiany: -";
+                    labelEfficiency.Text = "Wydajność: -";
                 }
 
-                //List<Charting.EfficiencyAtTime> list = (List<Charting.EfficiencyAtTime>)pbChart.Tag;
-
-                //if (list==null)
-                //{
-                //    Charting.DrawEfficiencyChart(pbChart, (float)efficiency);
-                //}
-                //else
-                //if (list.Count > 0)
-                //{
-                //    DateTime lastChartPoint = list[list.Count - 1].time;
-                //    if ((DateTime.Now - lastChartPoint).TotalMinutes > 0)
-                //    {
-                //        Charting.DrawEfficiencyChart(pbChart, (float)efficiency);
-                //    }
-                //}
-
-
-                
-                
-
+                if (dataGridView1.Rows.Count > 2)
+                {
+                    EfficiencyTools.QuantityDictionaryToGrid(dataGridView3DaysInfo, EfficiencyTools.quantityPerDayPerShift(SqlOperations.GetSmtRecordsFromDbQuantityOnly(6, smtLine)));
+                    Charting.DrawDayByDayEfficiency(dataGridView3DaysInfo, pictureBoxShifts);
+                }
             }
-            else
-            {
-                labelWasteLed.Text = "Odpad diody LED: -";
-                labelModuleWaste.Text = "Odpad modułów: ";
-                labelLotsThisShift.Text = "LOTy od początku zmiany: -";
-                labelEfficiency.Text = "Wydajność: -";
-            }
-            EfficiencyTools.QuantityDictionaryToGrid(dataGridView3DaysInfo, EfficiencyTools.quantityPerDayPerShift(SqlOperations.GetSmtRecordsFromDbQuantityOnly(6, smtLine)));
-            Charting.DrawDayByDayEfficiency(dataGridView3DaysInfo, pictureBoxShifts);
-            
         }
 
         private void EfficiencyTimer_Tick(object sender, EventArgs e)
