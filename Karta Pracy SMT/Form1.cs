@@ -455,7 +455,6 @@ namespace Karta_Pracy_SMT
                     }
 
                     //List<Charting.EfficiencyAtTime> list = (List<Charting.EfficiencyAtTime>)pbChart.Tag;
-
                     //if (list==null)
                     //{
                     //    Charting.DrawEfficiencyChart(pbChart, (float)efficiency);
@@ -469,10 +468,6 @@ namespace Karta_Pracy_SMT
                     //        Charting.DrawEfficiencyChart(pbChart, (float)efficiency);
                     //    }
                     //}
-
-
-
-
 
                 }
                 else

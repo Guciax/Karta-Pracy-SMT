@@ -19,19 +19,18 @@ namespace Karta_Pracy_SMT
             public DateTime time;
         }
 
-        private void savePoints(List<EfficiencyAtTime> pointsList)
+        private static void savePoints(List<EfficiencyAtTime> pointsList)
         {
             List<string> fileToSave = new List<string>();
             foreach (var point in pointsList)
             {
-                string newLine = point.efficiency + ":" + point.time;
+                string newLine = point.efficiency * 10 + ";" + point.time;
                 fileToSave.Add(newLine);
             }
-
             File.WriteAllLines("efficiencyPoints.pts", fileToSave.ToArray());
         }
 
-        List<EfficiencyAtTime> makeListOfPoints(float newPoint)
+        private static List<EfficiencyAtTime> makeListOfPoints(float newPoint)
         {
             List<EfficiencyAtTime> result = new List<EfficiencyAtTime>();
             if (File.Exists("efficiencyPoints.pts"))
@@ -39,30 +38,41 @@ namespace Karta_Pracy_SMT
                 string[] fileLines = File.ReadAllLines("efficiencyPoints.pts");
                 foreach (var line in fileLines)
                 {
-                    float eff = float.Parse(line.Split(';')[0]);
+                    string effString = line.Split(';')[0];
+                    if (effString.Trim() == "") continue;
+                    float eff = 0;
+                    if (float.TryParse(effString.Replace(",", "."), out eff)) continue;
+                    
                     DateTime time = DateTime.Parse(line.Split(';')[1]);
                     EfficiencyAtTime newItem = new EfficiencyAtTime();
-                    newItem.efficiency = eff;
+                    newItem.efficiency = eff / 10;
                     newItem.time = time;
                     result.Add(newItem);
                 }
             }
+
             EfficiencyAtTime latestPoint = new EfficiencyAtTime();
             latestPoint.time = DateTime.Now;
             latestPoint.efficiency = newPoint;
             result.Add(latestPoint);
 
+            if (result.Count>16)
+            {
+                result.RemoveAt(0);
+            }
             savePoints(result);
             return result;
         }
 
         public static void DrawEfficiencyChart(PictureBox pbChart, float newPoint)
         {
-            List<EfficiencyAtTime> allPoints = (List<EfficiencyAtTime>)pbChart.Tag;
-            if (allPoints==null)
-            {
-                allPoints = new List<EfficiencyAtTime>();
-            }
+            //List<EfficiencyAtTime> allPoints = (List<EfficiencyAtTime>)pbChart.Tag;
+            //if (allPoints==null)
+            //{
+            //    allPoints = new List<EfficiencyAtTime>();
+            //}
+
+            List<EfficiencyAtTime> allPoints = makeListOfPoints(newPoint);
 
 #if DEBUG
             //Random rnd = new Random();
@@ -73,18 +83,18 @@ namespace Karta_Pracy_SMT
             //}
 
 #endif
-            Random rnd = new Random();
-            EfficiencyAtTime newPt = new EfficiencyAtTime();
-            newPt.efficiency = newPoint;
-            newPt.time = DateTime.Now;
+            //Random rnd = new Random();
+            //EfficiencyAtTime newPt = new EfficiencyAtTime();
+            //newPt.efficiency = newPoint;
+            //newPt.time = DateTime.Now;
 
-            allPoints.Add(newPt);
-            pbChart.Tag = allPoints;
+            //allPoints.Add(newPt);
+            //pbChart.Tag = allPoints;
 
-            if (allPoints.Count > 16) 
-            {
-                allPoints.RemoveAt(0);
-            }
+            //if (allPoints.Count > 16) 
+            //{
+            //    allPoints.RemoveAt(0);
+            //}
 
             float maxVal = Math.Max(allPoints.Select(ef => ef.efficiency).ToList().Max(), 100);
             float minVal = allPoints.Select(ef => ef.efficiency).ToList().Min();
@@ -113,6 +123,7 @@ namespace Karta_Pracy_SMT
             path.AddLine(10, pbChart.Size.Height, 10, startY);
 
             g.DrawLine(penNorm, 10, pbChart.Size.Height - 100 * scale, pbChart.Width, pbChart.Size.Height - 100 * scale);
+            g.DrawString("100%", MainForm.DefaultFont, Brushes.Gray, pbChart.Width-40, pbChart.Size.Height - 98 * scale);
 
             g.DrawString(allPoints[0].time.ToString("HH:mm"), MainForm.DefaultFont, Brushes.Gray, 0, pbChart.Size.Height - 18);
             Debug.WriteLine("--- " + allPoints.Count + "points");
