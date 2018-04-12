@@ -12,6 +12,18 @@ namespace Karta_Pracy_SMT
 {
     class SqlOperations
     {
+        public static string formatRankString(string rawRank)
+        {
+            string[] rankSplitted = rawRank.Split('-');
+            if (rankSplitted.Length >= 3)
+            {
+                return rankSplitted[0] + "-" + rankSplitted[1] + "-" + rankSplitted[2];
+            }
+            else
+            {
+                return rawRank;
+            }
+        }
         public static LotData GetLotData(string lotNo)
         {
             double lotDoubleCheck = 0;
@@ -38,8 +50,8 @@ namespace Karta_Pracy_SMT
                 {
                     model = sqlTableLot.Rows[0]["NC12_wyrobu"].ToString().Replace("LLFML","");
                     int.TryParse(sqlTableLot.Rows[0]["Ilosc_wyrobu_zlecona"].ToString(), out orderedQuantity);
-                    rankA = sqlTableLot.Rows[0]["RankA"].ToString();
-                    rankB = sqlTableLot.Rows[0]["RankB"].ToString();
+                    rankA = formatRankString(sqlTableLot.Rows[0]["RankA"].ToString());
+                    rankB = formatRankString(sqlTableLot.Rows[0]["RankB"].ToString());
                 }
 
                 
@@ -109,7 +121,7 @@ namespace Karta_Pracy_SMT
             string LPN_ID = sqlTable.Rows[0]["LPN_ID"].ToString();
             string LPN_NC = sqlTable.Rows[0]["LPN_NC"].ToString();
             string ZlecenieString = sqlTable.Rows[0]["ZlecenieString"].ToString();
-            string rank = sqlTable.Rows[0]["RodzajKOMP"].ToString();
+            string rank = formatRankString(sqlTable.Rows[0]["RodzajKOMP"].ToString());
 
             return new ledReelData(nc12, ilosc, LPN_ID, LPN_NC, ZlecenieString, ledID, rank);
         }
