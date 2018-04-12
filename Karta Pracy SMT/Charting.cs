@@ -41,7 +41,11 @@ namespace Karta_Pracy_SMT
                     string effString = line.Split(';')[0];
                     if (effString.Trim() == "") continue;
                     float eff = 0;
-                    if (float.TryParse(effString.Replace(",", "."), out eff)) continue;
+                    if (!float.TryParse(effString.Replace(",","."), out eff))
+                    {
+                        Debug.WriteLine("skipped " + effString);
+                        continue;
+                    }
                     
                     DateTime time = DateTime.Parse(line.Split(';')[1]);
                     EfficiencyAtTime newItem = new EfficiencyAtTime();

@@ -61,9 +61,6 @@
             this.labelEfficiency = new System.Windows.Forms.Label();
             this.pbChart = new System.Windows.Forms.PictureBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.timerMiraeStalker = new System.Windows.Forms.Timer(this.components);
-            this.timerLedLeftSave = new System.Windows.Forms.Timer(this.components);
-            this.EfficiencyTimer = new System.Windows.Forms.Timer(this.components);
             this.ColumnSaved = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ColumnLot = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnModel = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -81,6 +78,9 @@
             this.EndDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Operator = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Stencil = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.timerMiraeStalker = new System.Windows.Forms.Timer(this.components);
+            this.timerLedLeftSave = new System.Windows.Forms.Timer(this.components);
+            this.EfficiencyTimer = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
             this.panelLeft.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3DaysInfo)).BeginInit();
@@ -327,23 +327,6 @@
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
             this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
             // 
-            // timerMiraeStalker
-            // 
-            this.timerMiraeStalker.Interval = 5000;
-            this.timerMiraeStalker.Tick += new System.EventHandler(this.timerMiraeStalker_Tick);
-            // 
-            // timerLedLeftSave
-            // 
-            this.timerLedLeftSave.Enabled = true;
-            this.timerLedLeftSave.Interval = 5000;
-            this.timerLedLeftSave.Tick += new System.EventHandler(this.timerLedLeftSave_Tick);
-            // 
-            // EfficiencyTimer
-            // 
-            this.EfficiencyTimer.Enabled = true;
-            this.EfficiencyTimer.Interval = 50000;
-            this.EfficiencyTimer.Tick += new System.EventHandler(this.EfficiencyTimer_Tick);
-            // 
             // ColumnSaved
             // 
             this.ColumnSaved.FillWeight = 50F;
@@ -501,6 +484,23 @@
             this.Stencil.HeaderText = "Stencil";
             this.Stencil.Name = "Stencil";
             this.Stencil.Visible = false;
+            // 
+            // timerMiraeStalker
+            // 
+            this.timerMiraeStalker.Interval = 5000;
+            this.timerMiraeStalker.Tick += new System.EventHandler(this.timerMiraeStalker_Tick);
+            // 
+            // timerLedLeftSave
+            // 
+            this.timerLedLeftSave.Enabled = true;
+            this.timerLedLeftSave.Interval = 5000;
+            this.timerLedLeftSave.Tick += new System.EventHandler(this.timerLedLeftSave_Tick);
+            // 
+            // EfficiencyTimer
+            // 
+            this.EfficiencyTimer.Enabled = true;
+            this.EfficiencyTimer.Interval = 60000;
+            this.EfficiencyTimer.Tick += new System.EventHandler(this.EfficiencyTimer_Tick);
             // 
             // MainForm
             // 

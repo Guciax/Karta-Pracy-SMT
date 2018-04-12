@@ -20,7 +20,7 @@ namespace Karta_Pracy_SMT
         Dictionary<string, EfficiencyStructure> efficiencNormyPerModel = new Dictionary<string, EfficiencyStructure>();
         List<LedLeftovers> ledLeftSaveBuffer = new List<LedLeftovers>();
         Dictionary<string, EfficiencyNormsPerModel> normPerModel = new Dictionary<string, EfficiencyNormsPerModel>();
-        double normlotsPerShift = 15;
+        double normlotsPerShift = 16;
 
         public MainForm()
         {
@@ -55,7 +55,7 @@ namespace Karta_Pracy_SMT
             EfficiencyTick();
             if (smtLine == "SMT7" || smtLine == "SMT8" || smtLine == "SMT1")
             {
-                normlotsPerShift = 11;
+                normlotsPerShift = 12;
             }
         }
 
@@ -449,7 +449,19 @@ namespace Karta_Pracy_SMT
                     labelLotsThisShift.Text = "LOTy od początku zmiany: " + lotsThisShift;
                     labelEfficiency.Text = "Wydajność: " + efficiency + "%";
 
-                    if (DateTime.Now.Minute == 0 || DateTime.Now.Minute == 30)
+                    bool debugOff = true;
+#if DEBUG
+                    debugOff = false;
+#endif
+
+                    if (debugOff)
+                    {
+                        if (DateTime.Now.Minute == 0 || DateTime.Now.Minute == 30)
+                        {
+                            Charting.DrawEfficiencyChart(pbChart, (float)efficiency);
+                        }
+                    }
+                    else
                     {
                         Charting.DrawEfficiencyChart(pbChart, (float)efficiency);
                     }
