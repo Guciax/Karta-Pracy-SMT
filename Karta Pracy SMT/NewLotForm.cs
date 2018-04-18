@@ -445,66 +445,73 @@ namespace Karta_Pracy_SMT
         {
             if (e.KeyCode== Keys.Return)
             {
-                currentLotData = SqlOperations.GetLotData(textBoxLotNo.Text);
-                if (currentLotData.Model.Length > 0)
+                if (!SqlOperations.IsLotAlreadyInDb(textBoxLotNo.Text))
                 {
-                    labelModel.Text = "Model: " + currentLotData.Model;
-                    labelOrderedQty.Text = "Ilość " + currentLotData.OrderedQty.ToString();
-                    labelRankA.Text = "Rank A" + Environment.NewLine + currentLotData.RankA;
-                    labelRankB.Text = "Rank B" + Environment.NewLine + currentLotData.RankB;
-
-                    string expectedMiraeProgram = currentLotData.Model.Remove(6, 1).Insert(6, "X");
-
-                    if (checkMirae)
-                        labelMiraeProgram.Text = "Mirae program: " + currentMiraeProgram;
-                    else
-                        labelMiraeProgram.Text = "";
-
-                    if (currentMiraeProgram == expectedMiraeProgram || !checkMirae)
+                    currentLotData = SqlOperations.GetLotData(textBoxLotNo.Text);
+                    if (currentLotData.Model.Length > 0)
                     {
-                        labelMiraeProgram.Text = labelMiraeProgram.Text + " OK";
-                        textBoxRankAQr.Visible = true;
-                        textBoxRankBQr.Visible = true;
+                        labelModel.Text = "Model: " + currentLotData.Model;
+                        labelOrderedQty.Text = "Ilość " + currentLotData.OrderedQty.ToString();
+                        labelRankA.Text = "Rank A" + Environment.NewLine + currentLotData.RankA;
+                        labelRankB.Text = "Rank B" + Environment.NewLine + currentLotData.RankB;
+
+                        string expectedMiraeProgram = currentLotData.Model.Remove(6, 1).Insert(6, "X");
+
+                        if (checkMirae)
+                            labelMiraeProgram.Text = "Mirae program: " + currentMiraeProgram;
+                        else
+                            labelMiraeProgram.Text = "";
+
+                        if (currentMiraeProgram == expectedMiraeProgram || !checkMirae)
+                        {
+                            labelMiraeProgram.Text = labelMiraeProgram.Text + " OK";
+                            textBoxRankAQr.Visible = true;
+                            textBoxRankBQr.Visible = true;
+                            textBoxRankAQr.Focus();
+                        }
+                        else
+                        {
+                            labelMiraeProgram.Text = labelMiraeProgram.Text + Environment.NewLine + " ZŁY PROGRAM!";
+                            labelMiraeProgram.ForeColor = Color.Red;
+                            labelMiraeProgram.Font = new Font(labelMiraeProgram.Font, FontStyle.Bold);
+                        }
+
+                        ledRanksQty = SqlOperations.MaxRankQty(currentLotData.Model);
+                        labelLedQty.Text = "RankA=" + ledRanksQty.Item1 + " RankB=" + ledRanksQty.Item2;
+                        labelLotData.Text = "Dane zlecenia nr. " + textBoxLotNo.Text;
                         textBoxRankAQr.Focus();
                     }
                     else
                     {
-                        labelMiraeProgram.Text = labelMiraeProgram.Text + Environment.NewLine + " ZŁY PROGRAM!";
-                        labelMiraeProgram.ForeColor = Color.Red;
-                        labelMiraeProgram.Font = new Font(labelMiraeProgram.Font, FontStyle.Bold);
+                        labelModel.Text = "Brak zlecenia w bazie danych";
+                        labelOrderedQty.Text = "";
+                        labelRankA.Text = "";
+                        labelRankB.Text = "";
+                        textBoxRankAQr.Visible = false;
+                        textBoxRankBQr.Visible = false;
                     }
 
-                    ledRanksQty = SqlOperations.MaxRankQty(currentLotData.Model);
-                    labelLedQty.Text = "RankA=" + ledRanksQty.Item1 + " RankB=" + ledRanksQty.Item2;
-                    labelLotData.Text = "Dane zlecenia nr. " + textBoxLotNo.Text;
-                    textBoxRankAQr.Focus();
+                    string prevModel = "";
+
+                    if (grid.Rows.Count > 0)
+                    {
+                        prevModel = Tools.getCellValue(grid.Rows[0].Cells["ColumnModel"]);
+                        if (prevModel != "")
+                            if (prevModel == currentLotData.Model)
+                            {
+                                string stencil = Tools.getCellValue(grid.Rows[0].Cells["Stencil"]);
+                                if (stencil != "")
+                                {
+                                    radioButtonCurrentStencil.Enabled = true;
+                                    radioButtonCurrentStencil.Checked = true;
+                                    radioButtonCurrentStencil.Text = "Aktualny: " + stencil;
+                                }
+                            }
+                    }
                 }
                 else
                 {
-                    labelModel.Text = "Brak zlecenia w bazie danych";
-                    labelOrderedQty.Text = "";
-                    labelRankA.Text = "";
-                    labelRankB.Text = "";
-                    textBoxRankAQr.Visible = false;
-                    textBoxRankBQr.Visible = false;
-                }
-
-                string prevModel = "";
-
-                if (grid.Rows.Count > 0)
-                {
-                    prevModel = Tools.getCellValue(grid.Rows[0].Cells["ColumnModel"]); 
-                    if (prevModel != "")
-                        if (prevModel == currentLotData.Model)
-                        {
-                            string stencil = Tools.getCellValue(grid.Rows[0].Cells["Stencil"]);
-                            if (stencil != "")
-                            {
-                                radioButtonCurrentStencil.Enabled = true;
-                                radioButtonCurrentStencil.Checked = true;
-                                radioButtonCurrentStencil.Text = "Aktualny: " + stencil;
-                            }
-                        }
+                    MessageBox.Show("Ten LOT jest już w bazie danych");
                 }
             }
         }

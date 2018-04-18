@@ -346,5 +346,23 @@ namespace Karta_Pracy_SMT
 
             return result;
         }
+
+        public static bool IsLotAlreadyInDb(string lotId)
+        {
+            DataTable result = new DataTable();
+
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = conn;
+            command.CommandText = String.Format(@"SELECT NrZlecenia FROM MES.dbo.tb_SMT_Karta_Pracy WHERE NrZlecenia = @lot;");
+            command.Parameters.AddWithValue("@lot", lotId);
+
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(result);
+
+            return result.Rows.Count > 0;
+        }
     }
 }
