@@ -20,7 +20,7 @@ namespace Karta_Pracy_SMT
         Dictionary<string, EfficiencyStructure> efficiencNormyPerModel = new Dictionary<string, EfficiencyStructure>();
         List<LedLeftovers> ledLeftSaveBuffer = new List<LedLeftovers>();
         Dictionary<string, EfficiencyNormsPerModel> normPerModel = new Dictionary<string, EfficiencyNormsPerModel>();
-        double normlotsPerShift = 16;
+        double normLotsPerShift = 16;
 
         public MainForm()
         {
@@ -55,7 +55,7 @@ namespace Karta_Pracy_SMT
             EfficiencyTick();
             if (smtLine == "SMT7" || smtLine == "SMT8" || smtLine == "SMT1")
             {
-                normlotsPerShift = 12;
+                normLotsPerShift = 12;
             }
         }
 
@@ -159,6 +159,11 @@ namespace Karta_Pracy_SMT
                         {
                             dataGridView1.Rows[e.RowIndex].Cells[ngIndex].Value = null;
                             ngValue = -9999;
+                        }
+                        else
+                        {
+                            //ng ,0 will be 0
+                            dataGridView1.Rows[e.RowIndex].Cells[ngIndex].Value = ngValue;
                         }
 
                     if (dataGridView1.Columns["Scrap"].Visible)
@@ -270,8 +275,8 @@ namespace Karta_Pracy_SMT
 
         private void button2_Click(object sender, EventArgs e)
         {
-            //dataGridView1.Rows.Insert(0, 1);
-            //dataGridView1.Rows[0].Cells["StartDate"].Value = System.DateTime.Now.ToLongTimeString();
+            dataGridView1.Rows.Insert(0, 1);
+            dataGridView1.Rows[0].Cells["StartDate"].Value = System.DateTime.Now.ToLongTimeString();
             //dataGridView1.Rows[0].Cells["ColumnSaved"].Style.BackColor = Color.Red;
             //Tools.CleanUpDgv(dataGridView1);
             // dataGridView1.FirstDisplayedScrollingRowIndex = 0;
@@ -441,7 +446,7 @@ namespace Karta_Pracy_SMT
                     Tools.dateShiftNo shiftStart = Tools.whatDayShiftIsit(DateTime.Now);
                     double minutesFromShiftStart = (DateTime.Now - shiftStart.date).TotalMinutes;
                     double lotsPerShift = (480 * (double)lotsThisShift) / minutesFromShiftStart;
-                    double efficiency = Math.Round(lotsPerShift / normlotsPerShift * 100, 1);
+                    double efficiency = Math.Round(lotsPerShift / normLotsPerShift * 100, 1);
 
 
                     labelWasteLed.Text = "Odpad diody LED: " + EfficiencyTools.CalculateLedDiodeWasteLevel(dataGridView1, normPerModel)[0] + "%";
@@ -516,7 +521,7 @@ namespace Karta_Pracy_SMT
         {
             DataGridViewCell cell = dataGridView3DaysInfo.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
-            ShowShiftInfo ShiftInfoDialog = new ShowShiftInfo((DataTable)cell.Tag, normlotsPerShift);
+            ShowShiftInfo ShiftInfoDialog = new ShowShiftInfo((DataTable)cell.Tag, normLotsPerShift);
             ShiftInfoDialog.ShowDialog();
         }
 
@@ -529,6 +534,26 @@ namespace Karta_Pracy_SMT
 
             if (release)
                 dataGridView3DaysInfo.ClearSelection();
+        }
+
+        private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if (e.RowIndex > -1 & e.ColumnIndex > -1)
+            {
+                DataGridViewCell cell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                //Debug.WriteLine(cell.Value.ToString());
+                
+                if (cell.OwningColumn.Name == "Ng" & cell.Value!=null )
+                {
+                    
+                    int check = 0;
+                    if (!int.TryParse(e.FormattedValue.ToString(), out check))
+                    {
+                        e.Cancel = true;
+                        dataGridView1.EndEdit();
+                    }
+                }
+            }
         }
     }
 }

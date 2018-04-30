@@ -78,9 +78,6 @@ namespace Karta_Pracy_SMT
                     ledsLeft.RankB[i].Qty = qtyB;
                 } else everyQtyFilled = false;
 
-
-                
-                
             }
 
             if (everyQtyFilled)
