@@ -290,7 +290,7 @@ namespace Karta_Pracy_SMT
         bool saveLedLeftWorking = false;
         private void timerLedLeftSave_Tick(object sender, EventArgs e)
         {
-            if (ledLeftSaveBuffer.Count>0 & !saveLedLeftWorking)
+            if (ledLeftSaveBuffer.Count > 0 & !saveLedLeftWorking) 
             {
                 saveLedLeftWorking = true;
                 new Thread(() =>
@@ -298,20 +298,24 @@ namespace Karta_Pracy_SMT
                     Thread.CurrentThread.IsBackground = true;
                     List<int> indexToDelete = new List<int>();
 
-                    for (int i = 0; i < ledLeftSaveBuffer.Count; i++)
+                    //for (int i = 0; i < ledLeftSaveBuffer.Count; i++)
+                    //{
+                    //    if (SqlOperations.UpdateLedLeftovers(ledLeftSaveBuffer[i]))
+                    //    {
+                    //        indexToDelete.Add(i);
+                    //    }
+                    //}
+
+                    //foreach (var ind in indexToDelete)
+                    //{
+                    //    ledLeftSaveBuffer.RemoveAt(ind);
+                    //}
+
+                    if (SqlOperations.UpdateLedLeftovers(ledLeftSaveBuffer[0])) 
                     {
-                        if (SqlOperations.UpdateLedLeftovers(ledLeftSaveBuffer[i]))
-                        {
-                            indexToDelete.Add(i);
-                        }
+                        ledLeftSaveBuffer.RemoveAt(0);
                     }
 
-                    foreach (var ind in indexToDelete)
-                    {
-                        ledLeftSaveBuffer.RemoveAt(ind);
-                    }
-
-                    //Debug.WriteLine("done...");
                     saveLedLeftWorking = false;
                 }).Start();
             }

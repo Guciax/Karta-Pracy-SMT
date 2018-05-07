@@ -151,8 +151,6 @@ namespace Karta_Pracy_SMT
         {
             using (SqlConnection openCon = new SqlConnection(@"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;"))
             {
-                
-
                 string save = "INSERT into tb_SMT_Karta_Pracy (DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED) VALUES (@DataCzasStart,@DataCzasKoniec,@LiniaSMT,@OperatorSMT,@NrZlecenia,@Model,@IloscWykonana,@NGIlosc,@ScrapIlosc,@Kontrola1szt,@KoncowkiLED)";
                 using (SqlCommand querySave = new SqlCommand(save))
                 {
@@ -168,10 +166,8 @@ namespace Karta_Pracy_SMT
                     querySave.Parameters.Add("@ScrapIlosc", SqlDbType.VarChar, 50).Value = scrapQty;
                     querySave.Parameters.Add("@Kontrola1szt", SqlDbType.VarChar, 50).Value = firstPieceCheck;
                     querySave.Parameters.Add("@KoncowkiLED", SqlDbType.VarChar, 255).Value = ledLefts;
-                        openCon.Open();
-                       querySave.ExecuteNonQuery();
-
-
+                    openCon.Open();
+                    querySave.ExecuteNonQuery();
                 }
             }
         }
@@ -240,7 +236,7 @@ namespace Karta_Pracy_SMT
 
             try
             {
-                List<Tuple<string, string,string>> flatList = new List<Tuple<string, string, string>>();
+                List<Tuple<string, string, string>> flatList = new List<Tuple<string, string, string>>();
                 foreach (var led in ledLeft.RankA)
                 {
                     flatList.Add(new Tuple<string, string, string>(led.Nc12, led.ID, led.Qty.ToString()));
@@ -249,7 +245,6 @@ namespace Karta_Pracy_SMT
                 {
                     flatList.Add(new Tuple<string, string, string>(led.Nc12, led.ID, led.Qty.ToString()));
                 }
-
 
                 using (SqlConnection conn = new SqlConnection(@"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;"))
                 {
@@ -261,16 +256,16 @@ namespace Karta_Pracy_SMT
                         cmd.Parameters.Add(new SqlParameter("@NC12", led.Item1));
                         cmd.Parameters.Add(new SqlParameter("@ID", led.Item2));
                         cmd.Parameters.Add(new SqlParameter("@Ilosc", led.Item3));
+                        //@ZlecenieString nvarchar(10)
                         cmd.ExecuteNonQuery();
                     }
                 }
-                }
-            catch(SqlException ex)
+            }
+            catch (SqlException ex)
             {
                 MessageBox.Show(ex.Message);
                 result = false;
             }
-
             return result;
         }
 
@@ -297,6 +292,7 @@ namespace Karta_Pracy_SMT
 
             foreach (DataRow row in sqlTableLot.Rows)
             {
+                if (result.ContainsKey(row["Nr_Zlecenia_Produkcyjnego"].ToString())) continue;
                 result.Add(row["Nr_Zlecenia_Produkcyjnego"].ToString(), new string[] { row["RankA"].ToString(), row["RankB"].ToString(), row["Ilosc_wyrobu_zlecona"].ToString() });
             }
             return result;

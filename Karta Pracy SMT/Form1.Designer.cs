@@ -494,7 +494,7 @@
             // timerLedLeftSave
             // 
             this.timerLedLeftSave.Enabled = true;
-            this.timerLedLeftSave.Interval = 5000;
+            this.timerLedLeftSave.Interval = 10000;
             this.timerLedLeftSave.Tick += new System.EventHandler(this.timerLedLeftSave_Tick);
             // 
             // EfficiencyTimer

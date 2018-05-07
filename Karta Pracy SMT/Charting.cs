@@ -159,72 +159,74 @@ namespace Karta_Pracy_SMT
 
         public static void DrawDayByDayEfficiency(DataGridView grid, PictureBox pbChart)
         {
-            Dictionary<string, float[]> efficiencyPerDayShift = new Dictionary<string, float[]>();
-            foreach (DataGridViewColumn col in grid.Columns)
+            if (grid.Columns.Count > 0)
             {
-                string shift1 = "";
-                string shift2 = "";
-                string shift3 = "";
+                Dictionary<string, float[]> efficiencyPerDayShift = new Dictionary<string, float[]>();
+                foreach (DataGridViewColumn col in grid.Columns)
+                {
+                    string shift1 = "";
+                    string shift2 = "";
+                    string shift3 = "";
 
-                if (grid.Rows[0].Cells[col.Name].Value != null)
-                    shift1 = grid.Rows[0].Cells[col.Name].Value.ToString().Split('/')[1].Trim();
-                if (grid.Rows[1].Cells[col.Name].Value != null)
-                    shift2 = grid.Rows[1].Cells[col.Name].Value.ToString().Split('/')[1].Trim();
-                if (grid.Rows[2].Cells[col.Name].Value != null)
-                    shift3 = grid.Rows[2].Cells[col.Name].Value.ToString().Split('/')[1].Trim();
+                    if (grid.Rows[0].Cells[col.Name].Value != null)
+                        shift1 = grid.Rows[0].Cells[col.Name].Value.ToString().Split('/')[1].Trim();
+                    if (grid.Rows[1].Cells[col.Name].Value != null)
+                        shift2 = grid.Rows[1].Cells[col.Name].Value.ToString().Split('/')[1].Trim();
+                    if (grid.Rows[2].Cells[col.Name].Value != null)
+                        shift3 = grid.Rows[2].Cells[col.Name].Value.ToString().Split('/')[1].Trim();
 
-                float val1 = 0;
-                float val2 = 0;
-                float val3 = 0;
-                float valSum = 0;
+                    float val1 = 0;
+                    float val2 = 0;
+                    float val3 = 0;
+                    float valSum = 0;
 
-                float.TryParse(shift1, out val1);
-                float.TryParse(shift2, out val2);
-                float.TryParse(shift3, out val3);
-                valSum = val1 + val2 + val3;
+                    float.TryParse(shift1, out val1);
+                    float.TryParse(shift2, out val2);
+                    float.TryParse(shift3, out val3);
+                    valSum = val1 + val2 + val3;
 
-                float[] val = new float[] { val1, val2, val3, valSum };
-                efficiencyPerDayShift.Add(col.HeaderText, val);
+                    float[] val = new float[] { val1, val2, val3, valSum };
+                    efficiencyPerDayShift.Add(col.HeaderText, val);
+                }
+
+                Bitmap DrawArea = new Bitmap(pbChart.Size.Width, pbChart.Size.Height);
+                pbChart.Image = DrawArea;
+
+                Graphics g;
+                g = Graphics.FromImage(DrawArea);
+                //g.SmoothingMode = SmoothingMode.AntiAlias;
+
+                Pen penEfficiencyThisShift = new Pen(Brushes.Lime, 2);
+                int bottomMargin = 18;
+                int halfWidth = 20;
+                float interval = (pbChart.Width - 10) / grid.Columns.Count;
+                float maxValue = efficiencyPerDayShift.Select(v => v.Value[3]).ToArray().Max();
+                float scale = (float)(pbChart.Height * 0.8) / (maxValue + bottomMargin);
+
+                int itemCounter = 0;
+
+                foreach (var dayEntry in efficiencyPerDayShift)
+                {
+                    float x = 50 + itemCounter * interval;
+                    float y1 = dayEntry.Value[0] * scale;
+                    float y2 = dayEntry.Value[1] * scale;
+                    float y3 = dayEntry.Value[2] * scale;
+
+                    g.FillRectangle(Brushes.Yellow, x - halfWidth, pbChart.Height - y3 - bottomMargin, halfWidth * 2, y3);
+                    g.DrawRectangle(new Pen(Brushes.White), x - halfWidth, pbChart.Height - y3 - bottomMargin, halfWidth * 2, y3);
+
+                    g.FillRectangle(Brushes.SpringGreen, x - halfWidth, pbChart.Height - bottomMargin - y3 - y2, halfWidth * 2, y2);
+                    g.DrawRectangle(new Pen(Brushes.White), x - halfWidth, pbChart.Height - bottomMargin - y3 - y2, halfWidth * 2, y2);
+
+                    g.FillRectangle(Brushes.MediumOrchid, x - halfWidth, pbChart.Height - bottomMargin - y1 - y2 - y3, halfWidth * 2, y1);
+                    g.DrawRectangle(new Pen(Brushes.White), x - halfWidth, pbChart.Height - bottomMargin - y1 - y2 - y3, halfWidth * 2, y1);
+
+                    g.DrawString(dayEntry.Key, MainForm.DefaultFont, Brushes.White, x - 17, pbChart.Height - 13);
+
+                    itemCounter++;
+                }
+
             }
-
-            Bitmap DrawArea = new Bitmap(pbChart.Size.Width, pbChart.Size.Height);
-            pbChart.Image = DrawArea;
-
-            Graphics g;
-            g = Graphics.FromImage(DrawArea);
-            //g.SmoothingMode = SmoothingMode.AntiAlias;
-
-            Pen penEfficiencyThisShift = new Pen(Brushes.Lime, 2);
-            int bottomMargin = 18;
-            int halfWidth = 20;
-            float interval = (pbChart.Width - 10) / grid.Columns.Count;
-            float maxValue = efficiencyPerDayShift.Select(v => v.Value[3]).ToArray().Max();
-            float scale = (float)(pbChart.Height * 0.8) / (maxValue + bottomMargin);
-
-            int itemCounter = 0;
-
-            foreach (var dayEntry in efficiencyPerDayShift)
-            {
-                float x = 50 + itemCounter * interval;
-                float y1 = dayEntry.Value[0] * scale;
-                float y2 = dayEntry.Value[1] * scale;
-                float y3 = dayEntry.Value[2] * scale;
-
-                g.FillRectangle(Brushes.Yellow, x - halfWidth, pbChart.Height -  y3 - bottomMargin, halfWidth*2,  y3);
-                g.DrawRectangle(new Pen(Brushes.White), x - halfWidth, pbChart.Height - y3 - bottomMargin, halfWidth * 2, y3);
-
-                g.FillRectangle(Brushes.SpringGreen, x - halfWidth, pbChart.Height - bottomMargin - y3 - y2, halfWidth * 2, y2);
-                g.DrawRectangle(new Pen(Brushes.White), x - halfWidth, pbChart.Height - bottomMargin - y3 - y2, halfWidth * 2, y2);
-
-                g.FillRectangle(Brushes.MediumOrchid, x - halfWidth, pbChart.Height - bottomMargin - y1 - y2 - y3, halfWidth * 2, y1);
-                g.DrawRectangle(new Pen(Brushes.White), x - halfWidth, pbChart.Height - bottomMargin - y1 - y2 - y3, halfWidth * 2, y1);
-
-                g.DrawString(dayEntry.Key, MainForm.DefaultFont, Brushes.White, x - 17, pbChart.Height - 13);
-
-                itemCounter++;
-            }
-            
-
 
 
         }

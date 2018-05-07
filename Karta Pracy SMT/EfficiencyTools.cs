@@ -306,31 +306,34 @@ namespace Karta_Pracy_SMT
 
         public static void QuantityDictionaryToGrid(DataGridView grid, Dictionary<DateTime, Dictionary<int, lotPiecesQuantity>> inputDic)
         {
-            grid.Rows.Clear();
-            grid.Columns.Clear();
-
-            foreach (var dateKey in inputDic)
+            if (inputDic.Count > 0)
             {
-                grid.Columns.Add(dateKey.Key.ToString("dd-MM"), dateKey.Key.ToString("dd-MM"));
-            }
+                grid.Rows.Clear();
+                grid.Columns.Clear();
 
-            grid.Rows.Add(3);
-            grid.Rows[0].HeaderCell.Value = "1";
-            grid.Rows[1].HeaderCell.Value = "2";
-            grid.Rows[2].HeaderCell.Value = "3";
-
-            grid.Rows[0].DefaultCellStyle.BackColor = System.Drawing.Color.MediumOrchid;
-            grid.Rows[1].DefaultCellStyle.BackColor = System.Drawing.Color.SpringGreen;
-            grid.Rows[2].DefaultCellStyle.BackColor = System.Drawing.Color.Yellow;
-
-            foreach (var dateKey in inputDic)
-            {
-                foreach (var shiftKey in dateKey.Value)
+                foreach (var dateKey in inputDic)
                 {
-                    grid.Rows[shiftKey.Key - 1].Cells[dateKey.Key.ToString("dd-MM")].Value = shiftKey.Value.lots.ToString() + " / " + shiftKey.Value.modules;
-                    grid.Rows[shiftKey.Key - 1].Cells[dateKey.Key.ToString("dd-MM")].Tag = inputDic[dateKey.Key.Date][shiftKey.Key].tagAllLots;
+                    grid.Columns.Add(dateKey.Key.ToString("dd-MM"), dateKey.Key.ToString("dd-MM"));
                 }
-                
+
+                grid.Rows.Add(3);
+                grid.Rows[0].HeaderCell.Value = "1";
+                grid.Rows[1].HeaderCell.Value = "2";
+                grid.Rows[2].HeaderCell.Value = "3";
+
+                grid.Rows[0].DefaultCellStyle.BackColor = System.Drawing.Color.MediumOrchid;
+                grid.Rows[1].DefaultCellStyle.BackColor = System.Drawing.Color.SpringGreen;
+                grid.Rows[2].DefaultCellStyle.BackColor = System.Drawing.Color.Yellow;
+
+                foreach (var dateKey in inputDic)
+                {
+                    foreach (var shiftKey in dateKey.Value)
+                    {
+                        grid.Rows[shiftKey.Key - 1].Cells[dateKey.Key.ToString("dd-MM")].Value = shiftKey.Value.lots.ToString() + " / " + shiftKey.Value.modules;
+                        grid.Rows[shiftKey.Key - 1].Cells[dateKey.Key.ToString("dd-MM")].Tag = inputDic[dateKey.Key.Date][shiftKey.Key].tagAllLots;
+                    }
+
+                }
             }
         }
 
