@@ -24,7 +24,7 @@ namespace Karta_Pracy_SMT
             List<string> fileToSave = new List<string>();
             foreach (var point in pointsList)
             {
-                string newLine = point.efficiency * 10 + ";" + point.time;
+                string newLine = Math.Round(point.efficiency * (float)10, 0).ToString() + ";" + point.time;
                 fileToSave.Add(newLine);
             }
             File.WriteAllLines("efficiencyPoints.pts", fileToSave.ToArray());

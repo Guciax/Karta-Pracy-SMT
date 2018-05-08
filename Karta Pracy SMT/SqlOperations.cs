@@ -224,9 +224,7 @@ namespace Karta_Pracy_SMT
                         inspectors.Add(techInsp[1]);
                     }
                 }
-                
             }
-
             return new string[][] { technicians.OrderBy(o=>o).ToArray(), inspectors.OrderBy(o => o).ToArray() };
         }
 
@@ -245,6 +243,7 @@ namespace Karta_Pracy_SMT
                 {
                     flatList.Add(new Tuple<string, string, string>(led.Nc12, led.ID, led.Qty.ToString()));
                 }
+                string lotNo = ledLeft.LotNo;
 
                 using (SqlConnection conn = new SqlConnection(@"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;"))
                 {
@@ -256,11 +255,12 @@ namespace Karta_Pracy_SMT
                         cmd.Parameters.Add(new SqlParameter("@NC12", led.Item1));
                         cmd.Parameters.Add(new SqlParameter("@ID", led.Item2));
                         cmd.Parameters.Add(new SqlParameter("@Ilosc", led.Item3));
-                        //@ZlecenieString nvarchar(10)
+                        //cmd.Parameters.Add(new SqlParameter("@ZlecenieString", lotNo);
                         cmd.ExecuteNonQuery();
                     }
                 }
             }
+
             catch (SqlException ex)
             {
                 MessageBox.Show(ex.Message);

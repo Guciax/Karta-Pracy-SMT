@@ -20,11 +20,19 @@ namespace Karta_Pracy_SMT
         Dictionary<string, EfficiencyStructure> efficiencNormyPerModel = new Dictionary<string, EfficiencyStructure>();
         List<LedLeftovers> ledLeftSaveBuffer = new List<LedLeftovers>();
         Dictionary<string, EfficiencyNormsPerModel> normPerModel = new Dictionary<string, EfficiencyNormsPerModel>();
+        string smtLine = ConfigurationManager.AppSettings["SMTLine"];
         double normLotsPerShift = 16;
 
         public MainForm()
         {
-            InitializeComponent(); 
+            InitializeComponent();
+            String thisprocessname = Process.GetCurrentProcess().ProcessName;
+
+            if (Process.GetProcesses().Count(p => p.ProcessName == thisprocessname) > 1)
+            {
+                MessageBox.Show("Karta Pracy SMT jest już uruchomiona.");
+                this.Close();
+            }
         }
 
         bool checkMirae = false;
@@ -68,7 +76,6 @@ namespace Karta_Pracy_SMT
                 {
                     notSavedQty++;
                 }
-
             }
 
             if (notSavedQty < 2)
@@ -248,7 +255,7 @@ namespace Karta_Pracy_SMT
                 dataGridView1.HorizontalScrollingOffset = 0;
             }
         }
-        string smtLine= ConfigurationManager.AppSettings["SMTLine"];
+        
         private void lotFinished(DataGridViewCheckBoxCell checkBoxCell, int rowIndex)
         {
             dataGridView1.Rows[rowIndex].Cells["EndDate"].Value = System.DateTime.Now.ToString("HH:mm:ss dd-MM-yyyy");
@@ -354,7 +361,7 @@ namespace Karta_Pracy_SMT
                 rankBList.Add(new RankStruc(lotToRankABQty[lotNo][1], rankB[0], rankB[1], qtyB));
             }
 
-            return new LedLeftovers(rankAList, rankBList);
+            return new LedLeftovers(rankAList, rankBList, lotNo);
         }
 
         private void AddRecordsFromDb()

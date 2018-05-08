@@ -273,8 +273,10 @@ namespace Karta_Pracy_SMT
             if (buttonOK.Text=="OK")
             {
                 grid.SuspendLayout();
-                LedLeftovers ledsLeft = new LedLeftovers(new List<RankStruc>(), new List<RankStruc>());
                 
+                string lotNo = textBoxLotNo.Text;
+                LedLeftovers ledsLeft = new LedLeftovers(new List<RankStruc>(), new List<RankStruc>(), lotNo);
+
                 foreach (DataGridViewRow rowA in dataGridViewRankA.Rows)
                 {
                     string rankA = labelRankA.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None)[1];

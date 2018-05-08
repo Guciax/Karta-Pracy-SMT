@@ -8,14 +8,16 @@ namespace Karta_Pracy_SMT
 {
     public class LedLeftovers
     {
-        public LedLeftovers(List<RankStruc> rankA, List<RankStruc> rankB)
+        public LedLeftovers(List<RankStruc> rankA, List<RankStruc> rankB, string lotNo)
         {
             RankA = rankA;
             RankB = rankB;
+            LotNo = lotNo;
         }
 
         public List<RankStruc> RankA { get; }
         public List<RankStruc> RankB { get; }
+        public string LotNo { get; }
     }
 
     public class RankStruc
