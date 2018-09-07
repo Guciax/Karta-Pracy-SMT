@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -321,9 +322,13 @@ namespace Karta_Pracy_SMT
                 grid.Rows[1].HeaderCell.Value = "2";
                 grid.Rows[2].HeaderCell.Value = "3";
 
-                grid.Rows[0].DefaultCellStyle.BackColor = System.Drawing.Color.MediumOrchid;
-                grid.Rows[1].DefaultCellStyle.BackColor = System.Drawing.Color.SpringGreen;
-                grid.Rows[2].DefaultCellStyle.BackColor = System.Drawing.Color.Yellow;
+                Color firstShiftColor = Tools.GetShiftColor(new DateTime(2018, 05, 29, 08, 00, 00));
+                Color secondShiftColor = Tools.GetShiftColor(new DateTime(2018, 05, 29, 15, 00, 00));
+                Color thirdShiftColor = Tools.GetShiftColor(new DateTime(2018, 05, 29, 23, 00, 00));
+
+                grid.Rows[0].DefaultCellStyle.BackColor = firstShiftColor;
+                grid.Rows[1].DefaultCellStyle.BackColor = secondShiftColor;
+                grid.Rows[2].DefaultCellStyle.BackColor = thirdShiftColor;
 
                 foreach (var dateKey in inputDic)
                 {

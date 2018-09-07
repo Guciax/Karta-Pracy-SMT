@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Configuration;
+using System.Drawing;
 
 namespace Karta_Pracy_SMT
 {
@@ -88,6 +89,15 @@ namespace Karta_Pracy_SMT
                 return cell.Value.ToString();
             }
             return "";
+        }
+
+        public static Color GetShiftColor(DateTime date)
+        {
+            dateShiftNo shiftInfo = Tools.whatDayShiftIsit(date);
+            if (shiftInfo.shift == 1) return Color.Plum;
+            if (shiftInfo.shift == 2) return Color.SpringGreen;
+            if (shiftInfo.shift == 3) return Color.LightGoldenrodYellow;
+            return Color.Black;
         }
 
         public struct dateShiftNo

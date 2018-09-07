@@ -54,6 +54,8 @@ namespace Karta_Pracy_SMT
         private void button1_Click(object sender, EventArgs e)
         {
             bool everyQtyFilled = true;
+            bool ledWasteAllert = false;
+
             for (int i = 0; i < dataGridViewRankA.Rows.Count; i++) 
             {
                 double qtyA = 0;
@@ -65,7 +67,15 @@ namespace Karta_Pracy_SMT
                     {
                         everyQtyFilled = false;
 
-                    } else ledsLeft.RankA[i].Qty = qtyA;
+                    }
+                    else
+                    {
+                        ledsLeft.RankA[i].Qty = qtyA;
+                        if (qtyA == 0)
+                        {
+                            ledWasteAllert = true;
+                        }
+                    }
                 }
                 else everyQtyFilled = false;
 
@@ -76,20 +86,30 @@ namespace Karta_Pracy_SMT
                         everyQtyFilled = false;
                     }
                     ledsLeft.RankB[i].Qty = qtyB;
-                } else everyQtyFilled = false;
-
+                }
+                else
+                {
+                    everyQtyFilled = false;
+                    if (qtyB == 0)
+                    {
+                        ledWasteAllert = true;
+                    }
+                }
             }
 
             if (everyQtyFilled)
             {
                 cell.Value = "OK";
                 cell.Style.BackColor = Color.Green;
-
                 //SqlOperations.UpdateLedLeftovers(ledsLeft);
                 ledLeftSaveBuffer.Add(ledsLeft);
             }
 
             this.Close();
+            if (ledWasteAllert) 
+            {
+                MessageBox.Show("UWAGA!" + Environment.NewLine + "Duży odpad LED!" + Environment.NewLine + "Powiadom technika.");
+            }
         }
 
         private void textBoxQr_Leave(object sender, EventArgs e)
@@ -102,12 +122,12 @@ namespace Karta_Pracy_SMT
             if (e.KeyCode == Keys.Return & textBoxQr.Text.Split('\t').Length>4) 
             {
                 bool foundLedReel = false;
-                string ledID = textBoxQr.Text.Split('\t')[5];
-                string nc12 = textBoxQr.Text.Split('\t')[0];
+                string ledID = textBoxQr.Text.ToUpper().Split('\t')[5];
+                string nc12 = textBoxQr.Text.ToUpper().Split('\t')[0];
 
                 for (int a = 0; a < dataGridViewRankA.Rows.Count; a++) 
                 {
-                    if (dataGridViewRankA.Rows[a].Cells[0].Value.ToString()==nc12 & dataGridViewRankA.Rows[a].Cells[2].Value.ToString() ==ledID)
+                    if (dataGridViewRankA.Rows[a].Cells[0].Value.ToString().ToUpper() ==nc12 & dataGridViewRankA.Rows[a].Cells[2].Value.ToString().ToUpper() ==ledID)
                     {
                         VirtualKeyboard kbForm = new VirtualKeyboard(dataGridViewRankA.Rows[a].Cells[3]);
                         kbForm.ShowInTaskbar = false;
@@ -121,7 +141,7 @@ namespace Karta_Pracy_SMT
                 if (!foundLedReel)
                     for (int b = 0; b < dataGridViewRankB.Rows.Count; b++)
                     {
-                        if (dataGridViewRankB.Rows[b].Cells[0].Value.ToString() == nc12 & dataGridViewRankB.Rows[b].Cells[2].Value.ToString() == ledID)
+                        if (dataGridViewRankB.Rows[b].Cells[0].Value.ToString().ToUpper() == nc12 & dataGridViewRankB.Rows[b].Cells[2].Value.ToString().ToUpper() == ledID)
                         {
                             VirtualKeyboard kbForm = new VirtualKeyboard(dataGridViewRankB.Rows[b].Cells[3]);
                             kbForm.ShowInTaskbar = false;

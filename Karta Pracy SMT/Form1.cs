@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Karta_Pracy_SMT.Tools;
 
 namespace Karta_Pracy_SMT
 {
@@ -28,7 +29,7 @@ namespace Karta_Pracy_SMT
             InitializeComponent();
             String thisprocessname = Process.GetCurrentProcess().ProcessName;
 
-            if (Process.GetProcesses().Count(p => p.ProcessName == thisprocessname) > 1)
+            if (Process.GetProcesses().Count(p => p.ProcessName == thisprocessname) > 1) 
             {
                 MessageBox.Show("Karta Pracy SMT jest już uruchomiona.");
                 this.Close();
@@ -65,6 +66,13 @@ namespace Karta_Pracy_SMT
             {
                 normLotsPerShift = 12;
             }
+           
+            Charting.DrawEfficiencyChart(pbChart, 0);
+
+            foreach (DataGridViewColumn column in dataGridView1.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -92,7 +100,7 @@ namespace Karta_Pracy_SMT
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex > 0 & e.RowIndex >= 0)
+            if (e.ColumnIndex > 0 & e.RowIndex >= 0) 
             {
                 DataGridViewCell cell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
                 if (dataGridView1.Columns[e.ColumnIndex].CellType.ToString() == "System.Windows.Forms.DataGridViewButtonCell")
@@ -217,6 +225,8 @@ namespace Karta_Pracy_SMT
                             DateTime endDate = DateTime.ParseExact(row.Cells["EndDate"].Value.ToString(), "HH:mm:ss dd-MM-yyyy", CultureInfo.InvariantCulture);
                             string firstPieceCheck = "";
 
+                            string stencil = Tools.getCellValue(row.Cells["Stencil"]);
+
                             LedLeftovers ledLeftovers = (LedLeftovers)row.Cells["ColumnButtonLed"].Tag;
                             string leftovers = ledLeftovers.RankA[0].ID + ":" + ledLeftovers.RankA[0].Nc12 + ":" + ledLeftovers.RankA[0].Qty + "|" + ledLeftovers.RankB[0].ID + ":" + ledLeftovers.RankB[0].Nc12 + ":" + ledLeftovers.RankB[0].Qty;
                             for (int i = 0; i < ledLeftovers.RankA.Count; i++)
@@ -246,7 +256,8 @@ namespace Karta_Pracy_SMT
                                 row.Cells["Ng"].Value.ToString(),
                                 scrap,
                                 firstPieceCheck,
-                                leftovers);
+                                leftovers,
+                                stencil);
                            // Debug.WriteLine("Saved");
                             Tools.CleanUpDgv(dataGridView1);
                         }
@@ -258,8 +269,15 @@ namespace Karta_Pracy_SMT
         
         private void lotFinished(DataGridViewCheckBoxCell checkBoxCell, int rowIndex)
         {
-            dataGridView1.Rows[rowIndex].Cells["EndDate"].Value = System.DateTime.Now.ToString("HH:mm:ss dd-MM-yyyy");
+            DateTime now = System.DateTime.Now;
+            dataGridView1.Rows[rowIndex].Cells["EndDate"].Value = now.ToString("HH:mm:ss dd-MM-yyyy");
+            Color cellColor = Tools.GetShiftColor(now);
+
             dataGridView1.Rows[rowIndex].Cells["ColumnSaved"].Style.BackColor = Color.White;
+            dataGridView1.Rows[rowIndex].Cells[13].Style.BackColor = cellColor;
+            dataGridView1.Rows[rowIndex].Cells[14].Style.BackColor = cellColor;
+            dataGridView1.Rows[rowIndex].Cells[15].Style.BackColor = cellColor;
+
             checkBoxCell.Value = true;
         }
 
@@ -277,13 +295,42 @@ namespace Karta_Pracy_SMT
                     dataGridView1.Rows[e.RowIndex].Cells["Stencil"].Value = currentStencilQR;
                 }
             }
-           // Debug.WriteLine(dataGridView1.Rows.Count);
+            // Debug.WriteLine(dataGridView1.Rows.Count);
+
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             dataGridView1.Rows.Insert(0, 1);
             dataGridView1.Rows[0].Cells["StartDate"].Value = System.DateTime.Now.ToLongTimeString();
+
+            dataGridView1.Rows[0].Cells[1].Value = "fakeLot";
+            string connQty = "4";
+            dataGridView1.Rows[0].Cells[3].Value = connQty;
+            if (connQty == "4")
+            {
+                dataGridView1.Rows[0].Cells[3].Style.ForeColor = Color.White;
+                dataGridView1.Rows[0].Cells[3].Style.BackColor = Color.DarkCyan;
+            }
+            dataGridView1.Rows[0].Cells[2].Value = "Model";
+            //dataGridView1.Rows[0].Cells[4].Value = kontrola pierwszej
+            dataGridView1.Rows[0].Cells[5].Value = "156";
+            dataGridView1.Rows[0].Cells[6].Value = "RankA";
+            dataGridView1.Rows[0].Cells[7].Value = "RankB";
+            dataGridView1.Rows[0].Cells[8].Value = "LED";
+            //dataGridView1.Rows[0].Cells[9].Value = ;
+            //dataGridView1.Rows[0].Cells[10].Value = row["NGIlosc"].ToString().Trim();
+            //dataGridView1.Rows[0].Cells[11].Value = row["ScrapIlosc"].ToString().Trim();
+            dataGridView1.Rows[0].Cells[12].Tag = dataGridView1.Rows[1].Cells[12].Tag;
+            dataGridView1.Rows[0].Cells[12].Value = "OK";
+
+            dataGridView1.Rows[0].Cells[13].Value = DateTime.Now.AddMinutes(-45).ToString("HH:mm:ss dd-MM-yyyy");
+            dataGridView1.Rows[0].Cells[14].Value =DateTime.Now.ToString("HH:mm:ss dd-MM-yyyy");
+
+
+            dataGridView1.Rows[0].Cells[15].Value = "Operator";
+
+
             //dataGridView1.Rows[0].Cells["ColumnSaved"].Style.BackColor = Color.Red;
             //Tools.CleanUpDgv(dataGridView1);
             // dataGridView1.FirstDisplayedScrollingRowIndex = 0;
@@ -291,7 +338,7 @@ namespace Karta_Pracy_SMT
             // labelLotsThisShift.Text = EfficiencyTools.HowManyLotsThisShift(dataGridView1).ToString();
             //EfficiencyTools.QuantityDictionaryToGrid(dataGridView2, EfficiencyTools.quantityPerDayPerShift(SqlOperations.GetSmtRecordsFromDbQuantityOnly(5, smtLine)));
             //Charting.DrawEfficiencyChart(pbChart, 80);
-            Charting.DrawDayByDayEfficiency(dataGridView3DaysInfo, pictureBoxShifts);
+            //Charting.DrawDayByDayEfficiency(dataGridView3DaysInfo, pictureBoxShifts);
         }
 
         bool saveLedLeftWorking = false;
@@ -304,19 +351,6 @@ namespace Karta_Pracy_SMT
                 {
                     Thread.CurrentThread.IsBackground = true;
                     List<int> indexToDelete = new List<int>();
-
-                    //for (int i = 0; i < ledLeftSaveBuffer.Count; i++)
-                    //{
-                    //    if (SqlOperations.UpdateLedLeftovers(ledLeftSaveBuffer[i]))
-                    //    {
-                    //        indexToDelete.Add(i);
-                    //    }
-                    //}
-
-                    //foreach (var ind in indexToDelete)
-                    //{
-                    //    ledLeftSaveBuffer.RemoveAt(ind);
-                    //}
 
                     if (SqlOperations.UpdateLedLeftovers(ledLeftSaveBuffer[0])) 
                     {
@@ -375,64 +409,56 @@ namespace Karta_Pracy_SMT
                 lotsList.Add(row["NrZlecenia"].ToString().Trim());
             }
 
+
+
             Dictionary<string, string[]> lotToRankABQty = SqlOperations.lotToRankABQty(lotsList.ToArray());
+
+
             dataGridView1.SuspendLayout();
             foreach (DataRow row in sqlTable.Rows)
             {
-                dataGridView1.Rows.Insert(0);
-                string lotNo = row["NrZlecenia"].ToString().Trim();
-
-                LedLeftovers ledLeft = CreateLedLeftovers(row["KoncowkiLED"].ToString(), lotNo, lotToRankABQty);
-
-                //string leftoverRaw = row["KoncowkiLED"].ToString();
-                //string[] leftoverReels = leftoverRaw.Split('#');
-                //string lotNo = row["NrZlecenia"].ToString().Trim();
-
-                //List<string[]> rankaAlist = new List<string[]>();
-                //List<string[]> rankaBlist = new List<string[]>();
-
-                //List<RankStruc> rankAList = new List<RankStruc>();
-                //List<RankStruc> rankBList = new List<RankStruc>();
-
-                //foreach (var item in leftoverReels)
-                //{
-                //    string[] rankA = item.Split('|')[0].Split(':');
-                //    string[] rankB = item.Split('|')[1].Split(':');
-
-                //    double qtyA = double.Parse(rankA[2]);
-                //    double qtyB = double.Parse(rankB[2]);
-
-                //    rankAList.Add(new RankStruc(lotToRankABQty[lotNo][0], rankA[0], rankA[1], qtyA));
-                //    rankBList.Add(new RankStruc(lotToRankABQty[lotNo][1], rankB[0], rankB[1], qtyB));
-                //}
-
-                //LedLeftovers ledLeft = new LedLeftovers(rankAList, rankBList);
-                DataGridViewCheckBoxCell chbCell = (DataGridViewCheckBoxCell)dataGridView1.Rows[0].Cells[0];
-                chbCell.Value = true;
-
-                dataGridView1.Rows[0].Cells[1].Value = lotNo;
-                string connQty = Tools.GetNumberOfConnectors(row["Model"].ToString().Trim());
-                dataGridView1.Rows[0].Cells[3].Value = connQty;
-                if (connQty == "4")
+                if (lotToRankABQty.ContainsKey(row["NrZlecenia"].ToString()))
                 {
-                    dataGridView1.Rows[0].Cells[3].Style.ForeColor = Color.White;
-                    dataGridView1.Rows[0].Cells[3].Style.BackColor = Color.DarkCyan;
-                }
-                dataGridView1.Rows[0].Cells[2].Value = row["Model"].ToString().Trim();
-                //dataGridView1.Rows[0].Cells[4].Value = kontrola pierwszej
-                dataGridView1.Rows[0].Cells[5].Value = lotToRankABQty[lotNo][2];
-                dataGridView1.Rows[0].Cells[6].Value = ledLeft.RankA[0].Nc12;
-                dataGridView1.Rows[0].Cells[7].Value = lotToRankABQty[lotNo][0];
-                dataGridView1.Rows[0].Cells[8].Value = lotToRankABQty[lotNo][1];
-                dataGridView1.Rows[0].Cells[9].Value = row["IloscWykonana"].ToString().Trim();
-                dataGridView1.Rows[0].Cells[10].Value = row["NGIlosc"].ToString().Trim();
-                dataGridView1.Rows[0].Cells[11].Value = row["ScrapIlosc"].ToString().Trim();
-                dataGridView1.Rows[0].Cells[12].Tag = ledLeft;
-                dataGridView1.Rows[0].Cells[12].Value = "OK";
+                    dataGridView1.Rows.Insert(0);
 
-                dataGridView1.Rows[0].Cells[13].Value = DateTime.Parse(row["DataCzasStart"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy");
-                dataGridView1.Rows[0].Cells[14].Value = DateTime.Parse(row["DataCzasKoniec"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy");
-                dataGridView1.Rows[0].Cells[15].Value = row["OperatorSMT"].ToString().Trim();
+                    string lotNo = row["NrZlecenia"].ToString().Trim();
+                    string stencil = row["StencilQR"].ToString();
+
+                    LedLeftovers ledLeft = CreateLedLeftovers(row["KoncowkiLED"].ToString(), lotNo, lotToRankABQty);
+
+                    DataGridViewCheckBoxCell chbCell = (DataGridViewCheckBoxCell)dataGridView1.Rows[0].Cells[0];
+                    chbCell.Value = true;
+
+                    dataGridView1.Rows[0].Cells[1].Value = lotNo;
+                    string connQty = Tools.GetNumberOfConnectors(row["Model"].ToString().Trim());
+                    dataGridView1.Rows[0].Cells[3].Value = connQty;
+                    if (connQty == "4")
+                    {
+                        dataGridView1.Rows[0].Cells[3].Style.ForeColor = Color.White;
+                        dataGridView1.Rows[0].Cells[3].Style.BackColor = Color.DarkCyan;
+                    }
+                    dataGridView1.Rows[0].Cells[2].Value = row["Model"].ToString().Trim();
+                    //dataGridView1.Rows[0].Cells[4].Value = kontrola pierwszej
+                    dataGridView1.Rows[0].Cells[5].Value = lotToRankABQty[lotNo][2];
+                    dataGridView1.Rows[0].Cells[6].Value = ledLeft.RankA[0].Nc12;
+                    dataGridView1.Rows[0].Cells[7].Value = lotToRankABQty[lotNo][0];
+                    dataGridView1.Rows[0].Cells[8].Value = lotToRankABQty[lotNo][1];
+                    dataGridView1.Rows[0].Cells[9].Value = row["IloscWykonana"].ToString().Trim();
+                    dataGridView1.Rows[0].Cells[10].Value = row["NGIlosc"].ToString().Trim();
+                    dataGridView1.Rows[0].Cells[11].Value = row["ScrapIlosc"].ToString().Trim();
+                    dataGridView1.Rows[0].Cells[12].Tag = ledLeft;
+                    dataGridView1.Rows[0].Cells[12].Value = "OK";
+
+                    dataGridView1.Rows[0].Cells[13].Value = DateTime.Parse(row["DataCzasStart"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy");
+                    dataGridView1.Rows[0].Cells[14].Value = DateTime.Parse(row["DataCzasKoniec"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy");
+                    Color cellColor = Tools.GetShiftColor(DateTime.Parse(row["DataCzasKoniec"].ToString()));
+                    dataGridView1.Rows[0].Cells[13].Style.BackColor = cellColor;
+                    dataGridView1.Rows[0].Cells[14].Style.BackColor = cellColor;
+                    dataGridView1.Rows[0].Cells[15].Style.BackColor = cellColor;
+
+                    dataGridView1.Rows[0].Cells[15].Value = row["OperatorSMT"].ToString().Trim();
+                    dataGridView1.Rows[0].Cells[16].Value = stencil;
+                }
             }
             Tools.AutoSizeColumnsWidth(dataGridView1);
             dataGridView1.ResumeLayout();
@@ -444,6 +470,10 @@ namespace Karta_Pracy_SMT
             if (e.Button == MouseButtons.Right & dataGridView1.Columns[e.ColumnIndex].Name == "goodQty")
             {
                 dataGridView1.Columns["Scrap"].Visible = !dataGridView1.Columns["Scrap"].Visible;
+            }
+            if (e.Button == MouseButtons.Right & dataGridView1.Columns[e.ColumnIndex].Name == "Operator")
+            {
+                dataGridView1.Columns["Stencil"].Visible = !dataGridView1.Columns["Stencil"].Visible;
             }
         }
 
@@ -508,7 +538,7 @@ namespace Karta_Pracy_SMT
 
                 if (dataGridView1.Rows.Count > 2)
                 {
-                    EfficiencyTools.QuantityDictionaryToGrid(dataGridView3DaysInfo, EfficiencyTools.quantityPerDayPerShift(SqlOperations.GetSmtRecordsFromDbQuantityOnly(6, smtLine)));
+                    EfficiencyTools.QuantityDictionaryToGrid(dataGridView3DaysInfo, EfficiencyTools.quantityPerDayPerShift(SqlOperations.GetSmtRecordsFromDbQuantityOnly(5, smtLine)));
                     Charting.DrawDayByDayEfficiency(dataGridView3DaysInfo, pictureBoxShifts);
                 }
             }
@@ -539,12 +569,14 @@ namespace Karta_Pracy_SMT
         private void dataGridView3DaysInfo_SelectionChanged(object sender, EventArgs e)
         {
             bool release = true;
-#if DEBUG
+            #if DEBUG
             release = false;
             #endif
 
             if (release)
                 dataGridView3DaysInfo.ClearSelection();
+
+
         }
 
         private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)

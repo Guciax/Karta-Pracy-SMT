@@ -147,42 +147,51 @@ namespace Karta_Pracy_SMT
             return sqlTable;
         }
 
-        public static void SaveRecordToDb(DateTime startDate, DateTime endDate,string smtLine,string operatorSMT,string lotNo,string model,string manufacturedQty,string ngQty,string scrapQty,string firstPieceCheck,string ledLefts )
+        public static void SaveRecordToDb(DateTime startDate, DateTime endDate,string smtLine,string operatorSMT,string lotNo,string model,string manufacturedQty,string ngQty,string scrapQty,string firstPieceCheck,string ledLefts, string stencil )
         {
-            using (SqlConnection openCon = new SqlConnection(@"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;"))
+            bool release = true;
+
+#if DEBUG
+           release = false;
+#endif
+            if (release)
             {
-                string save = "INSERT into tb_SMT_Karta_Pracy (DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED) VALUES (@DataCzasStart,@DataCzasKoniec,@LiniaSMT,@OperatorSMT,@NrZlecenia,@Model,@IloscWykonana,@NGIlosc,@ScrapIlosc,@Kontrola1szt,@KoncowkiLED)";
-                using (SqlCommand querySave = new SqlCommand(save))
+                using (SqlConnection openCon = new SqlConnection(@"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;"))
                 {
-                    querySave.Connection = openCon;
-                    querySave.Parameters.Add("@DataCzasStart", SqlDbType.SmallDateTime).Value = startDate;
-                    querySave.Parameters.Add("@DataCzasKoniec", SqlDbType.SmallDateTime).Value = endDate;
-                    querySave.Parameters.Add("@LiniaSMT", SqlDbType.VarChar, 50).Value = smtLine;
-                    querySave.Parameters.Add("@OperatorSMT", SqlDbType.VarChar, 50).Value = operatorSMT;
-                    querySave.Parameters.Add("@NrZlecenia", SqlDbType.VarChar, 50).Value = lotNo;
-                    querySave.Parameters.Add("@Model", SqlDbType.VarChar, 50).Value = model;
-                    querySave.Parameters.Add("@IloscWykonana", SqlDbType.VarChar, 50).Value = manufacturedQty;
-                    querySave.Parameters.Add("@NGIlosc", SqlDbType.VarChar, 50).Value = ngQty;
-                    querySave.Parameters.Add("@ScrapIlosc", SqlDbType.VarChar, 50).Value = scrapQty;
-                    querySave.Parameters.Add("@Kontrola1szt", SqlDbType.VarChar, 50).Value = firstPieceCheck;
-                    querySave.Parameters.Add("@KoncowkiLED", SqlDbType.VarChar, 255).Value = ledLefts;
-                    openCon.Open();
-                    querySave.ExecuteNonQuery();
+                    string save = "INSERT into tb_SMT_Karta_Pracy (DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED,StencilQR) VALUES (@DataCzasStart,@DataCzasKoniec,@LiniaSMT,@OperatorSMT,@NrZlecenia,@Model,@IloscWykonana,@NGIlosc,@ScrapIlosc,@Kontrola1szt,@KoncowkiLED,@StencilQR)";
+                    using (SqlCommand querySave = new SqlCommand(save))
+                    {
+                        querySave.Connection = openCon;
+                        querySave.Parameters.Add("@DataCzasStart", SqlDbType.SmallDateTime).Value = startDate;
+                        querySave.Parameters.Add("@DataCzasKoniec", SqlDbType.SmallDateTime).Value = endDate;
+                        querySave.Parameters.Add("@LiniaSMT", SqlDbType.VarChar, 50).Value = smtLine;
+                        querySave.Parameters.Add("@OperatorSMT", SqlDbType.VarChar, 50).Value = operatorSMT;
+                        querySave.Parameters.Add("@NrZlecenia", SqlDbType.VarChar, 50).Value = lotNo;
+                        querySave.Parameters.Add("@Model", SqlDbType.VarChar, 50).Value = model;
+                        querySave.Parameters.Add("@IloscWykonana", SqlDbType.VarChar, 50).Value = manufacturedQty;
+                        querySave.Parameters.Add("@NGIlosc", SqlDbType.VarChar, 50).Value = ngQty;
+                        querySave.Parameters.Add("@ScrapIlosc", SqlDbType.VarChar, 50).Value = scrapQty;
+                        querySave.Parameters.Add("@Kontrola1szt", SqlDbType.VarChar, 50).Value = firstPieceCheck;
+                        querySave.Parameters.Add("@KoncowkiLED", SqlDbType.VarChar, 255).Value = ledLefts;
+                        querySave.Parameters.Add("@StencilQR", SqlDbType.VarChar, 255).Value = stencil;
+                        openCon.Open();
+                        querySave.ExecuteNonQuery();
+                    }
                 }
             }
         }
 
-        public static string[] GetOperatorsArray()
+        public static string[] GetOperatorsArray(int daysAgo)
         {
-           // DateTime untilDate = System.DateTime.Now.AddDays(daysAgo * (-1));
+           DateTime untilDate = System.DateTime.Now.AddDays(daysAgo * (-1));
             DataTable sqlTable = new DataTable();
             SqlConnection conn = new SqlConnection();
             conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
 
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
-            command.CommandText = String.Format(@"SELECT DISTINCT OperatorSMT FROM tb_SMT_Karta_Pracy");
-            //command.Parameters.AddWithValue("@days", untilDate.Date);
+            command.CommandText = String.Format(@"SELECT OperatorSMT,DataCzasKoniec FROM tb_SMT_Karta_Pracy Where DataCzasKoniec>@Data");
+            command.Parameters.AddWithValue("@Data", untilDate.Date);
 
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(sqlTable);
@@ -230,41 +239,50 @@ namespace Karta_Pracy_SMT
 
         public static bool UpdateLedLeftovers(LedLeftovers ledLeft)
         {
+            bool release = true;
+
+            #if DEBUG
+            //release=false;
+            #endif
+
             bool result = true;
 
-            try
+            if (release)
             {
-                List<Tuple<string, string, string>> flatList = new List<Tuple<string, string, string>>();
-                foreach (var led in ledLeft.RankA)
+                try
                 {
-                    flatList.Add(new Tuple<string, string, string>(led.Nc12, led.ID, led.Qty.ToString()));
-                }
-                foreach (var led in ledLeft.RankB)
-                {
-                    flatList.Add(new Tuple<string, string, string>(led.Nc12, led.ID, led.Qty.ToString()));
-                }
-                string lotNo = ledLeft.LotNo;
-
-                using (SqlConnection conn = new SqlConnection(@"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;"))
-                {
-                    conn.Open();
-                    foreach (var led in flatList)
+                    List<Tuple<string, string, string>> flatList = new List<Tuple<string, string, string>>();
+                    foreach (var led in ledLeft.RankA)
                     {
-                        SqlCommand cmd = new SqlCommand("sp_Spg_DaneBierzaceKompAktualneFULL_UPD_ilosc", conn);
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.Add(new SqlParameter("@NC12", led.Item1));
-                        cmd.Parameters.Add(new SqlParameter("@ID", led.Item2));
-                        cmd.Parameters.Add(new SqlParameter("@Ilosc", led.Item3));
-                        //cmd.Parameters.Add(new SqlParameter("@ZlecenieString", lotNo);
-                        cmd.ExecuteNonQuery();
+                        flatList.Add(new Tuple<string, string, string>(led.Nc12, led.ID, led.Qty.ToString()));
+                    }
+                    foreach (var led in ledLeft.RankB)
+                    {
+                        flatList.Add(new Tuple<string, string, string>(led.Nc12, led.ID, led.Qty.ToString()));
+                    }
+                    string lotNo = ledLeft.LotNo;
+
+                    using (SqlConnection conn = new SqlConnection(@"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;"))
+                    {
+                        conn.Open();
+                        foreach (var led in flatList)
+                        {
+                            SqlCommand cmd = new SqlCommand("sp_Spg_DaneBierzaceKompAktualneFULL_UPD_ilosc", conn);
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.Add(new SqlParameter("@NC12", led.Item1));
+                            cmd.Parameters.Add(new SqlParameter("@ID", led.Item2));
+                            cmd.Parameters.Add(new SqlParameter("@Ilosc", led.Item3));
+                            //cmd.Parameters.Add(new SqlParameter("@ZlecenieString", lotNo);
+                            cmd.ExecuteNonQuery();
+                        }
                     }
                 }
-            }
 
-            catch (SqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-                result = false;
+                catch (SqlException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    result = false;
+                }
             }
             return result;
         }
@@ -307,7 +325,7 @@ namespace Karta_Pracy_SMT
 
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
-            command.CommandText = String.Format(@"SELECT TOP 28 DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED FROM MES.dbo.tb_SMT_Karta_Pracy WHERE LiniaSMT = @smtLine ORDER BY DataCzasKoniec DESC;");
+            command.CommandText = String.Format(@"SELECT TOP 28 DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED,StencilQR FROM MES.dbo.tb_SMT_Karta_Pracy WHERE LiniaSMT = @smtLine ORDER BY DataCzasKoniec DESC;");
             command.Parameters.AddWithValue("@qty", recordsQty.ToString());
             command.Parameters.AddWithValue("@smtLine", line);
 

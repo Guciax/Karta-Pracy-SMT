@@ -55,15 +55,35 @@ namespace Karta_Pracy_SMT
                 }
             }
 
-            EfficiencyAtTime latestPoint = new EfficiencyAtTime();
-            latestPoint.time = DateTime.Now;
-            latestPoint.efficiency = newPoint;
-            result.Add(latestPoint);
-
-            if (result.Count>16)
+            if (newPoint > 0)
             {
-                result.RemoveAt(0);
+
+
+                EfficiencyAtTime latestPoint = new EfficiencyAtTime();
+                latestPoint.time = DateTime.Now;
+                latestPoint.efficiency = newPoint;
+
+#if DEBUG
+
+                Random rnd = new Random();
+                rnd.Next(80, 120);
+                latestPoint.efficiency = newPoint * (float)rnd.Next(80, 120) / 100;
+#endif
+
+                result.Add(latestPoint);
             }
+
+            if (result.Count > 16)
+            {
+                do
+                {
+                    result.RemoveAt(0);
+                } while (result.Count > 16);
+            }
+            //if (result.Count>16)
+            //{
+            //    result.RemoveAt(0);
+            //}
             savePoints(result);
             return result;
         }
@@ -100,61 +120,64 @@ namespace Karta_Pracy_SMT
             //    allPoints.RemoveAt(0);
             //}
 
-            float maxVal = Math.Max(allPoints.Select(ef => ef.efficiency).ToList().Max(), 100);
-            float minVal = allPoints.Select(ef => ef.efficiency).ToList().Min();
-
-            float scale = pbChart.Height/ (float)((maxVal * 1.1));
-            float xInterval = (pbChart.Width-10) / allPoints.Count;
-            
-
-            Bitmap DrawArea = new Bitmap(pbChart.Size.Width, pbChart.Size.Height);
-            pbChart.Image = DrawArea;
-
-            Graphics g;
-            g = Graphics.FromImage(DrawArea);
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-
-            Pen penEfficiencyThisShift = new Pen(Brushes.Lime,2);
-            Pen penEfficiencyPreviousShift = new Pen(Brushes.Yellow,2);
-            Pen penNorm = new Pen(Brushes.Gray, 1);
-            LinearGradientBrush linearGradientBrushThisShift = new LinearGradientBrush(new PointF(10,0), new PointF(10, 100), Color.Lime, Color.Transparent);
-            LinearGradientBrush linearGradientBrushPreviousShift = new LinearGradientBrush(new PointF(10,0), new PointF(10, 100), Color.Yellow, Color.Transparent);
-
-            float startX = 10;
-            float startY = pbChart.Size.Height-allPoints[0].efficiency*scale;
-            g.Clear(Color.Black);
-            GraphicsPath path = new GraphicsPath();
-            path.AddLine(10, pbChart.Size.Height, 10, startY);
-
-            g.DrawLine(penNorm, 10, pbChart.Size.Height - 100 * scale, pbChart.Width, pbChart.Size.Height - 100 * scale);
-            g.DrawString("100%", MainForm.DefaultFont, Brushes.Gray, pbChart.Width-40, pbChart.Size.Height - 98 * scale);
-
-            g.DrawString(allPoints[0].time.ToString("HH:mm"), MainForm.DefaultFont, Brushes.Gray, 0, pbChart.Size.Height - 18);
-            Debug.WriteLine("--- " + allPoints.Count + "points");
-
-            for (int i = 1; i < allPoints.Count; i++) 
+            if (allPoints.Count > 0)
             {
-                Debug.WriteLine(startY + "-" + (pbChart.Size.Height - allPoints[i].efficiency * scale));
-                g.DrawLine(penEfficiencyThisShift, startX, startY, i * xInterval, pbChart.Size.Height-allPoints[i].efficiency*scale);
-                g.DrawLine(penNorm, i * xInterval, pbChart.Size.Height -20, i * xInterval, pbChart.Size.Height - allPoints[i].efficiency * scale);
-                g.DrawString(allPoints[i].time.ToString("HH:mm"), MainForm.DefaultFont,Brushes.Gray, (float)i * xInterval - 20, pbChart.Size.Height - 18);
+                float maxVal = Math.Max(allPoints.Select(ef => ef.efficiency).ToList().Max(), 100);
+                float minVal = allPoints.Select(ef => ef.efficiency).ToList().Min();
 
-                path.AddLine(startX, startY, i * xInterval, pbChart.Size.Height - allPoints[i].efficiency * scale);
-                startX = i * xInterval;
-                startY = pbChart.Size.Height-allPoints[i].efficiency* scale;
+                float scale = pbChart.Height / (float)((maxVal * 1.1));
+                float xInterval = (pbChart.Width - 10) / allPoints.Count;
+
+
+                Bitmap DrawArea = new Bitmap(pbChart.Size.Width, pbChart.Size.Height);
+                pbChart.Image = DrawArea;
+
+                Graphics g;
+                g = Graphics.FromImage(DrawArea);
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+
+                Pen penEfficiencyThisShift = new Pen(Brushes.Lime, 2);
+                Pen penEfficiencyPreviousShift = new Pen(Brushes.Yellow, 2);
+                Pen penNorm = new Pen(Brushes.Gray, 1);
+                LinearGradientBrush linearGradientBrushThisShift = new LinearGradientBrush(new PointF(10, 0), new PointF(10, 100), Color.Lime, Color.Transparent);
+                LinearGradientBrush linearGradientBrushPreviousShift = new LinearGradientBrush(new PointF(10, 0), new PointF(10, 100), Color.Yellow, Color.Transparent);
+
+                float startX = 10;
+                float startY = pbChart.Size.Height - allPoints[0].efficiency * scale;
+                g.Clear(Color.Black);
+                GraphicsPath path = new GraphicsPath();
+                path.AddLine(10, pbChart.Size.Height, 10, startY);
+
+                g.DrawLine(penNorm, 10, pbChart.Size.Height - 100 * scale, pbChart.Width, pbChart.Size.Height - 100 * scale);
+                g.DrawString("100%", MainForm.DefaultFont, Brushes.Gray, pbChart.Width - 40, pbChart.Size.Height - 98 * scale);
+
+                g.DrawString(allPoints[0].time.ToString("HH:mm"), MainForm.DefaultFont, Brushes.Gray, 0, pbChart.Size.Height - 18);
+                Debug.WriteLine("--- " + allPoints.Count + "points");
+
+                for (int i = 1; i < allPoints.Count; i++)
+                {
+                    Debug.WriteLine(startY + "-" + (pbChart.Size.Height - allPoints[i].efficiency * scale));
+                    g.DrawLine(penEfficiencyThisShift, startX, startY, i * xInterval, pbChart.Size.Height - allPoints[i].efficiency * scale);
+                    g.DrawLine(penNorm, i * xInterval, pbChart.Size.Height - 20, i * xInterval, pbChart.Size.Height - allPoints[i].efficiency * scale);
+                    g.DrawString(allPoints[i].time.ToString("HH:mm"), MainForm.DefaultFont, Brushes.Gray, (float)i * xInterval - 20, pbChart.Size.Height - 18);
+
+                    path.AddLine(startX, startY, i * xInterval, pbChart.Size.Height - allPoints[i].efficiency * scale);
+                    startX = i * xInterval;
+                    startY = pbChart.Size.Height - allPoints[i].efficiency * scale;
+                }
+
+                path.AddLine(startX, startY, startX, pbChart.Size.Height);
+                path.AddLine(startX, pbChart.Size.Height, 10, pbChart.Size.Height);
+                g.FillPath(linearGradientBrushThisShift, path);
+
+
+
+                //g.DrawLine(0,)
+
+                //g.DrawLine(mypen, 0, 0, 200, 200);
+                //g.Clear(Color.White);
+                g.Dispose();
             }
-
-            path.AddLine(startX, startY, startX, pbChart.Size.Height);
-            path.AddLine(startX, pbChart.Size.Height, 10, pbChart.Size.Height);
-            g.FillPath(linearGradientBrushThisShift, path);
-
-
-
-            //g.DrawLine(0,)
-
-            //g.DrawLine(mypen, 0, 0, 200, 200);
-            //g.Clear(Color.White);
-            g.Dispose();
         }
 
         public static void DrawDayByDayEfficiency(DataGridView grid, PictureBox pbChart)
@@ -205,6 +228,11 @@ namespace Karta_Pracy_SMT
 
                 int itemCounter = 0;
 
+                Brush firstShiftColor = new SolidBrush(Tools.GetShiftColor(new DateTime(2018, 05, 29, 08, 00, 00)));
+                Brush secondShiftColor = new SolidBrush(Tools.GetShiftColor(new DateTime(2018, 05, 29, 15, 00, 00)));
+                Brush thirdShiftColor = new SolidBrush(Tools.GetShiftColor(new DateTime(2018, 05, 29, 23, 00, 00)));
+
+
                 foreach (var dayEntry in efficiencyPerDayShift)
                 {
                     float x = 50 + itemCounter * interval;
@@ -212,19 +240,20 @@ namespace Karta_Pracy_SMT
                     float y2 = dayEntry.Value[1] * scale;
                     float y3 = dayEntry.Value[2] * scale;
 
-                    g.FillRectangle(Brushes.Yellow, x - halfWidth, pbChart.Height - y3 - bottomMargin, halfWidth * 2, y3);
+                    g.FillRectangle(firstShiftColor, x - halfWidth, pbChart.Height - y3 - bottomMargin, halfWidth * 2, y3);
                     g.DrawRectangle(new Pen(Brushes.White), x - halfWidth, pbChart.Height - y3 - bottomMargin, halfWidth * 2, y3);
 
-                    g.FillRectangle(Brushes.SpringGreen, x - halfWidth, pbChart.Height - bottomMargin - y3 - y2, halfWidth * 2, y2);
+                    g.FillRectangle(secondShiftColor, x - halfWidth, pbChart.Height - bottomMargin - y3 - y2, halfWidth * 2, y2);
                     g.DrawRectangle(new Pen(Brushes.White), x - halfWidth, pbChart.Height - bottomMargin - y3 - y2, halfWidth * 2, y2);
 
-                    g.FillRectangle(Brushes.MediumOrchid, x - halfWidth, pbChart.Height - bottomMargin - y1 - y2 - y3, halfWidth * 2, y1);
+                    g.FillRectangle(thirdShiftColor, x - halfWidth, pbChart.Height - bottomMargin - y1 - y2 - y3, halfWidth * 2, y1);
                     g.DrawRectangle(new Pen(Brushes.White), x - halfWidth, pbChart.Height - bottomMargin - y1 - y2 - y3, halfWidth * 2, y1);
 
                     g.DrawString(dayEntry.Key, MainForm.DefaultFont, Brushes.White, x - 17, pbChart.Height - 13);
 
                     itemCounter++;
                 }
+                
 
             }
 

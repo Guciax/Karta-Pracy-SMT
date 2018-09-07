@@ -36,11 +36,6 @@ namespace Karta_Pracy_SMT
             textBoxLotNo.BackColor = Color.LemonChiffon;
         }
 
-        private void textBoxLotNo_TextChanged(object sender, EventArgs e)
-        {
-           
-        }
-
         private void CountQtyProductToManufacture()
         {
             double sumRankA = 0;
@@ -71,6 +66,12 @@ namespace Karta_Pracy_SMT
 
         private void CheckIfCorrectLed()
         {
+            bool release = true;
+
+#if DEBUG
+            release = false;
+#endif
+
             bool error = false;
             string errorDescription = "";
             List<string> loadedIds = new List<string>();
@@ -104,7 +105,7 @@ namespace Karta_Pracy_SMT
                     errorRowsA.Add(row.Index);
                 }
 
-                if (lotNumber!= row.Cells["RankAZlecenie"].Value.ToString())
+                if (lotNumber!= row.Cells["RankAZlecenie"].Value.ToString() & release)
                 {
                     error = true;
                     errorDescription += Environment.NewLine + "Ta rolka LED jest przypisana do innego zlecenia -" + row.Cells["RankAZlecenie"].Value.ToString();
@@ -131,7 +132,7 @@ namespace Karta_Pracy_SMT
                     errorRowsB.Add(row.Index);
                     errorCellsB.Add(new Tuple<int, int>(row.Index, row.Cells.IndexOf(row.Cells["RankB"])));
                 }
-                if (lotNumber != row.Cells["RankBZlecenie"].Value.ToString())
+                if (lotNumber != row.Cells["RankBZlecenie"].Value.ToString() & release)
                 {
                     error = true;
                     errorDescription += Environment.NewLine + "Ta rolka LED jest przypisana do innego zlecenia -" + row.Cells["RankBZlecenie"].Value.ToString();
@@ -236,7 +237,7 @@ namespace Karta_Pracy_SMT
             {
                 if (textBoxRankAQr.Text.Split('\t').Length > 5)
                 {
-                    currentLedReel = SqlOperations.GetLedDataFromSparing(textBoxRankAQr.Text);
+                    currentLedReel = SqlOperations.GetLedDataFromSparing(textBoxRankAQr.Text.ToUpper());
                     if (currentLedReel.ID != "error")
                     {
                         dataGridViewRankA.Rows.Add(currentLedReel.NC12, currentLedReel.ID, currentLedReel.Rank, currentLedReel.Ilosc, currentLedReel.ZlecenieString);
@@ -270,7 +271,30 @@ namespace Karta_Pracy_SMT
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            if (buttonOK.Text=="OK")
+            string stencil = "";
+
+            if (radioButtonNewStencil.Checked)
+            {
+                using (var dial = new ScanStencilQr(currentLotData.Model))
+                {
+                    dial.ShowDialog();
+                    if (dial.DialogResult == DialogResult.OK)
+                    {
+                        stencil = dial.stencil;
+                    }
+                }
+                    //Stencil QR reading
+                //    ScanStencilQr fm = new ScanStencilQr(ref stencil, currentLotData.Model);
+                //fm.ShowDialog();
+            }
+            else
+            {
+                stencil = (string)radioButtonCurrentStencil.Tag;
+            }
+
+
+
+            if (buttonOK.Text == "OK" & stencil.Trim() != "") 
             {
                 grid.SuspendLayout();
                 
@@ -312,8 +336,9 @@ namespace Karta_Pracy_SMT
                 grid.Rows[lastRow].Cells["StartDate"].Value = DateTime.Now.ToString("HH:mm:ss dd-MM-yyyy");
                 grid.Rows[lastRow].Cells["ColumnButtonLed"].Tag = ledsLeft;
                 grid.Rows[lastRow].Cells["Operator"].Value = comboBoxOperator.Text;
-
+                grid.Rows[lastRow].Cells["Stencil"].Value = stencil;
                 grid.Rows[lastRow].Cells["connQty"].Value = Tools.GetNumberOfConnectors(currentLotData.Model);
+
                 if (grid.Rows[lastRow].Cells["connQty"].Value.ToString()=="4")
                 {
                     //grid.Rows[lastRow].Cells["connQty"].Style.ForeColor = System.Drawing.Color.Red;
@@ -322,33 +347,29 @@ namespace Karta_Pracy_SMT
                 }
 
                 if (grid.Rows.Count == 1)
+                {
                     foreach (DataGridViewColumn col in grid.Columns)
                     {
                         col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     }
-
-                if (grid.Rows.Count==1)
-                {
                     grid.Rows[lastRow].Cells["ColumnQualityCheck"].Style.BackColor = Color.Red;
                     grid.Rows[lastRow].Cells["ColumnQualityCheck"].Value = "BRAK";
                 }
                 else
                 {
                     if (Tools.getCellValue(grid.Rows[lastRow + 1].Cells["ColumnModel"]) != "")
+                    {
                         if (grid.Rows[lastRow].Cells["ColumnModel"].Value.ToString() != grid.Rows[lastRow + 1].Cells["ColumnModel"].Value.ToString())
                         {
                             grid.Rows[lastRow].Cells["ColumnQualityCheck"].Style.BackColor = Color.Red;
                             grid.Rows[lastRow].Cells["ColumnQualityCheck"].Value = "BRAK";
-                            
                         }
+
+                    }
                 }
 
-                if (radioButtonNewStencil.Checked)
-                {
-                    //Stencil QR reading
-                    //ScanStencilQr fm = new ScanStencilQr(grid.Rows[lastRow].Cells["Stencil"]);
-                    //fm.ShowDialog();
-                }
+
+                
 
                 Tools.CleanUpDgv(grid);
                 grid.FirstDisplayedScrollingRowIndex = 0;
@@ -362,7 +383,7 @@ namespace Karta_Pracy_SMT
                 grid.Rows.Insert(0, 1);
                 grid.Rows[0].Cells["StartDate"].Value = System.DateTime.Now.ToLongTimeString();
                 grid.Rows[0].Cells["ColumnSaved"].Style.BackColor = Color.Red;
-                ScanStencilQr fm = new ScanStencilQr(grid.Rows[0].Cells["Stencil"]);
+                ScanStencilQr fm = new ScanStencilQr(currentLotData.Model);
                 fm.ShowDialog();
 
             #endif
@@ -374,7 +395,7 @@ namespace Karta_Pracy_SMT
         {
             if (e.KeyCode == Keys.Return)
             {
-                currentLedReel = SqlOperations.GetLedDataFromSparing(textBoxRankBQr.Text);
+                currentLedReel = SqlOperations.GetLedDataFromSparing(textBoxRankBQr.Text.ToUpper());
                 if (currentLedReel.ID != "error")
                 {
                     dataGridViewRankB.Rows.Add(currentLedReel.NC12, currentLedReel.ID, currentLedReel.Rank, currentLedReel.Ilosc, currentLedReel.ZlecenieString);
@@ -412,10 +433,20 @@ namespace Karta_Pracy_SMT
         private void NewLotForm_Load(object sender, EventArgs e)
         {
             // comboBoxOperator.Items.AddRange(SqlOperations.GetLastOperators());
-            comboBoxOperator.Items.AddRange(SqlOperations.GetOperatorsArray());
+            comboBoxOperator.Items.AddRange(SqlOperations.GetOperatorsArray(30));
             //Stencil QR reading
-            //radioButtonCurrentStencil.Visible = true;
-            //radioButtonNewStencil.Visible = true;
+            radioButtonCurrentStencil.Visible = true;
+            //radioButtonCurrentStencil.Checked = true;
+            radioButtonNewStencil.Visible = true;
+            //string previousStencil = "";
+            //foreach (DataGridViewRow row in grid.Rows)
+            //{
+            //    DataGridViewCheckBoxCell ch = (DataGridViewCheckBoxCell)row.Cells["ColumnSaved"];
+            //    if ((bool)ch.Value == true) 
+            //    {
+            //        previousStencil = row[""]
+            //    }
+            //}
         }
 
         private void dataGridViewRankA_SelectionChanged(object sender, EventArgs e)
@@ -445,9 +476,16 @@ namespace Karta_Pracy_SMT
         
         private void textBoxLotNo_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode== Keys.Return)
+            if (e.KeyCode== Keys.Return & textBoxLotNo.Text.Trim()!="")
             {
-                if (!SqlOperations.IsLotAlreadyInDb(textBoxLotNo.Text))
+                bool debug = false;
+
+#if DEBUG
+                debug = true;
+#endif
+
+
+                if (!SqlOperations.IsLotAlreadyInDb(textBoxLotNo.Text) || debug)
                 {
                     currentLotData = SqlOperations.GetLotData(textBoxLotNo.Text);
                     if (currentLotData.Model.Length > 0)
@@ -502,11 +540,12 @@ namespace Karta_Pracy_SMT
                             if (prevModel == currentLotData.Model)
                             {
                                 string stencil = Tools.getCellValue(grid.Rows[0].Cells["Stencil"]);
-                                if (stencil != "")
+                                if (stencil.Trim() != "")
                                 {
                                     radioButtonCurrentStencil.Enabled = true;
                                     radioButtonCurrentStencil.Checked = true;
-                                    radioButtonCurrentStencil.Text = "Aktualny: " + stencil;
+                                    radioButtonCurrentStencil.Text = "Aktualny:" +Environment.NewLine+ stencil;
+                                    radioButtonCurrentStencil.Tag = stencil;
                                 }
                             }
                     }

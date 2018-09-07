@@ -12,15 +12,18 @@ namespace Karta_Pracy_SMT
 {
     public partial class ScanStencilQr : Form
     {
-        private readonly DataGridViewCell cell;
-        public ScanStencilQr(DataGridViewCell cell)
+        private readonly string model;
+        public string stencil { get; set; }
+
+        public ScanStencilQr(string model)
         {
             InitializeComponent();
-            this.cell = cell;
+            this.model = model;
         }
 
         private void ScanStencilQr_Load(object sender, EventArgs e)
         {
+            labelTitle.Text = "Zeskanuj kod stencila" + Environment.NewLine + "Model: " + model;
             this.ActiveControl = textBox1;
         }
 
@@ -31,15 +34,17 @@ namespace Karta_Pracy_SMT
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Return)
+            if (e.KeyCode == Keys.Return & textBox1.Text.Trim()!="")
             {
-                cell.Value = textBox1.Text;
+                this.stencil = textBox1.Text;
+                this.DialogResult = DialogResult.OK;
                 this.Close();
             }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
     }

@@ -129,6 +129,7 @@
     <Compile Include="ShowShiftInfo.Designer.cs">
       <DependentUpon>ShowShiftInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="SolidColorBrush.cs" />
     <Compile Include="SqlOperations.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="VirtualKeyboard.cs">
