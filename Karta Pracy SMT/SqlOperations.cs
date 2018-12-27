@@ -53,10 +53,6 @@ namespace Karta_Pracy_SMT
                     rankA = formatRankString(sqlTableLot.Rows[0]["RankA"].ToString());
                     rankB = formatRankString(sqlTableLot.Rows[0]["RankB"].ToString());
                 }
-
-                
-
-
                 return new LotData(model, orderedQuantity, rankA, rankB);
             }
             else

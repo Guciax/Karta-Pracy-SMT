@@ -80,16 +80,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Add LED leftovers.cs">
+    <Compile Include="Data Structures\CurrentMstOrder.cs" />
+    <Compile Include="Forms\Add LED leftovers.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Add LED leftovers.Designer.cs">
+    <Compile Include="Forms\Add LED leftovers.Designer.cs">
       <DependentUpon>Add LED leftovers.cs</DependentUpon>
     </Compile>
-    <Compile Include="ChangeOverConfirmationCard.cs">
+    <Compile Include="Forms\AddMstLedReel.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChangeOverConfirmationCard.Designer.cs">
+    <Compile Include="Forms\AddMstLedReel.Designer.cs">
+      <DependentUpon>AddMstLedReel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ChangeOverConfirmationCard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ChangeOverConfirmationCard.Designer.cs">
       <DependentUpon>ChangeOverConfirmationCard.cs</DependentUpon>
     </Compile>
     <Compile Include="Charting.cs" />
@@ -97,58 +104,79 @@
     <Compile Include="Data Structures\EfficiencyStructure.cs" />
     <Compile Include="Drawing.cs" />
     <Compile Include="EfficiencyTools.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="Forms\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
+    <Compile Include="Forms\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Data Structures\LedLeftovers.cs" />
     <Compile Include="Data Structures\ledReelData.cs" />
     <Compile Include="Data Structures\LotData.cs" />
+    <Compile Include="Forms\MstOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MstOrder.Designer.cs">
+      <DependentUpon>MstOrder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UpdateMstQty.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\UpdateMstQty.Designer.cs">
+      <DependentUpon>UpdateMstQty.cs</DependentUpon>
+    </Compile>
     <Compile Include="MyCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="NewLotForm.cs">
+    <Compile Include="Forms\NewLotForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NewLotForm.Designer.cs">
+    <Compile Include="Forms\NewLotForm.Designer.cs">
       <DependentUpon>NewLotForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScanStencilQr.cs">
+    <Compile Include="Forms\ScanStencilQr.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ScanStencilQr.Designer.cs">
+    <Compile Include="Forms\ScanStencilQr.Designer.cs">
       <DependentUpon>ScanStencilQr.cs</DependentUpon>
     </Compile>
-    <Compile Include="ShowShiftInfo.cs">
+    <Compile Include="Forms\ShowShiftInfo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ShowShiftInfo.Designer.cs">
+    <Compile Include="Forms\ShowShiftInfo.Designer.cs">
       <DependentUpon>ShowShiftInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="SolidColorBrush.cs" />
     <Compile Include="SqlOperations.cs" />
     <Compile Include="Tools.cs" />
-    <Compile Include="VirtualKeyboard.cs">
+    <Compile Include="Forms\VirtualKeyboard.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="VirtualKeyboard.Designer.cs">
+    <Compile Include="Forms\VirtualKeyboard.Designer.cs">
       <DependentUpon>VirtualKeyboard.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Add LED leftovers.resx">
+    <EmbeddedResource Include="Forms\Add LED leftovers.resx">
       <DependentUpon>Add LED leftovers.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ChangeOverConfirmationCard.resx">
+    <EmbeddedResource Include="Forms\AddMstLedReel.resx">
+      <DependentUpon>AddMstLedReel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ChangeOverConfirmationCard.resx">
       <DependentUpon>ChangeOverConfirmationCard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
+    <EmbeddedResource Include="Forms\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NewLotForm.resx">
+    <EmbeddedResource Include="Forms\MstOrder.resx">
+      <DependentUpon>MstOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NewLotForm.resx">
       <DependentUpon>NewLotForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UpdateMstQty.resx">
+      <DependentUpon>UpdateMstQty.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -160,13 +188,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="ScanStencilQr.resx">
+    <EmbeddedResource Include="Forms\ScanStencilQr.resx">
       <DependentUpon>ScanStencilQr.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ShowShiftInfo.resx">
+    <EmbeddedResource Include="Forms\ShowShiftInfo.resx">
       <DependentUpon>ShowShiftInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="VirtualKeyboard.resx">
+    <EmbeddedResource Include="Forms\VirtualKeyboard.resx">
       <DependentUpon>VirtualKeyboard.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Karta Pracy SMT_TemporaryKey.pfx" />

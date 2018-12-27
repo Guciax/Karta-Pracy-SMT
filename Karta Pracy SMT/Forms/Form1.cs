@@ -1,4 +1,5 @@
 ﻿using Karta_Pracy_SMT.Data_Structures;
+using Karta_Pracy_SMT.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +24,7 @@ namespace Karta_Pracy_SMT
         Dictionary<string, EfficiencyNormsPerModel> normPerModel = new Dictionary<string, EfficiencyNormsPerModel>();
         string smtLine = ConfigurationManager.AppSettings["SMTLine"];
         double normLotsPerShift = 16;
+        CurrentMstOrder currentMstOrder = new CurrentMstOrder("", "", 0, 0, DateTime.Now, "", "", DateTime.Now,0, new List<string>());
 
         public MainForm()
         {
@@ -34,6 +36,7 @@ namespace Karta_Pracy_SMT
                 MessageBox.Show("Karta Pracy SMT jest już uruchomiona.");
                 this.Close();
             }
+
         }
 
         bool checkMirae = false;
@@ -73,6 +76,10 @@ namespace Karta_Pracy_SMT
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+
+            tabControl1.SizeMode = TabSizeMode.Fixed;
+            tabControl1.ItemSize = new Size(300, 30);
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -417,50 +424,64 @@ namespace Karta_Pracy_SMT
             dataGridView1.SuspendLayout();
             foreach (DataRow row in sqlTable.Rows)
             {
-                if (lotToRankABQty.ContainsKey(row["NrZlecenia"].ToString()))
+                string model = row["Model"].ToString();
+                if (model[2] == '-')
                 {
-                    dataGridView1.Rows.Insert(0);
-
-                    string lotNo = row["NrZlecenia"].ToString().Trim();
-                    string stencil = row["StencilQR"].ToString();
-
-                    LedLeftovers ledLeft = CreateLedLeftovers(row["KoncowkiLED"].ToString(), lotNo, lotToRankABQty);
-
-                    DataGridViewCheckBoxCell chbCell = (DataGridViewCheckBoxCell)dataGridView1.Rows[0].Cells[0];
-                    chbCell.Value = true;
-
-                    dataGridView1.Rows[0].Cells[1].Value = lotNo;
-                    string connQty = Tools.GetNumberOfConnectors(row["Model"].ToString().Trim());
-                    dataGridView1.Rows[0].Cells[3].Value = connQty;
-                    if (connQty == "4")
+                    if (lotToRankABQty.ContainsKey(row["NrZlecenia"].ToString()))
                     {
-                        dataGridView1.Rows[0].Cells[3].Style.ForeColor = Color.White;
-                        dataGridView1.Rows[0].Cells[3].Style.BackColor = Color.DarkCyan;
+                        dataGridView1.Rows.Insert(0);
+
+                        string lotNo = row["NrZlecenia"].ToString().Trim();
+                        string stencil = row["StencilQR"].ToString();
+
+                        LedLeftovers ledLeft = CreateLedLeftovers(row["KoncowkiLED"].ToString(), lotNo, lotToRankABQty);
+
+                        DataGridViewCheckBoxCell chbCell = (DataGridViewCheckBoxCell)dataGridView1.Rows[0].Cells[0];
+                        chbCell.Value = true;
+
+                        dataGridView1.Rows[0].Cells[1].Value = lotNo;
+                        string connQty = Tools.GetNumberOfConnectors(row["Model"].ToString().Trim());
+                        dataGridView1.Rows[0].Cells[3].Value = connQty;
+                        if (connQty == "4")
+                        {
+                            dataGridView1.Rows[0].Cells[3].Style.ForeColor = Color.White;
+                            dataGridView1.Rows[0].Cells[3].Style.BackColor = Color.DarkCyan;
+                        }
+                        dataGridView1.Rows[0].Cells[2].Value = row["Model"].ToString().Trim();
+                        //dataGridView1.Rows[0].Cells[4].Value = kontrola pierwszej
+                        dataGridView1.Rows[0].Cells[5].Value = lotToRankABQty[lotNo][2];
+                        dataGridView1.Rows[0].Cells[6].Value = ledLeft.RankA[0].Nc12;
+                        dataGridView1.Rows[0].Cells[7].Value = lotToRankABQty[lotNo][0];
+                        dataGridView1.Rows[0].Cells[8].Value = lotToRankABQty[lotNo][1];
+                        dataGridView1.Rows[0].Cells[9].Value = row["IloscWykonana"].ToString().Trim();
+                        dataGridView1.Rows[0].Cells[10].Value = row["NGIlosc"].ToString().Trim();
+                        dataGridView1.Rows[0].Cells[11].Value = row["ScrapIlosc"].ToString().Trim();
+                        dataGridView1.Rows[0].Cells[12].Tag = ledLeft;
+                        dataGridView1.Rows[0].Cells[12].Value = "OK";
+
+                        dataGridView1.Rows[0].Cells[13].Value = DateTime.Parse(row["DataCzasStart"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy");
+                        dataGridView1.Rows[0].Cells[14].Value = DateTime.Parse(row["DataCzasKoniec"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy");
+                        Color cellColor = Tools.GetShiftColor(DateTime.Parse(row["DataCzasKoniec"].ToString()));
+                        dataGridView1.Rows[0].Cells[13].Style.BackColor = cellColor;
+                        dataGridView1.Rows[0].Cells[14].Style.BackColor = cellColor;
+                        dataGridView1.Rows[0].Cells[15].Style.BackColor = cellColor;
+
+                        dataGridView1.Rows[0].Cells[15].Value = row["OperatorSMT"].ToString().Trim();
+                        dataGridView1.Rows[0].Cells[16].Value = stencil;
                     }
-                    dataGridView1.Rows[0].Cells[2].Value = row["Model"].ToString().Trim();
-                    //dataGridView1.Rows[0].Cells[4].Value = kontrola pierwszej
-                    dataGridView1.Rows[0].Cells[5].Value = lotToRankABQty[lotNo][2];
-                    dataGridView1.Rows[0].Cells[6].Value = ledLeft.RankA[0].Nc12;
-                    dataGridView1.Rows[0].Cells[7].Value = lotToRankABQty[lotNo][0];
-                    dataGridView1.Rows[0].Cells[8].Value = lotToRankABQty[lotNo][1];
-                    dataGridView1.Rows[0].Cells[9].Value = row["IloscWykonana"].ToString().Trim();
-                    dataGridView1.Rows[0].Cells[10].Value = row["NGIlosc"].ToString().Trim();
-                    dataGridView1.Rows[0].Cells[11].Value = row["ScrapIlosc"].ToString().Trim();
-                    dataGridView1.Rows[0].Cells[12].Tag = ledLeft;
-                    dataGridView1.Rows[0].Cells[12].Value = "OK";
-
-                    dataGridView1.Rows[0].Cells[13].Value = DateTime.Parse(row["DataCzasStart"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy");
-                    dataGridView1.Rows[0].Cells[14].Value = DateTime.Parse(row["DataCzasKoniec"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy");
-                    Color cellColor = Tools.GetShiftColor(DateTime.Parse(row["DataCzasKoniec"].ToString()));
-                    dataGridView1.Rows[0].Cells[13].Style.BackColor = cellColor;
-                    dataGridView1.Rows[0].Cells[14].Style.BackColor = cellColor;
-                    dataGridView1.Rows[0].Cells[15].Style.BackColor = cellColor;
-
-                    dataGridView1.Rows[0].Cells[15].Value = row["OperatorSMT"].ToString().Trim();
-                    dataGridView1.Rows[0].Cells[16].Value = stencil;
+                }
+                else
+                {
+                    //MST order
+                    dataGridViewMstOrders.Rows.Insert(0, DateTime.Parse(row["DataCzasStart"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy"),
+                        DateTime.Parse(row["DataCzasKoniec"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy"),
+                        row["Model"].ToString().Trim(),
+                        row["IloscWykonana"].ToString().Trim(),
+                        row["OperatorSMT"].ToString().Trim());
                 }
             }
             Tools.AutoSizeColumnsWidth(dataGridView1);
+            Tools.AutoSizeColumnsWidth(dataGridViewMstOrders);
             dataGridView1.ResumeLayout();
             suspendCellVelueChangedEvent = false;
         }
@@ -595,6 +616,121 @@ namespace Karta_Pracy_SMT
                         e.Cancel = true;
                         dataGridView1.EndEdit();
                     }
+                }
+            }
+        }
+
+        private void tabControl1_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            //// This event is called once for each tab button in your tab control
+            //// First paint the background with a color based on the current tab
+            //// e.Index is the index of the tab in the TabPages collection.
+            //switch (e.Index)
+            //{
+            //    case 0:
+            //        e.Graphics.FillRectangle(new SolidBrush(Color.Black), e.Bounds);
+            //        break;
+            //    case 1:
+            //        e.Graphics.FillRectangle(new SolidBrush(Color.DarkBlue), e.Bounds);
+            //        break;
+            //    default:
+            //        break;
+            //}
+
+            //// Then draw the current tab button text 
+            //Rectangle paddedBounds = e.Bounds;
+            //paddedBounds.Inflate(-2, -2);
+            //float fontSize = 14;
+            //StringFormat sf = new StringFormat();
+            //sf.LineAlignment = StringAlignment.Center;
+            //sf.Alignment = StringAlignment.Center;
+            //e.Graphics.DrawString(tabControl1.TabPages[e.Index].Text, new Font(FontFamily.GenericSansSerif, fontSize), SystemBrushes.HighlightText, paddedBounds, sf);
+
+        }
+
+        private void tabControl1_Deselecting(object sender, TabControlCancelEventArgs e)
+        {
+            if (tabControl1.SelectedTab.Name == "tabPageLg")
+            {
+                int notSavedRowsQty = 0;
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    if (row.Cells["ColumnSaved"].Style.BackColor == Color.Red)
+                    {
+                        notSavedRowsQty++;
+                    }
+                }
+                if (notSavedRowsQty>0)
+                {
+                    MessageBox.Show("Zakończ trwające zlecenia");
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        public void UpdateMstLabels()
+        {
+            labelMstOrderStartDate.Text = currentMstOrder.DateStart.ToString("HH:mm:ss  dd-MM-yyyy");
+            labelMstOrderLastUpdate.Text = currentMstOrder.LastUpdateTime.ToString("HH:mm:ss  dd-MM-yyyy");
+            labelMstOrderQtyDone.Text = currentMstOrder.MadeQty.ToString();
+            label12NC.Text = currentMstOrder.Nc12;
+            labelMstOrderOrderedQty.Text = currentMstOrder.OrderedQty.ToString();
+            labelMstOrderNo.Text = currentMstOrder.OrderNumber;
+            labelMstOrderNo.Tag = currentMstOrder.OrderNumber;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            using (MstOrder mstOrderForm = new MstOrder())
+            {
+                if (mstOrderForm.ShowDialog() == DialogResult.OK)
+                {
+                    currentMstOrder.DateStart = mstOrderForm.currentMstOrderData.DateStart;
+                    currentMstOrder.LastUpdateTime = mstOrderForm.currentMstOrderData.LastUpdateTime;
+                    currentMstOrder.MadeQty = mstOrderForm.currentMstOrderData.MadeQty;
+                    currentMstOrder.Nc12 = mstOrderForm.currentMstOrderData.Nc12.Insert(5," ").Insert(10," ");
+                    currentMstOrder.Oper = mstOrderForm.currentMstOrderData.Oper;
+                    currentMstOrder.OrderedQty = mstOrderForm.currentMstOrderData.OrderedQty;
+                    currentMstOrder.OrderNumber = mstOrderForm.currentMstOrderData.OrderNumber;
+                    currentMstOrder.PcbOnMb = mstOrderForm.currentMstOrderData.PcbOnMb;
+                    currentMstOrder.Stencil = mstOrderForm.currentMstOrderData.Stencil;
+                    UpdateMstLabels();
+                }
+
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            using (UpdateMstQty updateQtyForm = new UpdateMstQty(currentMstOrder.LastUpdateTime, currentMstOrder.MadeQty, currentMstOrder.PcbOnMb))
+            {
+                if (updateQtyForm.ShowDialog() == DialogResult.OK)
+                {
+                    currentMstOrder.MadeQty = updateQtyForm.newTotalQty;
+                    currentMstOrder.LastUpdateTime = DateTime.Now;
+                    UpdateMstLabels();
+                }
+            }
+
+            SqlOperations.SaveRecordToDb(currentMstOrder.DateStart, DateTime.Now, smtLine, currentMstOrder.Oper, currentMstOrder.OrderNumber, currentMstOrder.Nc12, currentMstOrder.MadeQty.ToString(), "0", "0", "OK", "LEDS LEFT", currentMstOrder.Stencil);
+
+            dataGridViewMstOrders.Rows.Insert(0,
+                currentMstOrder.DateStart,
+                DateTime.Now,
+                currentMstOrder.Nc12,
+                currentMstOrder.MadeQty,
+                currentMstOrder.Oper);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            using (UpdateMstQty updateQtyForm = new UpdateMstQty(currentMstOrder.LastUpdateTime, currentMstOrder.MadeQty, currentMstOrder.PcbOnMb))
+            {
+                if (updateQtyForm.ShowDialog() == DialogResult.OK)
+                {
+                    currentMstOrder.MadeQty = updateQtyForm.newTotalQty;
+                    currentMstOrder.LastUpdateTime = DateTime.Now;
+                    UpdateMstLabels();
                 }
             }
         }
