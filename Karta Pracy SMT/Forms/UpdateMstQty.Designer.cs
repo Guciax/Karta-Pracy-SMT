@@ -33,10 +33,10 @@
             this.label3 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.numericUpDownMbQty = new System.Windows.Forms.NumericUpDown();
             this.labelMin = new System.Windows.Forms.Label();
             this.labelMbCalsTotal = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.numericUpDownMbQty = new System.Windows.Forms.NumericUpDown();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMbQty)).BeginInit();
@@ -109,6 +109,20 @@
             this.panel1.Size = new System.Drawing.Size(800, 136);
             this.panel1.TabIndex = 5;
             // 
+            // numericUpDownMbQty
+            // 
+            this.numericUpDownMbQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.numericUpDownMbQty.Location = new System.Drawing.Point(269, 51);
+            this.numericUpDownMbQty.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numericUpDownMbQty.Name = "numericUpDownMbQty";
+            this.numericUpDownMbQty.Size = new System.Drawing.Size(120, 38);
+            this.numericUpDownMbQty.TabIndex = 7;
+            this.numericUpDownMbQty.ValueChanged += new System.EventHandler(this.numericUpDownMbQty_ValueChanged);
+            // 
             // labelMin
             // 
             this.labelMin.AutoSize = true;
@@ -123,7 +137,7 @@
             // 
             this.labelMbCalsTotal.AutoSize = true;
             this.labelMbCalsTotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelMbCalsTotal.Location = new System.Drawing.Point(408, 51);
+            this.labelMbCalsTotal.Location = new System.Drawing.Point(441, 51);
             this.labelMbCalsTotal.Name = "labelMbCalsTotal";
             this.labelMbCalsTotal.Size = new System.Drawing.Size(86, 31);
             this.labelMbCalsTotal.TabIndex = 5;
@@ -138,20 +152,6 @@
             this.label2.Size = new System.Drawing.Size(246, 31);
             this.label2.TabIndex = 2;
             this.label2.Text = "Ilość całkowita MB:";
-            // 
-            // numericUpDownMbQty
-            // 
-            this.numericUpDownMbQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.numericUpDownMbQty.Location = new System.Drawing.Point(554, 52);
-            this.numericUpDownMbQty.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.numericUpDownMbQty.Name = "numericUpDownMbQty";
-            this.numericUpDownMbQty.Size = new System.Drawing.Size(120, 38);
-            this.numericUpDownMbQty.TabIndex = 7;
-            this.numericUpDownMbQty.ValueChanged += new System.EventHandler(this.numericUpDownMbQty_ValueChanged);
             // 
             // UpdateMstQty
             // 

@@ -26,7 +26,7 @@ namespace Karta_Pracy_SMT
                 string modelFamily = model.Substring(0, 6) + "XXX" + model.Substring(9, 1);
 
                 if (result.ContainsKey(modelFamily)) continue;
-
+                if(row["A_PKG_QTY"].ToString().Trim()=="" )continue;
                 int rankAQty = int.Parse(row["A_PKG_QTY"].ToString());
                 int rankBQty = int.Parse(row["B_PKG_QTY"].ToString());
 

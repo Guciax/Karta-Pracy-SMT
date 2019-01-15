@@ -371,7 +371,7 @@ namespace Karta_Pracy_SMT
 
                 
 
-                Tools.CleanUpDgv(grid);
+                DgvTools.CleanUpLgiDgv(grid);
                 grid.FirstDisplayedScrollingRowIndex = 0;
                 this.Close();
                 grid.ResumeLayout();

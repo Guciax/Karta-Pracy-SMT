@@ -13,7 +13,7 @@ namespace Karta_Pracy_SMT.Forms
 {
     public partial class MstOrder : Form
     {
-        internal CurrentMstOrder currentMstOrderData;
+        public CurrentMstOrder currentMstOrderData = new CurrentMstOrder("", "", 0, 0, DateTime.Now, "", "", DateTime.Now, 0, 0, 0, 0, new List<ledReelData>(),"",0);
 
         public MstOrder()
         {
@@ -28,6 +28,7 @@ namespace Karta_Pracy_SMT.Forms
         private void MstOrder_Load(object sender, EventArgs e)
         {
             comboBoxOperator.Items.AddRange(SqlOperations.GetOperatorsArray(30));
+            this.ActiveControl = textBoxOrderNumber;
         }
 
         private void CheckInputData()
@@ -36,8 +37,7 @@ namespace Karta_Pracy_SMT.Forms
 
             if (comboBoxOperator.Text.Trim() == "") result = false;
             if (textBoxOrderNumber.Text.Trim()== "") result = false;
-            if (textBox12NC.Text.Trim() =="") result = false;
-            if (textBoxQuantity.Text.Trim() == "") result = false;
+            if (textBoxStencil.Text.Trim() == "") result = false;
 
             if (result)
                 buttonOK.Text = "OK";
@@ -50,15 +50,9 @@ namespace Karta_Pracy_SMT.Forms
             CheckInputData();
         }
 
-        private void comboBoxOperator_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            CheckInputData();
-        }
+        
 
-        private void textBoxStencil_TextChanged(object sender, EventArgs e)
-        {
-            CheckInputData();
-        }
+        
 
         private void textBoxQuantity_TextChanged(object sender, EventArgs e)
         {
@@ -76,11 +70,11 @@ namespace Karta_Pracy_SMT.Forms
         }
         private void textBoxQuantity_TextChanged_1(object sender, EventArgs e)
         {
-            CheckInputData();
+
         }
         private void textBoxPcbOnMb_TextChanged(object sender, EventArgs e)
         {
-            CheckInputData();
+
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
@@ -88,9 +82,6 @@ namespace Karta_Pracy_SMT.Forms
             CheckInputData();
             if (buttonOK.Text== "OK")
             {
-                int pcbOnMb = int.Parse(textBoxPcbOnMb.Text);
-                currentMstOrderData = new CurrentMstOrder(textBoxOrderNumber.Text, comboBoxOperator.Text, int.Parse(textBoxQuantity.Text), 0, DateTime.Now, textBox12NC.Text.Trim().Replace(" ",""), textBox12NC.Text, DateTime.Now, pcbOnMb, new List<string>());
-
                 this.DialogResult = DialogResult.OK;
             }
             else
@@ -101,7 +92,7 @@ namespace Karta_Pracy_SMT.Forms
 
         private void comboBoxOperator_Leave_1(object sender, EventArgs e)
         {
-            if (comboBoxOperator.Text.Trim() != "")
+            if (comboBoxOperator.Text.Trim() != "") 
             {
                 comboBoxOperator.BackColor = Color.Lime;
             }
@@ -113,40 +104,48 @@ namespace Karta_Pracy_SMT.Forms
 
         private void textBoxOrderNumber_Leave(object sender, EventArgs e)
         {
-            TextBox tb = (TextBox)sender;
-
-            if (tb.Text.Trim() != "")
+            labelModelInfo.Text = "";
+            DataTable lotTable = MST.MES.SqlOperations.Kitting.GetKittingTableForLots(new string[] { textBoxOrderNumber.Text });
+            if (MST.MES.SqlOperations.SMT.SmtLots(new string[] { textBoxOrderNumber.Text }).Rows.Count>0)
             {
-                tb.BackColor = Color.Lime;
+                labelModelInfo.Text = "Ten numer zlecenia istnieje w bazie SMT";
+            }
+            if (lotTable.Rows.Count > 0)
+            {
+                currentMstOrderData.OrderNumber = textBoxOrderNumber.Text;
+                string modelId = lotTable.Rows[0]["NC12_wyrobu"].ToString();
+                currentMstOrderData.Nc10 = modelId;
+                currentMstOrderData.ModelName =  MST.MES.SqlOperations.ConnectDB.NC12ToModelName(modelId+"00");
+                DataTable modelInfoTable = MST.MES.SqlOperations.MesModels.GetMstModelInfo(modelId);
+                currentMstOrderData.OrderedQty = int.Parse(lotTable.Rows[0]["Ilosc_wyrobu_zlecona"].ToString());
+                currentMstOrderData.OrderNumber = textBoxOrderNumber.Text;
+                currentMstOrderData.PcbOnMb = int.Parse(modelInfoTable.Rows[0]["SMT_Carrier_QTY"].ToString());
+                currentMstOrderData.ResQty = int.Parse(modelInfoTable.Rows[0]["Resistor_Qty"].ToString());
+                currentMstOrderData.ConnQty = int.Parse(modelInfoTable.Rows[0]["Conn_Qty"].ToString());
+                currentMstOrderData.LedQty = int.Parse(modelInfoTable.Rows[0]["PKG_SUM_QTY"].ToString());
+                currentMstOrderData.BinQty = int.Parse(lotTable.Rows[0]["IloscKIT"].ToString());
+                textBoxOrderNumber.BackColor = Color.Lime;
+                labelModelInfo.Text += Environment.NewLine+ currentMstOrderData.Nc10.Insert(4, " ").Insert(8, " ") + Environment.NewLine + currentMstOrderData.ModelName;
             }
             else
             {
-                tb.BackColor = Color.Red;
+                labelModelInfo.Text = "Brak numeru zlecenia w bazie Kitting!";
             }
         }
 
-        private void textBoxQuantity_Leave(object sender, EventArgs e)
+        private void comboBoxOperator_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int value = 0;
-            TextBox tbx = (TextBox)sender;
-            if (Int32.TryParse(tbx.Text, out value))
-            {
-                if (value > 0)
-                {
-                    tbx.BackColor = Color.Lime;
-                }
-                else
-                {
-                    tbx.BackColor = Color.Red;
-                    tbx.Text = "";
-                }
-            }
-            else
-            {
-                tbx.BackColor = Color.Red;
-                tbx.Text = "";
-            }
+            currentMstOrderData.Oper = comboBoxOperator.Text;
+            CheckInputData();
         }
+
+        private void textBoxStencil_TextChanged(object sender, EventArgs e)
+        {
+            currentMstOrderData.Stencil = textBoxStencil.Text;
+            CheckInputData();
+        }
+
+
 
 
     }

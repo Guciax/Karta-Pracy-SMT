@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Karta_Pracy_SMT
 {
-    class ledReelData
+    public class ledReelData
     {
-        public ledReelData(string NC12,double Ilosc,string LPN_ID,string LPN_NC,string ZlecenieString, string ID, string rank)
+        private const bool @false = false;
+
+        public ledReelData(string NC12, double Ilosc, string LPN_ID, string LPN_NC, string ZlecenieString, string ID, string rank, bool removedToTrash = false)
         {
             this.NC12 = NC12;
             this.Ilosc = Ilosc;
@@ -17,6 +19,7 @@ namespace Karta_Pracy_SMT
             this.ZlecenieString = ZlecenieString;
             this.ID = ID;
             Rank = rank;
+            RemovedToTrash = removedToTrash;
         }
 
         public string NC12 { get; }
@@ -26,5 +29,6 @@ namespace Karta_Pracy_SMT
         public string ZlecenieString { get; }
         public string ID { get; }
         public string Rank { get; }
+        public bool RemovedToTrash { get; set; }
     }
 }

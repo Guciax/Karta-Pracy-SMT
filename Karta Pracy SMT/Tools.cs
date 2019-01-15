@@ -54,33 +54,7 @@ namespace Karta_Pracy_SMT
             }
         }
 
-        public static void CleanUpDgv(DataGridView dgv)
-        {
-            List<DataGridViewRow> rowsToRemove = new List<DataGridViewRow>();
-            for (int i = 0; i < dgv.Rows.Count; i++)
-            {
-                if (!dgv.Rows[i].Displayed)
-                {
-                    bool saved = Convert.ToBoolean(dgv.Rows[i].Cells[0].Value);
-                    if (saved)
-                    {
-                        rowsToRemove.Add(dgv.Rows[i]);
-                    }
-                }
-
-                DataGridViewCheckBoxCell chbCell = (DataGridViewCheckBoxCell)dgv.Rows[i].Cells[0];
-                if (Convert.ToBoolean(chbCell.Value))
-                {
-                    dgv.Rows[i].Cells[9].ReadOnly = true;
-                    dgv.Rows[i].Cells[10].ReadOnly = true;
-                }
-            }
-
-            foreach (var row in rowsToRemove)
-            {
-                dgv.Rows.Remove(row);
-            }
-        }
+        
 
         public static string getCellValue(DataGridViewCell cell)
         {

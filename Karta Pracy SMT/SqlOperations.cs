@@ -143,7 +143,7 @@ namespace Karta_Pracy_SMT
             return sqlTable;
         }
 
-        public static void SaveRecordToDb(DateTime startDate, DateTime endDate,string smtLine,string operatorSMT,string lotNo,string model,string manufacturedQty,string ngQty,string scrapQty,string firstPieceCheck,string ledLefts, string stencil )
+        public static void SaveRecordToDb(DateTime startDate, DateTime endDate,string smtLine,string operatorSMT,string lotNo,string model,string manufacturedQty,string ngQty,string scrapQty,string firstPieceCheck,string ledLefts, string stencil, string client )
         {
             bool release = true;
 
@@ -154,7 +154,7 @@ namespace Karta_Pracy_SMT
             {
                 using (SqlConnection openCon = new SqlConnection(@"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;"))
                 {
-                    string save = "INSERT into tb_SMT_Karta_Pracy (DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED,StencilQR) VALUES (@DataCzasStart,@DataCzasKoniec,@LiniaSMT,@OperatorSMT,@NrZlecenia,@Model,@IloscWykonana,@NGIlosc,@ScrapIlosc,@Kontrola1szt,@KoncowkiLED,@StencilQR)";
+                    string save = "INSERT into tb_SMT_Karta_Pracy (DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED,StencilQR,Client) VALUES (@DataCzasStart,@DataCzasKoniec,@LiniaSMT,@OperatorSMT,@NrZlecenia,@Model,@IloscWykonana,@NGIlosc,@ScrapIlosc,@Kontrola1szt,@KoncowkiLED,@StencilQR,@Client)";
                     using (SqlCommand querySave = new SqlCommand(save))
                     {
                         querySave.Connection = openCon;
@@ -170,6 +170,7 @@ namespace Karta_Pracy_SMT
                         querySave.Parameters.Add("@Kontrola1szt", SqlDbType.VarChar, 50).Value = firstPieceCheck;
                         querySave.Parameters.Add("@KoncowkiLED", SqlDbType.VarChar, 255).Value = ledLefts;
                         querySave.Parameters.Add("@StencilQR", SqlDbType.VarChar, 255).Value = stencil;
+                        querySave.Parameters.Add("@Client", SqlDbType.VarChar, 3).Value = client;
                         openCon.Open();
                         querySave.ExecuteNonQuery();
                     }
@@ -312,7 +313,7 @@ namespace Karta_Pracy_SMT
             return result;
         }
 
-        public static DataTable GetSmtRecordsFromDb(int recordsQty, string line)
+        public static DataTable GetLgSmtRecordsFromDb(int recordsQty, string line)
         {
             DataTable result = new DataTable();
 
@@ -321,7 +322,68 @@ namespace Karta_Pracy_SMT
 
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
-            command.CommandText = String.Format(@"SELECT TOP 28 DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED,StencilQR FROM MES.dbo.tb_SMT_Karta_Pracy WHERE LiniaSMT = @smtLine ORDER BY DataCzasKoniec DESC;");
+            command.CommandText = String.Format(@"SELECT TOP 28 DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED,StencilQR,Client FROM MES.dbo.tb_SMT_Karta_Pracy WHERE LiniaSMT = @smtLine AND (Client<>'MST' OR Client is null) ORDER BY DataCzasKoniec DESC;");
+            command.Parameters.AddWithValue("@qty", recordsQty.ToString());
+            command.Parameters.AddWithValue("@smtLine", line);
+
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(result);
+            Debug.WriteLine(line + " " + result.Rows.Count);
+
+            DataView dv = result.DefaultView;
+            dv.Sort = "DataCzasStart";
+            //DataTable sortedDT = dv.ToTable();
+
+            return dv.ToTable();
+        }
+
+        public static Dictionary<string, string> nc12ToModelDict (string[] nc12List)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            DataTable sqlTableLot = new DataTable();
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=ConnectToMSTDB;User Id=mes;Password=mes;";
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = conn;
+            command.CommandText = @"SELECT NC12,Opis FROM v_Item WHERE";
+            for(int i=0; i<nc12List.Length;i ++)//     (var nc12 in nc12List)
+            {
+                if (i > 0)
+                {
+                    command.CommandText += " OR";
+                }
+
+                    command.CommandText += " NC12=@nc12" + i;
+                    command.Parameters.AddWithValue("@nc12" + i, nc12List[i]);
+            }
+
+
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(sqlTableLot);
+
+
+            foreach (DataRow row in sqlTableLot.Rows)
+            {
+                string nc12 = row["NC12"].ToString();
+                if (result.ContainsKey(nc12)) continue;
+                string opis = row["Opis"].ToString();
+
+                result.Add(nc12, opis);
+            }
+            return result;
+        }
+
+        public static DataTable GetMstSmtRecordsFromDb(int recordsQty, string line)
+        {
+            DataTable result = new DataTable();
+
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = conn;
+            command.CommandText = String.Format(@"SELECT TOP 28 DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED,StencilQR,Client FROM MES.dbo.tb_SMT_Karta_Pracy WHERE LiniaSMT = @smtLine AND Client='MST' ORDER BY DataCzasKoniec DESC;");
             command.Parameters.AddWithValue("@qty", recordsQty.ToString());
             command.Parameters.AddWithValue("@smtLine", line);
 

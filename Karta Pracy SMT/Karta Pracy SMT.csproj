@@ -66,6 +66,9 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MST.MES">
+      <HintPath>..\..\MST.MES\MST.MES\bin\Release\MST.MES.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -81,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data Structures\CurrentMstOrder.cs" />
+    <Compile Include="DgvTools.cs" />
     <Compile Include="Forms\Add LED leftovers.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,6 +108,12 @@
     <Compile Include="Data Structures\EfficiencyStructure.cs" />
     <Compile Include="Drawing.cs" />
     <Compile Include="EfficiencyTools.cs" />
+    <Compile Include="Forms\FinishMstOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FinishMstOrder.Designer.cs">
+      <DependentUpon>FinishMstOrder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,12 +129,19 @@
     <Compile Include="Forms\MstOrder.Designer.cs">
       <DependentUpon>MstOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ReadQrForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ReadQrForm.Designer.cs">
+      <DependentUpon>ReadQrForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\UpdateMstQty.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\UpdateMstQty.Designer.cs">
       <DependentUpon>UpdateMstQty.cs</DependentUpon>
     </Compile>
+    <Compile Include="MstOperations.cs" />
     <Compile Include="MyCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -166,6 +183,9 @@
     <EmbeddedResource Include="Forms\ChangeOverConfirmationCard.resx">
       <DependentUpon>ChangeOverConfirmationCard.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FinishMstOrder.resx">
+      <DependentUpon>FinishMstOrder.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -174,6 +194,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\NewLotForm.resx">
       <DependentUpon>NewLotForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ReadQrForm.resx">
+      <DependentUpon>ReadQrForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\UpdateMstQty.resx">
       <DependentUpon>UpdateMstQty.cs</DependentUpon>

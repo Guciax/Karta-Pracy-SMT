@@ -24,7 +24,7 @@ namespace Karta_Pracy_SMT
         Dictionary<string, EfficiencyNormsPerModel> normPerModel = new Dictionary<string, EfficiencyNormsPerModel>();
         string smtLine = ConfigurationManager.AppSettings["SMTLine"];
         double normLotsPerShift = 16;
-        CurrentMstOrder currentMstOrder = new CurrentMstOrder("", "", 0, 0, DateTime.Now, "", "", DateTime.Now,0, new List<string>());
+        CurrentMstOrder currentMstOrder = new CurrentMstOrder("", "", 0, 0, DateTime.Now, "", "", DateTime.Now, 0, 0, 0, 0, new List<ledReelData>(),"",0);
 
         public MainForm()
         {
@@ -46,6 +46,7 @@ namespace Karta_Pracy_SMT
             //checkMirae = Convert.ToBoolean(chkMirae);
             labelLine.Text = "Linia: " + smtLine;
             AddRecordsFromDb();
+            LoadMstOrdersFromDb(20);
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             string version = fvi.FileVersion;
@@ -80,6 +81,7 @@ namespace Karta_Pracy_SMT
             tabControl1.SizeMode = TabSizeMode.Fixed;
             tabControl1.ItemSize = new Size(300, 30);
 
+            tableLayoutPanel1.ColumnStyles[1].Width = panel5.Width + button4.Width + panel5.Padding.Left*2+ button4.Padding.Right;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -264,9 +266,10 @@ namespace Karta_Pracy_SMT
                                 scrap,
                                 firstPieceCheck,
                                 leftovers,
-                                stencil);
-                           // Debug.WriteLine("Saved");
-                            Tools.CleanUpDgv(dataGridView1);
+                                stencil,
+                                "LGI");
+                            // Debug.WriteLine("Saved");
+                            DgvTools.CleanUpLgiDgv(dataGridView1);
                         }
                     }
                 }
@@ -409,7 +412,7 @@ namespace Karta_Pracy_SMT
         {
             suspendCellVelueChangedEvent = true;
             //DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED
-            DataTable sqlTable = SqlOperations.GetSmtRecordsFromDb(22, smtLine);
+            DataTable sqlTable = SqlOperations.GetLgSmtRecordsFromDb(22, smtLine);
             List<string> lotsList = new List<string>();
             foreach (DataRow row in sqlTable.Rows)
             {
@@ -470,20 +473,37 @@ namespace Karta_Pracy_SMT
                         dataGridView1.Rows[0].Cells[16].Value = stencil;
                     }
                 }
-                else
-                {
-                    //MST order
-                    dataGridViewMstOrders.Rows.Insert(0, DateTime.Parse(row["DataCzasStart"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy"),
-                        DateTime.Parse(row["DataCzasKoniec"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy"),
-                        row["Model"].ToString().Trim(),
-                        row["IloscWykonana"].ToString().Trim(),
-                        row["OperatorSMT"].ToString().Trim());
-                }
             }
             Tools.AutoSizeColumnsWidth(dataGridView1);
             Tools.AutoSizeColumnsWidth(dataGridViewMstOrders);
             dataGridView1.ResumeLayout();
             suspendCellVelueChangedEvent = false;
+        }
+
+        private void LoadMstOrdersFromDb(int recordsQuantity)
+        {
+            DataTable sqlTable = SqlOperations.GetMstSmtRecordsFromDb(recordsQuantity, smtLine);
+            if (sqlTable.Rows.Count > 0)
+            {
+                HashSet<string> nc12ToModelList = new HashSet<string>();
+                foreach (DataRow row in sqlTable.Rows)
+                {
+                    string startDate = DateTime.Parse(row["DataCzasStart"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy");
+                    string endDate = DateTime.Parse(row["DataCzasKoniec"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy");
+                    string nc10 = row["Model"].ToString() ;
+                    string qty = row["IloscWykonana"].ToString();
+                    dataGridViewMstOrders.Rows.Insert(0, startDate, endDate, nc10.Insert(4, " ").Insert(8, " "), "", qty);
+                    nc12ToModelList.Add(nc10 + "00");
+                }
+                Dictionary<string, string> nc12toName = SqlOperations.nc12ToModelDict(nc12ToModelList.ToArray());
+
+                foreach (DataGridViewRow row in dataGridViewMstOrders.Rows)
+                {
+                    string nc12 = row.Cells[2].Value.ToString().Replace(" ","") + "00";
+                    row.Cells[3].Value = nc12toName[nc12];
+                }
+                DgvTools.AutoSizeColumns(dataGridViewMstOrders, DataGridViewAutoSizeColumnMode.AllCells);
+            }
         }
 
         private void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -673,10 +693,17 @@ namespace Karta_Pracy_SMT
             labelMstOrderStartDate.Text = currentMstOrder.DateStart.ToString("HH:mm:ss  dd-MM-yyyy");
             labelMstOrderLastUpdate.Text = currentMstOrder.LastUpdateTime.ToString("HH:mm:ss  dd-MM-yyyy");
             labelMstOrderQtyDone.Text = currentMstOrder.MadeQty.ToString();
-            label12NC.Text = currentMstOrder.Nc12;
+            label12NC.Text = currentMstOrder.Nc10.Insert(4," ").Insert(8," ");
             labelMstOrderOrderedQty.Text = currentMstOrder.OrderedQty.ToString();
             labelMstOrderNo.Text = currentMstOrder.OrderNumber;
             labelMstOrderNo.Tag = currentMstOrder.OrderNumber;
+            labelName.Text = currentMstOrder.ModelName;
+            labelPcbPerMb.Text = currentMstOrder.PcbOnMb.ToString();
+            labelLedQty.Text = currentMstOrder.LedQty.ToString();
+            labelConnQty.Text = currentMstOrder.ConnQty.ToString();
+            labelResQty.Text = currentMstOrder.ResQty.ToString();
+
+            labelBinInfo.Text = string.Join(Environment.NewLine, MstOperations.LedInfoTableToList(MST.MES.SqlOperations.SparingLedInfo.GetReelsForLot(currentMstOrder.OrderNumber)).ToArray());
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -685,41 +712,32 @@ namespace Karta_Pracy_SMT
             {
                 if (mstOrderForm.ShowDialog() == DialogResult.OK)
                 {
-                    currentMstOrder.DateStart = mstOrderForm.currentMstOrderData.DateStart;
-                    currentMstOrder.LastUpdateTime = mstOrderForm.currentMstOrderData.LastUpdateTime;
-                    currentMstOrder.MadeQty = mstOrderForm.currentMstOrderData.MadeQty;
-                    currentMstOrder.Nc12 = mstOrderForm.currentMstOrderData.Nc12.Insert(5," ").Insert(10," ");
-                    currentMstOrder.Oper = mstOrderForm.currentMstOrderData.Oper;
-                    currentMstOrder.OrderedQty = mstOrderForm.currentMstOrderData.OrderedQty;
-                    currentMstOrder.OrderNumber = mstOrderForm.currentMstOrderData.OrderNumber;
-                    currentMstOrder.PcbOnMb = mstOrderForm.currentMstOrderData.PcbOnMb;
-                    currentMstOrder.Stencil = mstOrderForm.currentMstOrderData.Stencil;
-                    UpdateMstLabels();
-                }
+                    currentMstOrder = mstOrderForm.currentMstOrderData;
 
+                    DataTable ledInfoTable =MST.MES.SqlOperations.SparingLedInfo.GetReelsForLot(currentMstOrder.OrderNumber);
+
+                    UpdateMstLabels();
+                    DgvTools.PrepareDgvForBins(dataGridViewMstLedReels, currentMstOrder.BinQty);
+                    DgvTools.PrepareDgvForBins(dataGridViewLedTrash, currentMstOrder.BinQty);
+                }
             }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            using (UpdateMstQty updateQtyForm = new UpdateMstQty(currentMstOrder.LastUpdateTime, currentMstOrder.MadeQty, currentMstOrder.PcbOnMb))
+            using (FinishMstOrder finishForm = new FinishMstOrder(ref currentMstOrder, smtLine))
             {
-                if (updateQtyForm.ShowDialog() == DialogResult.OK)
+                if (finishForm.ShowDialog() == DialogResult.OK)
                 {
-                    currentMstOrder.MadeQty = updateQtyForm.newTotalQty;
-                    currentMstOrder.LastUpdateTime = DateTime.Now;
+                    SqlOperations.SaveRecordToDb(currentMstOrder.DateStart, DateTime.Now, smtLine, currentMstOrder.Oper, currentMstOrder.OrderNumber, currentMstOrder.Nc10, currentMstOrder.MadeQty.ToString(), "0", "0", "check", "", currentMstOrder.Stencil,"MST");
+                    dataGridViewMstOrders.Rows.Insert(0, currentMstOrder.DateStart, DateTime.Now.ToString(), currentMstOrder.Nc10.Insert(4, " ").Insert(8, " "), currentMstOrder.ModelName, currentMstOrder.MadeQty);
+                    currentMstOrder = new CurrentMstOrder("Brak", "Brak", 0, 0, DateTime.Now, "Brak", "0000000000", DateTime.Now, 0, 0, 0, 0, new List<ledReelData>(), "Brak", 0);
+                    dataGridViewMstLedReels.Rows.Clear();
+                    dataGridViewLedTrash.Rows.Clear();
                     UpdateMstLabels();
+                    DgvTools.CleanUpMstDgv(dataGridViewMstOrders);
                 }
             }
-
-            SqlOperations.SaveRecordToDb(currentMstOrder.DateStart, DateTime.Now, smtLine, currentMstOrder.Oper, currentMstOrder.OrderNumber, currentMstOrder.Nc12, currentMstOrder.MadeQty.ToString(), "0", "0", "OK", "LEDS LEFT", currentMstOrder.Stencil);
-
-            dataGridViewMstOrders.Rows.Insert(0,
-                currentMstOrder.DateStart,
-                DateTime.Now,
-                currentMstOrder.Nc12,
-                currentMstOrder.MadeQty,
-                currentMstOrder.Oper);
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -733,6 +751,57 @@ namespace Karta_Pracy_SMT
                     UpdateMstLabels();
                 }
             }
+        }
+
+        private void dataGridViewMstLedReels_SelectionChanged(object sender, EventArgs e)
+        {
+            dataGridViewMstLedReels.ClearSelection();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            using (ReadQrForm qrForm = new ReadQrForm())
+            {
+                bool alreadyExist = false;
+                if (qrForm.ShowDialog() ==  DialogResult.OK)
+                {
+                    foreach (var reel in currentMstOrder.LedReels)
+                    {
+                        if (reel.NC12 == qrForm.nc12 & reel.ID==qrForm.id)
+                        {
+                            MessageBox.Show("Ta rolka została już dodana!");
+                            alreadyExist = true;
+                            break;
+                        }
+                    }
+                    if (!alreadyExist)
+                    {
+                        DgvTools.AddReelToGrid(qrForm.nc12, qrForm.id, dataGridViewMstLedReels, ref currentMstOrder);
+                    }
+                }
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            using (ReadQrForm qrForm = new ReadQrForm())
+            {
+                if (qrForm.ShowDialog() == DialogResult.OK)
+                {
+                    DgvTools.AddReelToTrash(qrForm.nc12, qrForm.id, dataGridViewLedTrash,ref currentMstOrder);
+                    DgvTools.MarkRemovedRow(qrForm.nc12, qrForm.id, dataGridViewMstLedReels, Color.Red, Color.White);
+                }
+            }
+        }
+
+        private void dataGridViewLedTrash_SelectionChanged(object sender, EventArgs e)
+        {
+            dataGridViewLedTrash.ClearSelection();
+        }
+
+        private void dataGridViewMstOrders_SelectionChanged(object sender, EventArgs e)
+        {
+            dataGridViewMstOrders.ClearSelection();
         }
     }
 }
