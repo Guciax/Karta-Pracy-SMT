@@ -58,7 +58,7 @@ namespace Karta_Pracy_SMT
             dataGridView3DaysInfo.ScrollBars = ScrollBars.None;
 
 #if DEBUG
-                button2.Visible=true;
+            button2.Visible=true;
             EfficiencyTimer.Interval = 1000;
             dataGridView3DaysInfo.ReadOnly = false;
             dataGridView3DaysInfo.EditMode = DataGridViewEditMode.EditOnKeystroke;
@@ -82,6 +82,12 @@ namespace Karta_Pracy_SMT
             tabControl1.ItemSize = new Size(300, 30);
 
             tableLayoutPanel1.ColumnStyles[1].Width = panel5.Width + button4.Width + panel5.Padding.Left*2+ button4.Padding.Right;
+
+            panelClock.Parent = this;
+            panelClock.BringToFront();
+            panelClock.Width = pbChart.Width;
+            panelClock.Location = new Point(this.Width - panelClock.Width-23, 0);
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -419,12 +425,10 @@ namespace Karta_Pracy_SMT
                 lotsList.Add(row["NrZlecenia"].ToString().Trim());
             }
 
-
-
             Dictionary<string, string[]> lotToRankABQty = SqlOperations.lotToRankABQty(lotsList.ToArray());
 
 
-            dataGridView1.SuspendLayout();
+            //dataGridView1.SuspendLayout();
             foreach (DataRow row in sqlTable.Rows)
             {
                 string model = row["Model"].ToString();
@@ -475,8 +479,10 @@ namespace Karta_Pracy_SMT
                 }
             }
             Tools.AutoSizeColumnsWidth(dataGridView1);
-            Tools.AutoSizeColumnsWidth(dataGridViewMstOrders);
-            dataGridView1.ResumeLayout();
+            //dataGridView1.ResumeLayout();
+            dataGridView1.CurrentCell =  dataGridView1.Rows[0].Cells[0];
+
+
             suspendCellVelueChangedEvent = false;
         }
 
@@ -719,23 +725,29 @@ namespace Karta_Pracy_SMT
                     UpdateMstLabels();
                     DgvTools.PrepareDgvForBins(dataGridViewMstLedReels, currentMstOrder.BinQty);
                     DgvTools.PrepareDgvForBins(dataGridViewLedTrash, currentMstOrder.BinQty);
+                    timerMstUpdate.Enabled = true;
                 }
             }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
+            timerMstUpdate.Enabled = false;
             using (FinishMstOrder finishForm = new FinishMstOrder(ref currentMstOrder, smtLine))
             {
                 if (finishForm.ShowDialog() == DialogResult.OK)
                 {
-                    SqlOperations.SaveRecordToDb(currentMstOrder.DateStart, DateTime.Now, smtLine, currentMstOrder.Oper, currentMstOrder.OrderNumber, currentMstOrder.Nc10, currentMstOrder.MadeQty.ToString(), "0", "0", "check", "", currentMstOrder.Stencil,"MST");
+                    SqlOperations.SaveRecordToDb(currentMstOrder.DateStart, DateTime.Now, smtLine, currentMstOrder.Oper, currentMstOrder.OrderNumber, currentMstOrder.Nc10, currentMstOrder.MadeQty.ToString(), "0", "0", "check", "", currentMstOrder.Stencil, "MST");
                     dataGridViewMstOrders.Rows.Insert(0, currentMstOrder.DateStart, DateTime.Now.ToString(), currentMstOrder.Nc10.Insert(4, " ").Insert(8, " "), currentMstOrder.ModelName, currentMstOrder.MadeQty);
                     currentMstOrder = new CurrentMstOrder("Brak", "Brak", 0, 0, DateTime.Now, "Brak", "0000000000", DateTime.Now, 0, 0, 0, 0, new List<ledReelData>(), "Brak", 0);
                     dataGridViewMstLedReels.Rows.Clear();
                     dataGridViewLedTrash.Rows.Clear();
                     UpdateMstLabels();
                     DgvTools.CleanUpMstDgv(dataGridViewMstOrders);
+                }
+                else
+                {
+                    timerMstUpdate.Enabled = true;
                 }
             }
         }
@@ -802,6 +814,47 @@ namespace Karta_Pracy_SMT
         private void dataGridViewMstOrders_SelectionChanged(object sender, EventArgs e)
         {
             dataGridViewMstOrders.ClearSelection();
+        }
+
+        private void timerClock_Tick(object sender, EventArgs e)
+        {
+            labelClockTime.Text = DateTime.Now.ToString("HH:mm:ss");
+            labelClockDate.Text = DateTime.Now.ToString("dddd dd MMMM yyyy        ")+ " Linia "+smtLine ;
+        }
+
+        bool updateFormDisplayed = false;
+        private void timerMstUpdate_Tick(object sender, EventArgs e)
+        {
+            if (!updateFormDisplayed)
+            {
+                if (currentMstOrder.OrderNumber != "")
+                {
+                    if (Math.Abs((DateTime.Now-currentMstOrder.LastUpdateTime ).TotalMinutes) > 30)
+                    {
+                        UpdateMstOrder();
+                    }
+                }
+            }
+        }
+
+        private void UpdateMstOrder()
+        {
+            using (UpdateMstQty updForm = new UpdateMstQty(currentMstOrder.LastUpdateTime, currentMstOrder.MadeQty, currentMstOrder.PcbOnMb))
+            {
+                updateFormDisplayed = true;
+                if (updForm.ShowDialog() == DialogResult.OK)
+                {
+                    currentMstOrder.LastUpdateTime = DateTime.Now;
+                    currentMstOrder.MadeQty = updForm.newTotalQty;
+                    UpdateMstLabels();
+                    updateFormDisplayed = false;
+                }
+            }
+        }
+
+        private void labelMstOrderLastUpdate_DoubleClick(object sender, EventArgs e)
+        {
+            UpdateMstOrder();
         }
     }
 }

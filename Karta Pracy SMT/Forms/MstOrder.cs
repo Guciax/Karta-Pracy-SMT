@@ -143,6 +143,7 @@ namespace Karta_Pracy_SMT.Forms
         {
             currentMstOrderData.Stencil = textBoxStencil.Text;
             CheckInputData();
+            textBoxStencil.BackColor = Color.Lime;
         }
 
 

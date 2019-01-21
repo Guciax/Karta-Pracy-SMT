@@ -22,10 +22,14 @@ namespace Karta_Pracy_SMT
             foreach (DataRow row in mesModels.Rows)
             {
                 string model = row["MODEL_ID"].ToString().Replace("LLFML", "");
+                if (model== "G2-08K201A")
+                {
+                    ;
+                }
                 string modelType = model.Split('-')[0]; //K2, K1, G2, G1....
                 string modelFamily = model.Substring(0, 6) + "XXX" + model.Substring(9, 1);
 
-                if (result.ContainsKey(modelFamily)) continue;
+                //if (result.ContainsKey(modelFamily)) continue;
                 if(row["A_PKG_QTY"].ToString().Trim()=="" )continue;
                 int rankAQty = int.Parse(row["A_PKG_QTY"].ToString());
                 int rankBQty = int.Parse(row["B_PKG_QTY"].ToString());
@@ -191,6 +195,10 @@ namespace Karta_Pracy_SMT
                 string lotNo = row.Cells["ColumnLot"].Value.ToString().Trim();
                 //string ledLeftRaw = row.Cells["ColumnButtonLed"].Value.ToString().Trim();
                 string model = row.Cells["ColumnModel"].Value.ToString().Trim();
+                if (!modelNorm.ContainsKey(model))
+                {
+                    continue;
+                }
 
                 LedLeftovers ledLeft = (LedLeftovers)row.Cells["ColumnButtonLed"].Tag;
 
@@ -229,11 +237,16 @@ namespace Karta_Pracy_SMT
                 double wasteDifference = expectedLedLeft - realLedLeft;
 
                 percentageLotWaste.Add(((expectedLedLeft-realLedLeft)/ledPerLot)*100);
-
-
             }
 
-            return new double[] { Math.Round(percentageLotWaste.Average(), 2), Math.Round(moduleWasteSum / goodModuleSum, 4)*100 };
+            if (goodModuleSum > 0)
+            {
+                return new double[] { Math.Round(percentageLotWaste.Average(), 2), Math.Round(moduleWasteSum / goodModuleSum, 4) * 100 };
+            }
+            else
+            {
+                return new double[] { 0, 0 };
+            }
         }
 
         public struct lotPiecesQuantity

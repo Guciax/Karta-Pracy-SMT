@@ -34,7 +34,9 @@ namespace Karta_Pracy_SMT.Forms
             labelStartDate.Text += currentOrder.DateStart.ToString();
 
             DataGridViewComboBoxColumn combo = new DataGridViewComboBoxColumn();
-            combo.DataSource = new string[] { "Zużyta", "Do liczenia" };
+            combo.Name = "qty";
+            combo.HeaderText = "Ilość na koniec zlecenia";
+            combo.DataSource = new string[] { "Pusta", "Do liczenia" };
             combo.HeaderText = "Stan rolki";
 
             dataGridView1.Columns.Add(combo);
@@ -45,7 +47,7 @@ namespace Karta_Pracy_SMT.Forms
 
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
-            labelPcbQty.Text = "=PCB: " + (numericUpDown1.Value * currentOrder.PcbOnMb).ToString();
+            labelPcbQty.Text = "=> PCB " + (numericUpDown1.Value * currentOrder.PcbOnMb).ToString();
             currentOrder.MadeQty = (int)numericUpDown1.Value * currentOrder.PcbOnMb;
         }
 
@@ -53,28 +55,21 @@ namespace Karta_Pracy_SMT.Forms
         {
             foreach (var reel in currentOrder.LedReels)
             {
-                dataGridView1.Rows.Add(reel.Rank, reel.NC12, reel.ID, reel.Ilosc, reel.RemovedToTrash ? "Zużyta" : "Do liczenia");
+                dataGridView1.Rows.Add(reel.Rank, reel.NC12, reel.ID, reel.Ilosc, reel.RemovedToTrash ? "Pusta" : "Do liczenia");
             }
-        }
-
-        private void dataGridView1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            
-        }
-
-        private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            
-        }
-
-        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-           
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (row.Cells["qty"].Value.ToString() == "Pusta") 
+                {
+                    string nc12 = row.Cells["nc12"].Value.ToString();
+                    string id = row.Cells["id"].Value.ToString();
+                    MST.MES.SqlOperations.SparingLedInfo.UpdateLedQuantity(nc12, id, "0");
+                }
+            }
         }
     }
 }

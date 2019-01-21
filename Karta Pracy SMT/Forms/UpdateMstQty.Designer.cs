@@ -114,7 +114,7 @@
             this.numericUpDownMbQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.numericUpDownMbQty.Location = new System.Drawing.Point(269, 51);
             this.numericUpDownMbQty.Maximum = new decimal(new int[] {
-            10000,
+            100000,
             0,
             0,
             0});
