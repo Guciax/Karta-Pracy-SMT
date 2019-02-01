@@ -480,6 +480,7 @@ namespace Karta_Pracy_SMT
             }
             Tools.AutoSizeColumnsWidth(dataGridView1);
             //dataGridView1.ResumeLayout();
+            if (dataGridView1.Rows.Count>0)
             dataGridView1.CurrentCell =  dataGridView1.Rows[0].Cells[0];
 
 
@@ -496,17 +497,19 @@ namespace Karta_Pracy_SMT
                 {
                     string startDate = DateTime.Parse(row["DataCzasStart"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy");
                     string endDate = DateTime.Parse(row["DataCzasKoniec"].ToString().Trim()).ToString("HH:mm:ss dd-MM-yyyy");
+                    
                     string nc10 = row["Model"].ToString() ;
                     string qty = row["IloscWykonana"].ToString();
-                    dataGridViewMstOrders.Rows.Insert(0, startDate, endDate, nc10.Insert(4, " ").Insert(8, " "), "", qty);
+                    string orderNo = row["NrZlecenia"].ToString();
+                    dataGridViewMstOrders.Rows.Insert(0, startDate, endDate,orderNo, nc10.Insert(4, " ").Insert(8, " "), "", qty);
                     nc12ToModelList.Add(nc10 + "00");
                 }
                 Dictionary<string, string> nc12toName = SqlOperations.nc12ToModelDict(nc12ToModelList.ToArray());
 
                 foreach (DataGridViewRow row in dataGridViewMstOrders.Rows)
                 {
-                    string nc12 = row.Cells[2].Value.ToString().Replace(" ","") + "00";
-                    row.Cells[3].Value = nc12toName[nc12];
+                    string nc12 = row.Cells["Column12NC"].Value.ToString().Replace(" ","") + "00";
+                    row.Cells["ColumnName"].Value = nc12toName[nc12];
                 }
                 DgvTools.AutoSizeColumns(dataGridViewMstOrders, DataGridViewAutoSizeColumnMode.AllCells);
             }
@@ -732,22 +735,27 @@ namespace Karta_Pracy_SMT
 
         private void button4_Click(object sender, EventArgs e)
         {
-            timerMstUpdate.Enabled = false;
-            using (FinishMstOrder finishForm = new FinishMstOrder(ref currentMstOrder, smtLine))
+            if (currentMstOrder.OrderNumber.Trim() != "")
             {
-                if (finishForm.ShowDialog() == DialogResult.OK)
+                timerMstUpdate.Enabled = false;
+                using (FinishMstOrder finishForm = new FinishMstOrder(ref currentMstOrder, smtLine))
                 {
-                    SqlOperations.SaveRecordToDb(currentMstOrder.DateStart, DateTime.Now, smtLine, currentMstOrder.Oper, currentMstOrder.OrderNumber, currentMstOrder.Nc10, currentMstOrder.MadeQty.ToString(), "0", "0", "check", "", currentMstOrder.Stencil, "MST");
-                    dataGridViewMstOrders.Rows.Insert(0, currentMstOrder.DateStart, DateTime.Now.ToString(), currentMstOrder.Nc10.Insert(4, " ").Insert(8, " "), currentMstOrder.ModelName, currentMstOrder.MadeQty);
-                    currentMstOrder = new CurrentMstOrder("Brak", "Brak", 0, 0, DateTime.Now, "Brak", "0000000000", DateTime.Now, 0, 0, 0, 0, new List<ledReelData>(), "Brak", 0);
-                    dataGridViewMstLedReels.Rows.Clear();
-                    dataGridViewLedTrash.Rows.Clear();
-                    UpdateMstLabels();
-                    DgvTools.CleanUpMstDgv(dataGridViewMstOrders);
-                }
-                else
-                {
-                    timerMstUpdate.Enabled = true;
+                    if (finishForm.ShowDialog() == DialogResult.OK)
+                    {
+
+                        SqlOperations.SaveRecordToDb(currentMstOrder.DateStart, DateTime.Now, smtLine, currentMstOrder.Oper, currentMstOrder.OrderNumber, currentMstOrder.Nc10, currentMstOrder.MadeQty.ToString(), "0", "0", "check", "", currentMstOrder.Stencil, "MST");
+                        dataGridViewMstOrders.Rows.Insert(0, currentMstOrder.DateStart, DateTime.Now.ToString(), currentMstOrder.OrderNumber, currentMstOrder.Nc10.Insert(4, " ").Insert(8, " "), currentMstOrder.ModelName, currentMstOrder.MadeQty);
+                        currentMstOrder = new CurrentMstOrder("Brak", "Brak", 0, 0, DateTime.Now, "Brak", "0000000000", DateTime.Now, 0, 0, 0, 0, new List<ledReelData>(), "Brak", 0);
+                        dataGridViewMstLedReels.Rows.Clear();
+                        dataGridViewLedTrash.Rows.Clear();
+                        UpdateMstLabels();
+                        DgvTools.CleanUpMstDgv(dataGridViewMstOrders);
+
+                    }
+                    else
+                    {
+                        timerMstUpdate.Enabled = true;
+                    }
                 }
             }
         }
