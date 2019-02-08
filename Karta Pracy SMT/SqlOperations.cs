@@ -143,7 +143,7 @@ namespace Karta_Pracy_SMT
             return sqlTable;
         }
 
-        public static void SaveRecordToDb(DateTime startDate, DateTime endDate,string smtLine,string operatorSMT,string lotNo,string model,string manufacturedQty,string ngQty,string scrapQty,string firstPieceCheck,string ledLefts, string stencil, string client )
+        public static void SaveRecordToDb(DateTime startDate, DateTime endDate,string smtLine,string operatorSMT,string lotNo,string model,string manufacturedQty,string ngQty,string scrapQty,string firstPieceCheck,string ledLefts, string stencil, string client, double totalLedsUsed )
         {
             bool release = true;
 
@@ -154,9 +154,10 @@ namespace Karta_Pracy_SMT
             {
                 using (SqlConnection openCon = new SqlConnection(@"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;"))
                 {
-                    string save = "INSERT into tb_SMT_Karta_Pracy (DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED,StencilQR,Client) VALUES (@DataCzasStart,@DataCzasKoniec,@LiniaSMT,@OperatorSMT,@NrZlecenia,@Model,@IloscWykonana,@NGIlosc,@ScrapIlosc,@Kontrola1szt,@KoncowkiLED,@StencilQR,@Client)";
+                    string save = "INSERT into tb_SMT_Karta_Pracy (DataCzasStart,DataCzasKoniec,LiniaSMT,OperatorSMT,NrZlecenia,Model,IloscWykonana,NGIlosc,ScrapIlosc,Kontrola1szt,KoncowkiLED,StencilQR,Client,Zuzycie_Led) VALUES (@DataCzasStart,@DataCzasKoniec,@LiniaSMT,@OperatorSMT,@NrZlecenia,@Model,@IloscWykonana,@NGIlosc,@ScrapIlosc,@Kontrola1szt,@KoncowkiLED,@StencilQR,@Client,@Zuzycie_Led)";
                     using (SqlCommand querySave = new SqlCommand(save))
                     {
+                        
                         querySave.Connection = openCon;
                         querySave.Parameters.Add("@DataCzasStart", SqlDbType.SmallDateTime).Value = startDate;
                         querySave.Parameters.Add("@DataCzasKoniec", SqlDbType.SmallDateTime).Value = endDate;
@@ -169,6 +170,7 @@ namespace Karta_Pracy_SMT
                         querySave.Parameters.Add("@ScrapIlosc", SqlDbType.VarChar, 50).Value = scrapQty;
                         querySave.Parameters.Add("@Kontrola1szt", SqlDbType.VarChar, 50).Value = firstPieceCheck;
                         querySave.Parameters.Add("@KoncowkiLED", SqlDbType.VarChar, 255).Value = ledLefts;
+                        querySave.Parameters.Add("@Zuzycie_Led", SqlDbType.Int, 255).Value = totalLedsUsed;
                         querySave.Parameters.Add("@StencilQR", SqlDbType.VarChar, 255).Value = stencil;
                         querySave.Parameters.Add("@Client", SqlDbType.VarChar, 3).Value = client;
                         openCon.Open();
@@ -239,7 +241,7 @@ namespace Karta_Pracy_SMT
             bool release = true;
 
             #if DEBUG
-            //release=false;
+            release=false;
             #endif
 
             bool result = true;
@@ -251,11 +253,11 @@ namespace Karta_Pracy_SMT
                     List<Tuple<string, string, string>> flatList = new List<Tuple<string, string, string>>();
                     foreach (var led in ledLeft.RankA)
                     {
-                        flatList.Add(new Tuple<string, string, string>(led.Nc12, led.ID, led.Qty.ToString()));
+                        flatList.Add(new Tuple<string, string, string>(led.Nc12, led.ID, led.QtyLeft.ToString()));
                     }
                     foreach (var led in ledLeft.RankB)
                     {
-                        flatList.Add(new Tuple<string, string, string>(led.Nc12, led.ID, led.Qty.ToString()));
+                        flatList.Add(new Tuple<string, string, string>(led.Nc12, led.ID, led.QtyLeft.ToString()));
                     }
                     string lotNo = ledLeft.LotNo;
 

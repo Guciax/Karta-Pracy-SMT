@@ -108,29 +108,48 @@ namespace Karta_Pracy_SMT.Forms
             DataTable lotTable = MST.MES.SqlOperations.Kitting.GetKittingTableForLots(new string[] { textBoxOrderNumber.Text });
             if (MST.MES.SqlOperations.SMT.SmtLots(new string[] { textBoxOrderNumber.Text }).Rows.Count>0)
             {
-                labelModelInfo.Text = "Ten numer zlecenia istnieje w bazie SMT";
+                labelModelInfo.Text = "Ten numer zlecenia nie istnieje w bazie SMT";
             }
             if (lotTable.Rows.Count > 0)
             {
+
                 currentMstOrderData.OrderNumber = textBoxOrderNumber.Text;
                 string modelId = lotTable.Rows[0]["NC12_wyrobu"].ToString();
                 currentMstOrderData.Nc10 = modelId;
                 currentMstOrderData.ModelName =  MST.MES.SqlOperations.ConnectDB.NC12ToModelName(modelId+"00");
                 DataTable modelInfoTable = MST.MES.SqlOperations.MesModels.GetMstModelInfo(modelId);
-                currentMstOrderData.OrderedQty = int.Parse(lotTable.Rows[0]["Ilosc_wyrobu_zlecona"].ToString());
+                
+                currentMstOrderData.OrderedQty = TryParseNullableCell(lotTable.Rows[0]["Ilosc_wyrobu_zlecona"].ToString());
                 currentMstOrderData.OrderNumber = textBoxOrderNumber.Text;
-                currentMstOrderData.PcbOnMb = int.Parse(modelInfoTable.Rows[0]["SMT_Carrier_QTY"].ToString());
-                currentMstOrderData.ResQty = int.Parse(modelInfoTable.Rows[0]["Resistor_Qty"].ToString());
-                currentMstOrderData.ConnQty = int.Parse(modelInfoTable.Rows[0]["Conn_Qty"].ToString());
-                currentMstOrderData.LedQty = int.Parse(modelInfoTable.Rows[0]["PKG_SUM_QTY"].ToString());
-                currentMstOrderData.BinQty = int.Parse(lotTable.Rows[0]["IloscKIT"].ToString());
+                currentMstOrderData.PcbOnMb = TryParseNullableCell(modelInfoTable.Rows[0]["SMT_Carrier_QTY"].ToString());
+                currentMstOrderData.ResQty = TryParseNullableCell(modelInfoTable.Rows[0]["Resistor_Qty"].ToString());
+                currentMstOrderData.ConnQty = TryParseNullableCell(modelInfoTable.Rows[0]["Conn_Qty"].ToString());
+                currentMstOrderData.LedQty = TryParseNullableCell(modelInfoTable.Rows[0]["PKG_SUM_QTY"].ToString());
+                currentMstOrderData.BinQty = TryParseNullableCell(lotTable.Rows[0]["IloscKIT"].ToString());
                 textBoxOrderNumber.BackColor = Color.Lime;
-                labelModelInfo.Text += Environment.NewLine+ currentMstOrderData.Nc10.Insert(4, " ").Insert(8, " ") + Environment.NewLine + currentMstOrderData.ModelName;
+                labelModelInfo.Text += currentMstOrderData.Nc10.Insert(4, " ").Insert(8, " ") + Environment.NewLine + currentMstOrderData.ModelName;
+
+                var previousSmtRecords = MST.MES.SqlDataReaderMethods.SMT.GetOneOrder(textBoxOrderNumber.Text);
+                if (previousSmtRecords.totalManufacturedQty > 0)
+                {
+                    labelPreviousSmtInfo.Text = "Kontynuacja zlecenia." + Environment.NewLine + 
+                        $"Do tej pory wykonano: {previousSmtRecords.totalManufacturedQty} szt." + Environment.NewLine + 
+                        $"Pozostało do wykonania: {currentMstOrderData.OrderedQty - previousSmtRecords.totalManufacturedQty} szt.";
+                    currentMstOrderData.PreviouslyManufacturedQty = previousSmtRecords.totalManufacturedQty;
+                }
             }
             else
             {
                 labelModelInfo.Text = "Brak numeru zlecenia w bazie Kitting!";
             }
+        }
+
+        private int TryParseNullableCell(object dataCell)
+        {
+            int result = 0;
+            if (int.TryParse(dataCell.ToString(), out  result)) return result;
+            return 0;
+
         }
 
         private void comboBoxOperator_SelectedIndexChanged(object sender, EventArgs e)

@@ -45,6 +45,7 @@
             this.nc12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.labelTotalOrdersQty = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -93,6 +94,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.labelTotalOrdersQty);
             this.panel1.Controls.Add(this.labelPcbQty);
             this.panel1.Controls.Add(this.numericUpDown1);
             this.panel1.Controls.Add(this.label1);
@@ -235,6 +237,16 @@
             this.Column3.Name = "Column3";
             this.Column3.ReadOnly = true;
             // 
+            // labelTotalOrdersQty
+            // 
+            this.labelTotalOrdersQty.AutoSize = true;
+            this.labelTotalOrdersQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelTotalOrdersQty.Location = new System.Drawing.Point(22, 166);
+            this.labelTotalOrdersQty.Name = "labelTotalOrdersQty";
+            this.labelTotalOrdersQty.Size = new System.Drawing.Size(20, 17);
+            this.labelTotalOrdersQty.TabIndex = 8;
+            this.labelTotalOrdersQty.Text = "...";
+            // 
             // FinishMstOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -273,5 +285,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn nc12;
         private System.Windows.Forms.DataGridViewTextBoxColumn id;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.Label labelTotalOrdersQty;
     }
 }

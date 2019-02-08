@@ -81,7 +81,7 @@ namespace Karta_Pracy_SMT
             tabControl1.SizeMode = TabSizeMode.Fixed;
             tabControl1.ItemSize = new Size(300, 30);
 
-            tableLayoutPanel1.ColumnStyles[1].Width = panel5.Width + button4.Width + panel5.Padding.Left*2+ button4.Padding.Right;
+            tableLayoutPanel1.ColumnStyles[1].Width = panel5.Width + buttonMstSaveOrder.Width + panel5.Padding.Left*2+ buttonMstSaveOrder.Padding.Right;
 
             panelClock.Parent = this;
             panelClock.BringToFront();
@@ -243,12 +243,16 @@ namespace Karta_Pracy_SMT
                             string stencil = Tools.getCellValue(row.Cells["Stencil"]);
 
                             LedLeftovers ledLeftovers = (LedLeftovers)row.Cells["ColumnButtonLed"].Tag;
-                            string leftovers = ledLeftovers.RankA[0].ID + ":" + ledLeftovers.RankA[0].Nc12 + ":" + ledLeftovers.RankA[0].Qty + "|" + ledLeftovers.RankB[0].ID + ":" + ledLeftovers.RankB[0].Nc12 + ":" + ledLeftovers.RankB[0].Qty;
+                            double totalLedsUsed = 0;
+                            string leftovers = ledLeftovers.RankA[0].ID + ":" + ledLeftovers.RankA[0].Nc12 + ":" + ledLeftovers.RankA[0].QtyLeft + "|" + ledLeftovers.RankB[0].ID + ":" + ledLeftovers.RankB[0].Nc12 + ":" + ledLeftovers.RankB[0].QtyLeft;
                             for (int i = 0; i < ledLeftovers.RankA.Count; i++)
                             {
+                                totalLedsUsed += ledLeftovers.RankA[i].StartQty - ledLeftovers.RankA[i].QtyLeft;
+                                totalLedsUsed += ledLeftovers.RankB[i].StartQty - ledLeftovers.RankB[i].QtyLeft;
                                 if (i > 0)
                                 {
-                                    leftovers += "#" + ledLeftovers.RankA[i].ID + ":" + ledLeftovers.RankA[i].Nc12 + ":" + ledLeftovers.RankA[i].Qty + "|" + ledLeftovers.RankB[i].ID + ":" + ledLeftovers.RankB[i].Nc12 + ":" + ledLeftovers.RankB[i].Qty;
+                                    leftovers += "#" + ledLeftovers.RankA[i].ID + ":" + ledLeftovers.RankA[i].Nc12 + ":" + ledLeftovers.RankA[i].QtyLeft + "|" + ledLeftovers.RankB[i].ID + ":" + ledLeftovers.RankB[i].Nc12 + ":" + ledLeftovers.RankB[i].QtyLeft;
+                                    
                                 }
                             }
 
@@ -273,7 +277,8 @@ namespace Karta_Pracy_SMT
                                 firstPieceCheck,
                                 leftovers,
                                 stencil,
-                                "LGI");
+                                "LGI",
+                                totalLedsUsed);
                             // Debug.WriteLine("Saved");
                             DgvTools.CleanUpLgiDgv(dataGridView1);
                         }
@@ -407,8 +412,8 @@ namespace Karta_Pracy_SMT
                 double qtyA = double.Parse(rankA[2]);
                 double qtyB = double.Parse(rankB[2]);
 
-                rankAList.Add(new RankStruc(lotToRankABQty[lotNo][0], rankA[0], rankA[1], qtyA));
-                rankBList.Add(new RankStruc(lotToRankABQty[lotNo][1], rankB[0], rankB[1], qtyB));
+                rankAList.Add(new RankStruc(lotToRankABQty[lotNo][0], rankA[0], rankA[1], qtyA, 3000));
+                rankBList.Add(new RankStruc(lotToRankABQty[lotNo][1], rankB[0], rankB[1], qtyB, 3000));
             }
 
             return new LedLeftovers(rankAList, rankBList, lotNo);
@@ -702,6 +707,11 @@ namespace Karta_Pracy_SMT
             labelMstOrderStartDate.Text = currentMstOrder.DateStart.ToString("HH:mm:ss  dd-MM-yyyy");
             labelMstOrderLastUpdate.Text = currentMstOrder.LastUpdateTime.ToString("HH:mm:ss  dd-MM-yyyy");
             labelMstOrderQtyDone.Text = currentMstOrder.MadeQty.ToString();
+            if (currentMstOrder.PreviouslyManufacturedQty>0)
+            {
+                labelMstOrderQtyDone.Text += $" / {currentMstOrder.PreviouslyManufacturedQty + currentMstOrder.MadeQty}";
+            }
+            labelPreviousProduction.Text = currentMstOrder.PreviouslyManufacturedQty.ToString();
             label12NC.Text = currentMstOrder.Nc10.Insert(4," ").Insert(8," ");
             labelMstOrderOrderedQty.Text = currentMstOrder.OrderedQty.ToString();
             labelMstOrderNo.Text = currentMstOrder.OrderNumber;
@@ -733,32 +743,6 @@ namespace Karta_Pracy_SMT
             }
         }
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-            if (currentMstOrder.OrderNumber.Trim() != "")
-            {
-                timerMstUpdate.Enabled = false;
-                using (FinishMstOrder finishForm = new FinishMstOrder(ref currentMstOrder, smtLine))
-                {
-                    if (finishForm.ShowDialog() == DialogResult.OK)
-                    {
-
-                        SqlOperations.SaveRecordToDb(currentMstOrder.DateStart, DateTime.Now, smtLine, currentMstOrder.Oper, currentMstOrder.OrderNumber, currentMstOrder.Nc10, currentMstOrder.MadeQty.ToString(), "0", "0", "check", "", currentMstOrder.Stencil, "MST");
-                        dataGridViewMstOrders.Rows.Insert(0, currentMstOrder.DateStart, DateTime.Now.ToString(), currentMstOrder.OrderNumber, currentMstOrder.Nc10.Insert(4, " ").Insert(8, " "), currentMstOrder.ModelName, currentMstOrder.MadeQty);
-                        currentMstOrder = new CurrentMstOrder("Brak", "Brak", 0, 0, DateTime.Now, "Brak", "0000000000", DateTime.Now, 0, 0, 0, 0, new List<ledReelData>(), "Brak", 0);
-                        dataGridViewMstLedReels.Rows.Clear();
-                        dataGridViewLedTrash.Rows.Clear();
-                        UpdateMstLabels();
-                        DgvTools.CleanUpMstDgv(dataGridViewMstOrders);
-
-                    }
-                    else
-                    {
-                        timerMstUpdate.Enabled = true;
-                    }
-                }
-            }
-        }
 
         private void button5_Click(object sender, EventArgs e)
         {
@@ -809,7 +793,7 @@ namespace Karta_Pracy_SMT
                 if (qrForm.ShowDialog() == DialogResult.OK)
                 {
                     DgvTools.AddReelToTrash(qrForm.nc12, qrForm.id, dataGridViewLedTrash,ref currentMstOrder);
-                    DgvTools.MarkRemovedRow(qrForm.nc12, qrForm.id, dataGridViewMstLedReels, Color.Red, Color.White);
+                    DgvTools.MarkRemovedRow(qrForm.nc12, qrForm.id, dataGridViewMstLedReels, Color.FromArgb(255, 44, 62, 80), Color.FromArgb(255, 189, 195, 199));
                 }
             }
         }
@@ -863,6 +847,33 @@ namespace Karta_Pracy_SMT
         private void labelMstOrderLastUpdate_DoubleClick(object sender, EventArgs e)
         {
             UpdateMstOrder();
+        }
+
+        private void MstSaveOrder_Click(object sender, EventArgs e)
+        {
+            if (currentMstOrder.OrderNumber.Trim() != "")
+            {
+                timerMstUpdate.Enabled = false;
+                using (FinishMstOrder finishForm = new FinishMstOrder(ref currentMstOrder, smtLine))
+                {
+                    if (finishForm.ShowDialog() == DialogResult.OK)
+                    {
+
+                        SqlOperations.SaveRecordToDb(currentMstOrder.DateStart, DateTime.Now, smtLine, currentMstOrder.Oper, currentMstOrder.OrderNumber, currentMstOrder.Nc10, currentMstOrder.MadeQty.ToString(), "0", "0", "check", "", currentMstOrder.Stencil, "MST",0);
+                        dataGridViewMstOrders.Rows.Insert(0, currentMstOrder.DateStart, DateTime.Now.ToString(), currentMstOrder.OrderNumber, currentMstOrder.Nc10.Insert(4, " ").Insert(8, " "), currentMstOrder.ModelName, currentMstOrder.MadeQty);
+                        currentMstOrder = new CurrentMstOrder("Brak", "Brak", 0, 0, DateTime.Now, "Brak", "0000000000", DateTime.Now, 0, 0, 0, 0, new List<ledReelData>(), "Brak", 0);
+                        dataGridViewMstLedReels.Rows.Clear();
+                        dataGridViewLedTrash.Rows.Clear();
+                        UpdateMstLabels();
+                        DgvTools.CleanUpMstDgv(dataGridViewMstOrders);
+
+                    }
+                    else
+                    {
+                        timerMstUpdate.Enabled = true;
+                    }
+                }
+            }
         }
     }
 }

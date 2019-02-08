@@ -228,11 +228,11 @@ namespace Karta_Pracy_SMT
                 double realLedLeft = 0;
                 foreach (var led in ledLeft.RankA)
                 {
-                    realLedLeft += led.Qty;
+                    realLedLeft += led.QtyLeft;
                 }
                 foreach (var led in ledLeft.RankB)
                 {
-                    realLedLeft += led.Qty;
+                    realLedLeft += led.QtyLeft;
                 }
                 double wasteDifference = expectedLedLeft - realLedLeft;
 

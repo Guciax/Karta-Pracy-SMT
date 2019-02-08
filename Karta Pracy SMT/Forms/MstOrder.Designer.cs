@@ -37,6 +37,8 @@
             this.comboBoxOperator = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panelOperator = new System.Windows.Forms.Panel();
+            this.labelPreviousSmtInfo = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.labelModelInfo = new System.Windows.Forms.Label();
             this.textBoxOrderNumber = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -59,20 +61,20 @@
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 4;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 275);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 343);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // buttonOK
             // 
             this.buttonOK.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonOK.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.buttonOK.Location = new System.Drawing.Point(3, 223);
+            this.buttonOK.Location = new System.Drawing.Point(3, 296);
             this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(794, 57);
+            this.buttonOK.Size = new System.Drawing.Size(794, 44);
             this.buttonOK.TabIndex = 0;
             this.buttonOK.Text = "Uzupełnij dane";
             this.buttonOK.UseVisualStyleBackColor = true;
@@ -80,11 +82,11 @@
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.textBoxStencil);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(1, 171);
+            this.panel1.Location = new System.Drawing.Point(1, 244);
             this.panel1.Margin = new System.Windows.Forms.Padding(1);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(798, 48);
@@ -113,11 +115,11 @@
             // 
             // panelOrderNo
             // 
-            this.panelOrderNo.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panelOrderNo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
             this.panelOrderNo.Controls.Add(this.comboBoxOperator);
             this.panelOrderNo.Controls.Add(this.label1);
             this.panelOrderNo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelOrderNo.Location = new System.Drawing.Point(1, 121);
+            this.panelOrderNo.Location = new System.Drawing.Point(1, 194);
             this.panelOrderNo.Margin = new System.Windows.Forms.Padding(1);
             this.panelOrderNo.Name = "panelOrderNo";
             this.panelOrderNo.Size = new System.Drawing.Size(798, 48);
@@ -147,7 +149,9 @@
             // 
             // panelOperator
             // 
-            this.panelOperator.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panelOperator.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
+            this.panelOperator.Controls.Add(this.labelPreviousSmtInfo);
+            this.panelOperator.Controls.Add(this.label4);
             this.panelOperator.Controls.Add(this.labelModelInfo);
             this.panelOperator.Controls.Add(this.textBoxOrderNumber);
             this.panelOperator.Controls.Add(this.label2);
@@ -155,14 +159,34 @@
             this.panelOperator.Location = new System.Drawing.Point(1, 1);
             this.panelOperator.Margin = new System.Windows.Forms.Padding(1);
             this.panelOperator.Name = "panelOperator";
-            this.panelOperator.Size = new System.Drawing.Size(798, 118);
+            this.panelOperator.Size = new System.Drawing.Size(798, 191);
             this.panelOperator.TabIndex = 0;
+            // 
+            // labelPreviousSmtInfo
+            // 
+            this.labelPreviousSmtInfo.AutoSize = true;
+            this.labelPreviousSmtInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelPreviousSmtInfo.Location = new System.Drawing.Point(96, 111);
+            this.labelPreviousSmtInfo.Name = "labelPreviousSmtInfo";
+            this.labelPreviousSmtInfo.Size = new System.Drawing.Size(25, 24);
+            this.labelPreviousSmtInfo.TabIndex = 6;
+            this.labelPreviousSmtInfo.Text = "...";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label4.Location = new System.Drawing.Point(96, 83);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(590, 24);
+            this.label4.TabIndex = 5;
+            this.label4.Text = "__________________________________________________________";
             // 
             // labelModelInfo
             // 
             this.labelModelInfo.AutoSize = true;
             this.labelModelInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.labelModelInfo.Location = new System.Drawing.Point(96, 39);
+            this.labelModelInfo.Location = new System.Drawing.Point(96, 38);
             this.labelModelInfo.Name = "labelModelInfo";
             this.labelModelInfo.Size = new System.Drawing.Size(25, 24);
             this.labelModelInfo.TabIndex = 4;
@@ -193,7 +217,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 275);
+            this.ClientSize = new System.Drawing.Size(800, 343);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "MstOrder";
             this.Text = "MstOrder";
@@ -223,5 +247,7 @@
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label labelModelInfo;
+        private System.Windows.Forms.Label labelPreviousSmtInfo;
+        private System.Windows.Forms.Label label4;
     }
 }

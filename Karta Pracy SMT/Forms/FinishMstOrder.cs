@@ -32,10 +32,14 @@ namespace Karta_Pracy_SMT.Forms
             labelOrderedQty.Text += currentOrder.OrderedQty.ToString();
             numericUpDown1.Value = currentOrder.MadeQty / currentOrder.PcbOnMb;
             labelStartDate.Text += currentOrder.DateStart.ToString();
+            if (currentOrder.PreviouslyManufacturedQty > 0)
+            {
+                labelTotalOrdersQty.Text = $"Całkowita ilość: {(currentOrder.PreviouslyManufacturedQty + currentOrder.MadeQty)} szt.";
+            }
+            
 
             DataGridViewComboBoxColumn combo = new DataGridViewComboBoxColumn();
             combo.Name = "qty";
-            combo.HeaderText = "Ilość na koniec zlecenia";
             combo.DataSource = new string[] { "Pusta", "Do liczenia" };
             combo.HeaderText = "Stan rolki";
 
@@ -49,6 +53,10 @@ namespace Karta_Pracy_SMT.Forms
         {
             labelPcbQty.Text = "=> PCB " + (numericUpDown1.Value * currentOrder.PcbOnMb).ToString();
             currentOrder.MadeQty = (int)numericUpDown1.Value * currentOrder.PcbOnMb;
+            if (currentOrder.PreviouslyManufacturedQty > 0)
+            {
+                labelTotalOrdersQty.Text = $"Całkowita ilość: {(currentOrder.PreviouslyManufacturedQty + currentOrder.MadeQty)} szt.";
+            }
         }
 
         private void AddReelsToGrid()

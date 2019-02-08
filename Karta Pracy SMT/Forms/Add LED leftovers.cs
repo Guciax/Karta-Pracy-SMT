@@ -28,19 +28,19 @@ namespace Karta_Pracy_SMT
             foreach (var reel in ledsLeft.RankA)
             {
                 string qty = "";
-                if (reel.Qty < 0)
+                if (reel.QtyLeft < 0)
                     qty = "";
                 else
-                    qty = reel.Qty.ToString();
+                    qty = reel.QtyLeft.ToString();
                 dataGridViewRankA.Rows.Add(reel.Nc12,  reel.Rank, reel.ID, qty);
             }
             foreach (var reel in ledsLeft.RankB)
             {
                 string qty = "";
-                if (reel.Qty < 0)
+                if (reel.QtyLeft < 0)
                     qty = "";
                 else
-                    qty = reel.Qty.ToString();
+                    qty = reel.QtyLeft.ToString();
                 dataGridViewRankB.Rows.Add(reel.Nc12, reel.Rank, reel.ID, qty);
             }
             
@@ -70,7 +70,7 @@ namespace Karta_Pracy_SMT
                     }
                     else
                     {
-                        ledsLeft.RankA[i].Qty = qtyA;
+                        ledsLeft.RankA[i].QtyLeft = qtyA;
                         if (qtyA == 0)
                         {
                             ledWasteAllert = true;
@@ -85,7 +85,7 @@ namespace Karta_Pracy_SMT
                     {
                         everyQtyFilled = false;
                     }
-                    ledsLeft.RankB[i].Qty = qtyB;
+                    ledsLeft.RankB[i].QtyLeft = qtyB;
                 }
                 else
                 {

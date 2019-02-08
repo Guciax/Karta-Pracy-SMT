@@ -308,7 +308,7 @@ namespace Karta_Pracy_SMT
                     string rankA12NC= rowA.Cells["RankANc12"].Value.ToString();
                     string iloscAString = rowA.Cells["RankAIlosc"].Value.ToString();
                     double rankAIlosc = double.Parse(iloscAString); 
-                    ledsLeft.RankA.Add(new RankStruc(rankA, rankAId, rankA12NC, -1));
+                    ledsLeft.RankA.Add(new RankStruc(rankA, rankAId, rankA12NC, -1, rankAIlosc));
                 }
 
                 foreach (DataGridViewRow rowB in dataGridViewRankB.Rows)
@@ -318,7 +318,7 @@ namespace Karta_Pracy_SMT
                     string rankB12NC = rowB.Cells["RankBNc12"].Value.ToString();
                     string iloscBString = rowB.Cells["rankBIlosc"].Value.ToString();
                     double rankBIlosc = double.Parse(iloscBString);
-                    ledsLeft.RankB.Add(new RankStruc(rankB, rankBId, rankB12NC, -1));
+                    ledsLeft.RankB.Add(new RankStruc(rankB, rankBId, rankB12NC, -1, rankBIlosc));
                 }
 
                 grid.Rows.Insert(0, 1);

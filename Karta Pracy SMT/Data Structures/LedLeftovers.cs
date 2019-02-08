@@ -22,18 +22,20 @@ namespace Karta_Pracy_SMT
 
     public class RankStruc
     {
-        public RankStruc(string rank, string ID, string nc12, double qty)
+        public RankStruc(string rank, string ID, string nc12, double qtyLeft, double startQty)
         {
             Rank = rank;
             this.ID = ID;
             Nc12 = nc12;
-            Qty = qty;
+            QtyLeft = qtyLeft;
+            StartQty = startQty;
         }
 
         public string Rank { get; }
         public string ID { get; }
         public string Nc12 { get; }
-        public double Qty { get; set; }
+        public double QtyLeft { get; set; }
+        public double StartQty { get; }
     }
     
 }
