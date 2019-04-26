@@ -1,4 +1,5 @@
 ﻿using Karta_Pracy_SMT.Data_Structures;
+using Karta_Pracy_SMT.Efficiency;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,11 +14,13 @@ namespace Karta_Pracy_SMT.Forms
 {
     public partial class MstOrder : Form
     {
-        public CurrentMstOrder currentMstOrderData = new CurrentMstOrder("", "", 0, 0, DateTime.Now, "", "", DateTime.Now, 0, 0, 0, 0, new List<ledReelData>(),"",0);
+        public CurrentMstOrder currentMstOrderData = new CurrentMstOrder("", "", 0, 0, DateTime.Now, "", "", DateTime.Now, 0, 0, 0, 0, new List<ledReelData>(),"",0, 0);
+        private readonly string smtLine;
 
-        public MstOrder()
+        public MstOrder(string smtLine)
         {
             InitializeComponent();
+            this.smtLine = smtLine;
         }
 
         private void numericUpDown3_ValueChanged(object sender, EventArgs e)
@@ -36,8 +39,9 @@ namespace Karta_Pracy_SMT.Forms
             bool result = true;
 
             if (comboBoxOperator.Text.Trim() == "") result = false;
-            if (textBoxOrderNumber.Text.Trim()== "") result = false;
-            if (textBoxStencil.Text.Trim() == "") result = false;
+            if (currentMstOrderData.OrderNumber == "") result = false;
+            if (currentMstOrderData.Stencil == "") result = false;
+            if (currentMstOrderData.Nc10 == "") result = false;
 
             if (result)
                 buttonOK.Text = "OK";
@@ -82,6 +86,7 @@ namespace Karta_Pracy_SMT.Forms
             CheckInputData();
             if (buttonOK.Text== "OK")
             {
+                currentMstOrderData.Oper = comboBoxOperator.Text;
                 this.DialogResult = DialogResult.OK;
             }
             else
@@ -106,19 +111,20 @@ namespace Karta_Pracy_SMT.Forms
         {
             labelModelInfo.Text = "";
             DataTable lotTable = MST.MES.SqlOperations.Kitting.GetKittingTableForLots(new string[] { textBoxOrderNumber.Text });
-            if (MST.MES.SqlOperations.SMT.SmtLots(new string[] { textBoxOrderNumber.Text }).Rows.Count>0)
-            {
-                labelModelInfo.Text = "Ten numer zlecenia nie istnieje w bazie SMT";
-            }
+            //if (MST.MES.SqlOperations.SMT.SmtLots(new string[] { textBoxOrderNumber.Text }).Rows.Count > 0) 
+            //{
+            //    labelModelInfo.Text = "Ten numer zlecenia nie istnieje w bazie SMT";
+            //}
             if (lotTable.Rows.Count > 0)
             {
-
                 currentMstOrderData.OrderNumber = textBoxOrderNumber.Text;
                 string modelId = lotTable.Rows[0]["NC12_wyrobu"].ToString();
                 currentMstOrderData.Nc10 = modelId;
-                currentMstOrderData.ModelName =  MST.MES.SqlOperations.ConnectDB.NC12ToModelName(modelId+"00");
+                currentMstOrderData.ModelName = MST.MES.SqlOperations.ConnectDB.NC12ToModelName(modelId + "00");
                 DataTable modelInfoTable = MST.MES.SqlOperations.MesModels.GetMstModelInfo(modelId);
-                
+
+                var effPerHour = EfficiencyCalculation.CalculateModelNormPerHour(modelId, smtLine);
+
                 currentMstOrderData.OrderedQty = TryParseNullableCell(lotTable.Rows[0]["Ilosc_wyrobu_zlecona"].ToString());
                 currentMstOrderData.OrderNumber = textBoxOrderNumber.Text;
                 currentMstOrderData.PcbOnMb = TryParseNullableCell(modelInfoTable.Rows[0]["SMT_Carrier_QTY"].ToString());
@@ -126,21 +132,33 @@ namespace Karta_Pracy_SMT.Forms
                 currentMstOrderData.ConnQty = TryParseNullableCell(modelInfoTable.Rows[0]["Conn_Qty"].ToString());
                 currentMstOrderData.LedQty = TryParseNullableCell(modelInfoTable.Rows[0]["PKG_SUM_QTY"].ToString());
                 currentMstOrderData.BinQty = TryParseNullableCell(lotTable.Rows[0]["IloscKIT"].ToString());
+                currentMstOrderData.NormPerHour = Math.Round(effPerHour.outputPerHour, 0);
                 textBoxOrderNumber.BackColor = Color.Lime;
-                labelModelInfo.Text += currentMstOrderData.Nc10.Insert(4, " ").Insert(8, " ") + Environment.NewLine + currentMstOrderData.ModelName;
+                labelModelInfo.Text += currentMstOrderData.Nc10.Insert(4, " ").Insert(8, " ") + Environment.NewLine +
+                    currentMstOrderData.ModelName + Environment.NewLine +
+                    "Ilość zlecona: " + currentMstOrderData.OrderedQty;
 
                 var previousSmtRecords = MST.MES.SqlDataReaderMethods.SMT.GetOneOrder(textBoxOrderNumber.Text);
                 if (previousSmtRecords.totalManufacturedQty > 0)
                 {
-                    labelPreviousSmtInfo.Text = "Kontynuacja zlecenia." + Environment.NewLine + 
-                        $"Do tej pory wykonano: {previousSmtRecords.totalManufacturedQty} szt." + Environment.NewLine + 
+                    labelPreviousSmtInfo.Text = "Kontynuacja zlecenia." + Environment.NewLine +
+                        $"Do tej pory wykonano: {previousSmtRecords.totalManufacturedQty} szt." + Environment.NewLine +
                         $"Pozostało do wykonania: {currentMstOrderData.OrderedQty - previousSmtRecords.totalManufacturedQty} szt.";
                     currentMstOrderData.PreviouslyManufacturedQty = previousSmtRecords.totalManufacturedQty;
+                }
+                else
+                {
+                    labelPreviousSmtInfo.Text = "";
+                }
+
+                if (currentMstOrderData.Nc10.Contains("-"))
+                {
+                    labelPreviousSmtInfo.Text = "To jest zlecenie LG, zmień zakładkę na LGIT!";
                 }
             }
             else
             {
-                labelModelInfo.Text = "Brak numeru zlecenia w bazie Kitting!";
+                labelModelInfo.Text = "Nieprawidłowy numer zlecenia - Brak zlecenia w bazie Kitting!";
             }
         }
 
@@ -154,7 +172,7 @@ namespace Karta_Pracy_SMT.Forms
 
         private void comboBoxOperator_SelectedIndexChanged(object sender, EventArgs e)
         {
-            currentMstOrderData.Oper = comboBoxOperator.Text;
+            
             CheckInputData();
         }
 

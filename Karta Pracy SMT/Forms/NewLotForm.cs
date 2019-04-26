@@ -333,7 +333,7 @@ namespace Karta_Pracy_SMT
                 grid.Rows[lastRow].Cells["ColumnButtonLed"].Value = "BRAK";
                 grid.Rows[lastRow].Cells["ColumnButtonLed"].Style.BackColor = Color.Red;
                 grid.Rows[lastRow].Cells["ColumnQualityCheck"].Value = "";
-                grid.Rows[lastRow].Cells["StartDate"].Value = DateTime.Now.ToString("HH:mm:ss dd-MM-yyyy");
+                grid.Rows[lastRow].Cells["StartDate"].Value = DateTime.Now;
                 grid.Rows[lastRow].Cells["ColumnButtonLed"].Tag = ledsLeft;
                 grid.Rows[lastRow].Cells["Operator"].Value = comboBoxOperator.Text;
                 grid.Rows[lastRow].Cells["Stencil"].Value = stencil;
@@ -381,7 +381,7 @@ namespace Karta_Pracy_SMT
             #if DEBUG
                 grid.Columns["Stencil"].Visible = true;
                 grid.Rows.Insert(0, 1);
-                grid.Rows[0].Cells["StartDate"].Value = System.DateTime.Now.ToLongTimeString();
+                grid.Rows[0].Cells["StartDate"].Value = System.DateTime.Now;
                 grid.Rows[0].Cells["ColumnSaved"].Style.BackColor = Color.Red;
                 ScanStencilQr fm = new ScanStencilQr(currentLotData.Model);
                 fm.ShowDialog();
@@ -478,11 +478,17 @@ namespace Karta_Pracy_SMT
         {
             if (e.KeyCode== Keys.Return & textBoxLotNo.Text.Trim()!="")
             {
+                if (!int.TryParse(textBoxLotNo.Text, out int b))
+                {
+                    textBoxLotNo.Text = "";
+                    MessageBox.Show("Nieprawidłowy numer zlecenia");
+                    return;
+                }
                 bool debug = false;
 
-#if DEBUG
+                #if DEBUG
                 debug = true;
-#endif
+                #endif
 
 
                 if (!SqlOperations.IsLotAlreadyInDb(textBoxLotNo.Text) || debug)

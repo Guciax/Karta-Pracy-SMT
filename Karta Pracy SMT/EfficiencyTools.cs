@@ -357,11 +357,8 @@ namespace Karta_Pracy_SMT
 
         public static DateTime ParseExact(string stringDate)
         {
-            return DateTime.ParseExact(stringDate, "HH:mm:ss dd-MM-yyyy", CultureInfo.InvariantCulture);
-
+            return DateTime.ParseExact(stringDate, "HH:mm dd-MM-yyyy", CultureInfo.InvariantCulture);
         }
-
-
 
         public static int HowManyLotsThisShift(DataGridView grid)
         {
@@ -372,7 +369,7 @@ namespace Karta_Pracy_SMT
             {
                 if (row.Cells["EndDate"].Value == null) continue;
 
-                    DateTime lotEndTime = ParseExact(row.Cells["EndDate"].Value.ToString());
+                    DateTime lotEndTime = (DateTime)row.Cells["EndDate"].Value;
                     if (lotEndTime > shiftStart)
                     {
                         lotsCounter++;

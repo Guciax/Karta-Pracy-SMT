@@ -8,7 +8,7 @@ namespace Karta_Pracy_SMT.Data_Structures
 {
     public class CurrentMstOrder
     {
-        public CurrentMstOrder(string orderNumber, string oper, int orderedQty, int madeQty, DateTime dateStart, string stencil, string nc10, DateTime lastUpdateTime, int pcbOnMb, int ledQty, int connQty, int resQty, List<ledReelData> ledReels, string modelName, int binQty, int previouslyManufacturedQty=0)
+        public CurrentMstOrder(string orderNumber, string oper, int orderedQty, int madeQty, DateTime dateStart, string stencil, string nc10, DateTime lastUpdateTime, int pcbOnMb, int ledQty, int connQty, int resQty, List<ledReelData> ledReels, string modelName, int binQty, double normPerHour, int previouslyManufacturedQty=0,  int recordId=0)
         {
             OrderNumber = orderNumber;
             Oper = oper;
@@ -24,7 +24,9 @@ namespace Karta_Pracy_SMT.Data_Structures
             LedReels = ledReels;
             ModelName = modelName;
             BinQty = binQty;
+            NormPerHour = normPerHour;
             PreviouslyManufacturedQty = previouslyManufacturedQty;
+            RecordId = recordId;
             LedQty = ledQty;
         }
 
@@ -42,7 +44,9 @@ namespace Karta_Pracy_SMT.Data_Structures
         public List<ledReelData> LedReels { get; set; }
         public string ModelName { get; set; }
         public int BinQty { get; set; }
+        public double NormPerHour { get; set; }
         public int PreviouslyManufacturedQty { get; set; }
+        public int RecordId { get; set; }
         public int LedQty { get; set; }
     }
 }

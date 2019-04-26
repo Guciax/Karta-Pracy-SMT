@@ -12,6 +12,18 @@ namespace Karta_Pracy_SMT
 {
     class DgvTools
     {
+        public static void ColorDgvRow(DataGridViewRow row, Color backColor, Color? foreColor = null)
+        {
+            foreach (DataGridViewCell cell in row.Cells)
+            {
+                cell.Style.BackColor = backColor;
+                if (foreColor.HasValue)
+                {
+                    cell.Style.ForeColor = (Color)foreColor;
+                }
+            }
+        }
+
         public static void PrepareDgvForBins(DataGridView grid, int binQty)
         {
             grid.Rows.Clear();

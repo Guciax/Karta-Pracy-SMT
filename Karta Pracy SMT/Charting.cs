@@ -90,46 +90,21 @@ namespace Karta_Pracy_SMT
 
         public static void DrawEfficiencyChart(PictureBox pbChart, float newPoint)
         {
-            //List<EfficiencyAtTime> allPoints = (List<EfficiencyAtTime>)pbChart.Tag;
-            //if (allPoints==null)
-            //{
-            //    allPoints = new List<EfficiencyAtTime>();
-            //}
+            if (pbChart.ClientRectangle.Width == 0) return;
 
             List<EfficiencyAtTime> allPoints = makeListOfPoints(newPoint);
 
-#if DEBUG
-            //Random rnd = new Random();
-            //for (int i=0;i<=50;i++)
-            //{
-            //    //allPoints.Add((float)rnd.NextDouble()*100);
-            //    //allPoints.Add(i*2);
-            //}
-
-#endif
-            //Random rnd = new Random();
-            //EfficiencyAtTime newPt = new EfficiencyAtTime();
-            //newPt.efficiency = newPoint;
-            //newPt.time = DateTime.Now;
-
-            //allPoints.Add(newPt);
-            //pbChart.Tag = allPoints;
-
-            //if (allPoints.Count > 16) 
-            //{
-            //    allPoints.RemoveAt(0);
-            //}
 
             if (allPoints.Count > 0)
             {
                 float maxVal = Math.Max(allPoints.Select(ef => ef.efficiency).ToList().Max(), 100);
                 float minVal = allPoints.Select(ef => ef.efficiency).ToList().Min();
 
-                float scale = pbChart.Height / (float)((maxVal * 1.1));
-                float xInterval = (pbChart.Width - 10) / allPoints.Count;
+                float scale = pbChart.ClientRectangle.Height / (float)((maxVal * 1.1));
+                float xInterval = (float)(pbChart.ClientRectangle.Width - 10) / allPoints.Count;
 
 
-                Bitmap DrawArea = new Bitmap(pbChart.Size.Width, pbChart.Size.Height);
+                Bitmap DrawArea = new Bitmap(pbChart.ClientRectangle.Width, pbChart.ClientRectangle.Height);
                 pbChart.Image = DrawArea;
 
                 Graphics g;
@@ -137,38 +112,94 @@ namespace Karta_Pracy_SMT
                 g.SmoothingMode = SmoothingMode.AntiAlias;
 
                 Pen penEfficiencyThisShift = new Pen(Brushes.Lime, 2);
-                Pen penEfficiencyPreviousShift = new Pen(Brushes.Yellow, 2);
+                Pen penEfficiencyPreviousShift = new Pen(Brushes.LightYellow, 2);
                 Pen penNorm = new Pen(Brushes.Gray, 1);
-                LinearGradientBrush linearGradientBrushThisShift = new LinearGradientBrush(new PointF(10, 0), new PointF(10, 100), Color.Lime, Color.Transparent);
-                LinearGradientBrush linearGradientBrushPreviousShift = new LinearGradientBrush(new PointF(10, 0), new PointF(10, 100), Color.Yellow, Color.Transparent);
+                LinearGradientBrush linearGradientBrushThisShift = new LinearGradientBrush(new PointF(10, pbChart.ClientRectangle.Height- maxVal*scale), new PointF(10, pbChart.ClientRectangle.Height), Color.Lime, Color.Transparent);
+                LinearGradientBrush linearGradientBrushPreviousShift = new LinearGradientBrush(new PointF(10, pbChart.ClientRectangle.Height - maxVal * scale), new PointF(10, pbChart.ClientRectangle.Height), Color.LightYellow, Color.Transparent);
 
                 float startX = 10;
-                float startY = pbChart.Size.Height - allPoints[0].efficiency * scale;
+                float startY = pbChart.ClientRectangle.Height - allPoints[0].efficiency * scale;
                 g.Clear(Color.Black);
-                GraphicsPath path = new GraphicsPath();
-                path.AddLine(10, pbChart.Size.Height, 10, startY);
+                //GraphicsPath path = new GraphicsPath();
+                //path.AddLine(10, pbChart.ClientRectangle.Height, 10, startY);
 
-                g.DrawLine(penNorm, 10, pbChart.Size.Height - 100 * scale, pbChart.Width, pbChart.Size.Height - 100 * scale);
-                g.DrawString("100%", MainForm.DefaultFont, Brushes.Gray, pbChart.Width - 40, pbChart.Size.Height - 98 * scale);
+                g.DrawLine(penNorm, 10, pbChart.ClientRectangle.Height - 100 * scale, pbChart.ClientRectangle.Width, pbChart.ClientRectangle.Height - 100 * scale);
+                g.DrawString("100%", MainForm.DefaultFont, Brushes.Gray, pbChart.ClientRectangle.Width - 40, pbChart.ClientRectangle.Height - 98 * scale);
 
-                g.DrawString(allPoints[0].time.ToString("HH:mm"), MainForm.DefaultFont, Brushes.Gray, 0, pbChart.Size.Height - 18);
+                g.DrawString(allPoints[0].time.ToString("HH:mm"), MainForm.DefaultFont, Brushes.Gray, 0, pbChart.ClientRectangle.Height - 18);
                 Debug.WriteLine("--- " + allPoints.Count + "points");
+
+                List<PointF> thisShiftPoints = new List<PointF>();
+                List<PointF> previousShiftPoints = new List<PointF>();
 
                 for (int i = 1; i < allPoints.Count; i++)
                 {
-                    Debug.WriteLine(startY + "-" + (pbChart.Size.Height - allPoints[i].efficiency * scale));
-                    g.DrawLine(penEfficiencyThisShift, startX, startY, i * xInterval, pbChart.Size.Height - allPoints[i].efficiency * scale);
-                    g.DrawLine(penNorm, i * xInterval, pbChart.Size.Height - 20, i * xInterval, pbChart.Size.Height - allPoints[i].efficiency * scale);
-                    g.DrawString(allPoints[i].time.ToString("HH:mm"), MainForm.DefaultFont, Brushes.Gray, (float)i * xInterval - 20, pbChart.Size.Height - 18);
+                    float nextX = i * xInterval;
+                    float nextY = pbChart.ClientRectangle.Height - allPoints[i].efficiency * scale;
 
-                    path.AddLine(startX, startY, i * xInterval, pbChart.Size.Height - allPoints[i].efficiency * scale);
-                    startX = i * xInterval;
-                    startY = pbChart.Size.Height - allPoints[i].efficiency * scale;
+                    if (allPoints[i].time  > (DateTools.whatDayShiftIsit(DateTime.Now).fixedDate))
+                    {
+                        g.DrawLine(penEfficiencyThisShift, startX, startY, nextX, nextY);
+
+                        if (thisShiftPoints.Count == 0)
+                        {
+                            thisShiftPoints.Add(new PointF(startX, startY));
+                        }
+                        thisShiftPoints.Add(new PointF(nextX, nextY));
+                    }
+                    else
+                    {
+                        g.DrawLine(penEfficiencyPreviousShift, startX, startY, nextX, nextY);
+
+                        if (previousShiftPoints.Count == 0)
+                        {
+                            previousShiftPoints.Add(new PointF(startX, startY));
+                        }
+                        previousShiftPoints.Add(new PointF(nextX, nextY));
+                    }
+                    g.DrawString(allPoints[i].time.ToString("HH:mm"), MainForm.DefaultFont, Brushes.Gray, (float)i * xInterval - 20, pbChart.ClientRectangle.Height - 18);
+                    g.DrawLine(penNorm, i * xInterval, pbChart.ClientRectangle.Height - 20, i * xInterval, pbChart.ClientRectangle.Height - allPoints[i].efficiency * scale);
+
+                    //Debug.WriteLine($"line: ({startX}x{startY}) -> ({nextX}x{nextY})");
+                    //g.DrawLine(penEfficiencyThisShift, startX, startY, nextX, nextY);
+                    //g.DrawLine(penNorm, i * xInterval, pbChart.ClientRectangle.Height - 20, i * xInterval, pbChart.ClientRectangle.Height - allPoints[i].efficiency * scale);
+                    //g.DrawString(allPoints[i].time.ToString("HH:mm"), MainForm.DefaultFont, Brushes.Gray, (float)i * xInterval - 20, pbChart.ClientRectangle.Height - 18);
+
+                    //path.AddLine(startX, (float)Math.Round(startY,0), nextX, (float)Math.Round(nextY,0));
+
+                    startX = nextX;
+                    startY = nextY;
+                }
+                if (thisShiftPoints.Count > 0)
+                {
+                    thisShiftPoints.Insert(0, new PointF(thisShiftPoints.First().X, pbChart.ClientRectangle.Height));
+                    thisShiftPoints.Add(new PointF(thisShiftPoints.Last().X, pbChart.ClientRectangle.Height));
+                    thisShiftPoints.Add(new PointF(thisShiftPoints.First().X, pbChart.ClientRectangle.Height));
+
+                    GraphicsPath thisShiftPath = new GraphicsPath();
+                    thisShiftPath.AddLines(thisShiftPoints.ToArray());
+                    g.FillPath(linearGradientBrushThisShift, thisShiftPath);
+
+                }
+                if (previousShiftPoints.Count > 0)
+                {
+                    previousShiftPoints.Insert(0, new PointF(previousShiftPoints.First().X, pbChart.ClientRectangle.Height));
+                    previousShiftPoints.Add(new PointF(previousShiftPoints.Last().X, pbChart.ClientRectangle.Height));
+                    previousShiftPoints.Add(new PointF(previousShiftPoints.First().X, pbChart.ClientRectangle.Height));
+
+                    GraphicsPath prevShiftPath = new GraphicsPath();
+                    prevShiftPath.AddLines(previousShiftPoints.ToArray());
+                    g.FillPath(linearGradientBrushPreviousShift, prevShiftPath);
                 }
 
-                path.AddLine(startX, startY, startX, pbChart.Size.Height);
-                path.AddLine(startX, pbChart.Size.Height, 10, pbChart.Size.Height);
-                g.FillPath(linearGradientBrushThisShift, path);
+                //path.AddLine(startX, startY, startX, pbChart.ClientRectangle.Height);
+                //path.AddLine(startX, pbChart.ClientRectangle.Height, 10, pbChart.ClientRectangle.Height);
+
+
+
+
+
+
 
 
 
@@ -232,8 +263,7 @@ namespace Karta_Pracy_SMT
                 Brush secondShiftColor = new SolidBrush(Tools.GetShiftColor(new DateTime(2018, 05, 29, 15, 00, 00)));
                 Brush thirdShiftColor = new SolidBrush(Tools.GetShiftColor(new DateTime(2018, 05, 29, 23, 00, 00)));
 
-
-                foreach (var dayEntry in efficiencyPerDayShift)
+                foreach (var dayEntry in efficiencyPerDayShift) 
                 {
                     float x = 50 + itemCounter * interval;
                     float y1 = dayEntry.Value[0] * scale;
@@ -253,11 +283,7 @@ namespace Karta_Pracy_SMT
 
                     itemCounter++;
                 }
-                
-
             }
-
-
         }
     }
 }
