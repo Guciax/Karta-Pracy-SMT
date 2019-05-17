@@ -110,28 +110,26 @@ namespace Karta_Pracy_SMT.Forms
         private void textBoxOrderNumber_Leave(object sender, EventArgs e)
         {
             labelModelInfo.Text = "";
-            DataTable lotTable = MST.MES.SqlOperations.Kitting.GetKittingTableForLots(new string[] { textBoxOrderNumber.Text });
-            //if (MST.MES.SqlOperations.SMT.SmtLots(new string[] { textBoxOrderNumber.Text }).Rows.Count > 0) 
-            //{
-            //    labelModelInfo.Text = "Ten numer zlecenia nie istnieje w bazie SMT";
-            //}
-            if (lotTable.Rows.Count > 0)
+            //DataTable lotTable = MST.MES.SqlOperations.Kitting.GetKittingTableForLots(new string[] { textBoxOrderNumber.Text });
+            var kittingInfo = MST.MES.SqlDataReaderMethods.Kitting.GetKittingDataForOrders(new string[] { textBoxOrderNumber.Text });
+            if (kittingInfo.Count > 0) 
             {
+                var orderInfo = kittingInfo[textBoxOrderNumber.Text];
                 currentMstOrderData.OrderNumber = textBoxOrderNumber.Text;
-                string modelId = lotTable.Rows[0]["NC12_wyrobu"].ToString();
+                string modelId = orderInfo.modelId;
                 currentMstOrderData.Nc10 = modelId;
-                currentMstOrderData.ModelName = MST.MES.SqlOperations.ConnectDB.NC12ToModelName(modelId + "00");
+                currentMstOrderData.ModelName = orderInfo.ModelName; ;
                 DataTable modelInfoTable = MST.MES.SqlOperations.MesModels.GetMstModelInfo(modelId);
 
                 var effPerHour = EfficiencyCalculation.CalculateModelNormPerHour(modelId, smtLine);
 
-                currentMstOrderData.OrderedQty = TryParseNullableCell(lotTable.Rows[0]["Ilosc_wyrobu_zlecona"].ToString());
+                currentMstOrderData.OrderedQty = (int)orderInfo.orderedQty;
                 currentMstOrderData.OrderNumber = textBoxOrderNumber.Text;
                 currentMstOrderData.PcbOnMb = TryParseNullableCell(modelInfoTable.Rows[0]["SMT_Carrier_QTY"].ToString());
                 currentMstOrderData.ResQty = TryParseNullableCell(modelInfoTable.Rows[0]["Resistor_Qty"].ToString());
                 currentMstOrderData.ConnQty = TryParseNullableCell(modelInfoTable.Rows[0]["Conn_Qty"].ToString());
                 currentMstOrderData.LedQty = TryParseNullableCell(modelInfoTable.Rows[0]["PKG_SUM_QTY"].ToString());
-                currentMstOrderData.BinQty = TryParseNullableCell(lotTable.Rows[0]["IloscKIT"].ToString());
+                currentMstOrderData.BinQty = (int)orderInfo.numberOfBins;
                 currentMstOrderData.NormPerHour = Math.Round(effPerHour.outputPerHour, 0);
                 textBoxOrderNumber.BackColor = Color.Lime;
                 labelModelInfo.Text += currentMstOrderData.Nc10.Insert(4, " ").Insert(8, " ") + Environment.NewLine +
@@ -160,6 +158,57 @@ namespace Karta_Pracy_SMT.Forms
             {
                 labelModelInfo.Text = "Nieprawidłowy numer zlecenia - Brak zlecenia w bazie Kitting!";
             }
+
+
+            //if (MST.MES.SqlOperations.SMT.SmtLots(new string[] { textBoxOrderNumber.Text }).Rows.Count > 0) 
+            //{
+            //    labelModelInfo.Text = "Ten numer zlecenia nie istnieje w bazie SMT";
+            //}
+            //if (lotTable.Rows.Count > 0)
+            //{
+            //    currentMstOrderData.OrderNumber = textBoxOrderNumber.Text;
+            //    string modelId = lotTable.Rows[0]["NC12_wyrobu"].ToString();
+            //    currentMstOrderData.Nc10 = modelId;
+            //    currentMstOrderData.ModelName = MST.MES.SqlOperations.ConnectDB.NC12ToModelName(modelId + "00");
+            //    DataTable modelInfoTable = MST.MES.SqlOperations.MesModels.GetMstModelInfo(modelId);
+
+            //    var effPerHour = EfficiencyCalculation.CalculateModelNormPerHour(modelId, smtLine);
+
+            //    currentMstOrderData.OrderedQty = TryParseNullableCell(lotTable.Rows[0]["Ilosc_wyrobu_zlecona"].ToString());
+            //    currentMstOrderData.OrderNumber = textBoxOrderNumber.Text;
+            //    currentMstOrderData.PcbOnMb = TryParseNullableCell(modelInfoTable.Rows[0]["SMT_Carrier_QTY"].ToString());
+            //    currentMstOrderData.ResQty = TryParseNullableCell(modelInfoTable.Rows[0]["Resistor_Qty"].ToString());
+            //    currentMstOrderData.ConnQty = TryParseNullableCell(modelInfoTable.Rows[0]["Conn_Qty"].ToString());
+            //    currentMstOrderData.LedQty = TryParseNullableCell(modelInfoTable.Rows[0]["PKG_SUM_QTY"].ToString());
+            //    currentMstOrderData.BinQty = TryParseNullableCell(lotTable.Rows[0]["IloscKIT"].ToString());
+            //    currentMstOrderData.NormPerHour = Math.Round(effPerHour.outputPerHour, 0);
+            //    textBoxOrderNumber.BackColor = Color.Lime;
+            //    labelModelInfo.Text += currentMstOrderData.Nc10.Insert(4, " ").Insert(8, " ") + Environment.NewLine +
+            //        currentMstOrderData.ModelName + Environment.NewLine +
+            //        "Ilość zlecona: " + currentMstOrderData.OrderedQty;
+
+            //    var previousSmtRecords = MST.MES.SqlDataReaderMethods.SMT.GetOneOrder(textBoxOrderNumber.Text);
+            //    if (previousSmtRecords.totalManufacturedQty > 0)
+            //    {
+            //        labelPreviousSmtInfo.Text = "Kontynuacja zlecenia." + Environment.NewLine +
+            //            $"Do tej pory wykonano: {previousSmtRecords.totalManufacturedQty} szt." + Environment.NewLine +
+            //            $"Pozostało do wykonania: {currentMstOrderData.OrderedQty - previousSmtRecords.totalManufacturedQty} szt.";
+            //        currentMstOrderData.PreviouslyManufacturedQty = previousSmtRecords.totalManufacturedQty;
+            //    }
+            //    else
+            //    {
+            //        labelPreviousSmtInfo.Text = "";
+            //    }
+
+            //    if (currentMstOrderData.Nc10.Contains("-"))
+            //    {
+            //        labelPreviousSmtInfo.Text = "To jest zlecenie LG, zmień zakładkę na LGIT!";
+            //    }
+            //}
+            //else
+            //{
+            //    labelModelInfo.Text = "Nieprawidłowy numer zlecenia - Brak zlecenia w bazie Kitting!";
+            //}
         }
 
         private int TryParseNullableCell(object dataCell)

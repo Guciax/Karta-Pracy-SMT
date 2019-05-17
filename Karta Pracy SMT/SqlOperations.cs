@@ -151,6 +151,10 @@ namespace Karta_Pracy_SMT
         public static void SaveRecordToDb(DateTime startDate, DateTime endDate,string smtLine,string operatorSMT,string lotNo,string model,string manufacturedQty,string ngQty,string scrapQty,string firstPieceCheck,string ledLefts, string stencil, string client, double totalLedsUsed )
         {
             bool release = true;
+            if ((endDate - startDate).TotalMinutes < 1)
+            {
+                endDate = endDate.AddMinutes(1);
+            }
 
 #if DEBUG
            //release = false;

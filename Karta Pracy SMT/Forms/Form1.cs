@@ -44,13 +44,13 @@ namespace Karta_Pracy_SMT
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-        #if DEBUG
+            #if DEBUG
             button2.Visible = true;
             EfficiencyTimer.Interval = 1000;
             dataGridView3DaysInfo.ReadOnly = false;
             dataGridView3DaysInfo.EditMode = DataGridViewEditMode.EditOnKeystroke;
-            smtLine = "SMT6";
-        #endif
+            smtLine = "SMT2";
+            #endif
             angularGauge1.LabelsStep = 10;
             angularGauge1.TickStep = 5;
             angularGauge1.Sections.Add(new AngularSection
@@ -562,8 +562,8 @@ namespace Karta_Pracy_SMT
                     {
                         efficiency = Math.Round(EfficiencyCalculation.CalculateEfficiency(startDate, endDate, nc10, qty, true) * 100, 0);
                     }
-
-                    dataGridViewMstOrders.Rows.Insert(0, startDate, endDate, orderNo, nc10.Insert(4, " ").Insert(8, " "), qty, efficiency+"%", nc[nc10+"00"]);
+                    string name = nc.ContainsKey(nc10 + "00") ? nc[nc10 + "00"] : nc10;
+                    dataGridViewMstOrders.Rows.Insert(0, startDate, endDate, orderNo, nc10.Insert(4, " ").Insert(8, " "), qty, efficiency+"%", name);
                     nc12ToModelList.Add(nc10 + "00");
 
                     ordersEff.Add(new EfficiencyCalculation.OrderDataForEfficiencyStructure() { start = startDate, end = endDate, qty = qty, modelId=nc10 });
@@ -862,7 +862,7 @@ namespace Karta_Pracy_SMT
             labelConnQty.Text = currentMstOrder.ConnQty.ToString();
             labelResQty.Text = currentMstOrder.ResQty.ToString();
             labelModelNorm.Text = $"{currentMstOrder.NormPerHour} szt/h";
-            labelMstCycleTime.Text = $"{Math.Ceiling(3600/currentMstOrder.NormPerHour)}sek";
+            labelMstCycleTime.Text = $"{Math.Ceiling(3600/currentMstOrder.NormPerHour * currentMstOrder.PcbOnMb)}sek /1MB";
 
             labelBinInfo.Text = string.Join(Environment.NewLine, MstOperations.LedInfoTableToList(MST.MES.SqlOperations.SparingLedInfo.GetReelsForLot(currentMstOrder.OrderNumber)).ToArray());
         }
@@ -1028,8 +1028,10 @@ namespace Karta_Pracy_SMT
                         {
                             SqlOperations.SaveRecordToDb(currentMstOrder.DateStart, DateTime.Now, smtLine, currentMstOrder.Oper, currentMstOrder.OrderNumber, currentMstOrder.Nc10, currentMstOrder.MadeQty.ToString(), "0", "0", "check", "", currentMstOrder.Stencil, "MST", 0);
                         }
-                        
-                        dataGridViewMstOrders.Rows.Insert(0, currentMstOrder.DateStart, DateTime.Now.ToString(), currentMstOrder.OrderNumber, currentMstOrder.Nc10.Insert(4, " ").Insert(8, " "), currentMstOrder.MadeQty, currentMstOrder.ModelName);
+
+                        double efficiency = Math.Round(EfficiencyCalculation.CalculateEfficiency(currentMstOrder.DateStart, DateTime.Now, currentMstOrder.Nc10, currentMstOrder.MadeQty, true) * 100, 0);
+
+                        dataGridViewMstOrders.Rows.Insert(0, currentMstOrder.DateStart, DateTime.Now, currentMstOrder.OrderNumber, currentMstOrder.Nc10.Insert(4, " ").Insert(8, " "), currentMstOrder.MadeQty, efficiency+"%",currentMstOrder.ModelName);
                         currentMstOrder = new CurrentMstOrder("Brak", "Brak", 0, 0, DateTime.Now, "Brak", "0000000000", DateTime.Now, 0, 0, 0, 0, new List<ledReelData>(), "Brak", 0, 0);
                         dataGridViewMstLedReels.Rows.Clear();
                         dataGridViewLedTrash.Rows.Clear();
